@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone";
+
+service AuthService {
+    // Verifies a User and returns an access token.
+    rpc GetToken(GetTokenRequest) returns (GetTokenResponse) {}
+    // Refreshes an access token.
+    rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+}
+
+message GetTokenRequest {
+    oneof id {
+        // The unique email associated with the user.
+        string email = 1;
+        // The unique username associated with the user.
+        string username = 2;
+    }
+
+    // The password for the user account.
+    string password = 3;
+}
+
+message GetTokenResponse {
+    // The access JWT for the user.
+    string access_token = 1;
+    // The refresh JWT for the user.
+    string refresh_token = 2;
+}
+
+message RefreshTokenRequest {
+    // The refresh JWT for the user.
+    string refresh_token = 1;
+}   
+
+message RefreshTokenResponse {
+    // The new access JWT for the user.
+    string access_token = 1;
+    // The new refresh JWT for the user.
+    string refresh_token = 2;
+}

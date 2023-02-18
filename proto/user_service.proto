@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+import "proto/user.proto";
+import "google/protobuf/empty.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone";
+
+service UserService {
+    // Creates a User.
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+    // Updates a User to the given User in the request.
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+    // Deletes a User from the database.
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+}
+
+// Creates the given user with the given password.
+message CreateUserRequest {
+    // The user to create.
+    User user = 1;
+
+    // The password for the user. This password is hashed before being
+    // stored in the database. 
+    // The password must be at least 8 characters.
+    string password = 2;
+}
+
+message CreateUserResponse {
+    // The created user proto.
+    User created_user = 1;
+}
+
+message UpdateUserRequest {
+    // The updated user proto.
+    User user = 1;
+
+    // The password for the user account.
+    string password = 2;
+}
+
+message UpdateUserResponse {
+    // The updated user proto.
+    User updated_user = 2;
+}
+
+message DeleteUserRequest {
+    oneof id {
+        // The unique email associated with the user.
+        string email = 1;
+        // The unique username associated with the user.
+        string username = 2;
+    }
+
+    // The password for the user account.
+    string password = 3;
+}
+
+// Empty response returned for DeleteUser RPC.
+message DeleteUserResponse {}

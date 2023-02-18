@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone";
+
+// Defines a specific role a user might have for a specific masjid.
+message MasjidRole {
+    // Defines the different possible roles a user might have in a masjid.
+    enum Role {
+        // Default value. 
+        ROLE_UNSPECIFIED = 0;
+        // This role specifies someone who is just a member of the masjid.
+        MASJID_MEMBER = 1;
+        // This role specifies someone who has some responsibility at the masjid
+        // but is not an administrator.
+        MASJID_VOLUNTEER = 2;
+        // This role specifies someone at the masjid who is involved in a
+        // high-level administrative capacity.
+        MASJID_ADMIN = 3;
+        // This role specifies someone at the masjid who is involved in a
+        // religious capacity.
+        MASJID_IMAM = 4;
+    }
+
+    // The associated role.
+    Role role = 1;
+    // The ID of the masjid associated with this role.
+    string masjid_id = 2;
+}
+
+// Defines a User.
+message User {
+    // The email of the user. This field is required and must be unique.
+    string email = 1;
+    // The username of the user. This field is required and must be unique.
+    string username = 2;
+    // Whether or not the email of the user was verified.
+    bool is_email_verified = 3;
+
+    // The first name of the user. 
+    string first_name = 4;
+    // The last name of the user.
+    string last_name = 5;
+    // The phone number associated with the user.
+    string phone_number = 6;
+    
+    // Defines an enum representing the gender of the user.
+    enum Gender {
+        // Default value.
+        GENDER_UNSPECIFIED = 0;
+        MALE = 1;
+        FEMALE = 2;
+    }    
+    Gender gender = 7;
+
+    // The different MasjidRoles associated with this user. 
+    repeated MasjidRole masjid_roles = 8;
+
+    // The create time of the user.
+    google.protobuf.Timestamp create_time = 9; 
+    // The update time of the user.
+    google.protobuf.Timestamp update_time = 10; 
+}
