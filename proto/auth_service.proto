@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone";
+option go_package = "github.com/mnadev/limestone/authservice/proto";
 
 service AuthService {
     // Verifies a User and returns an access token.

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	limestone "github.com/mnadev/limestone/bazel-out/darwin-fastbuild/bin/proto/user_go_proto_pb/github.com/mnadev/limestone/proto"
+	userpb "github.com/mnadev/limestone/user/proto"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -49,7 +49,7 @@ type User struct {
 	UpdatedAt      time.Time
 }
 
-func NewUserFromProto(user_proto *limestone.User, password string) (*User, error) {
+func NewUserFromProto(user_proto *userpb.User, password string) (*User, error) {
 	if len(password) < 8 {
 		return nil, status.Error(codes.InvalidArgument, "password must be at least 8 characters long")
 	}
@@ -81,7 +81,7 @@ func NewUserFromProto(user_proto *limestone.User, password string) (*User, error
 	}, nil
 }
 
-func CreateUser(user_proto *limestone.User, password string, db *gorm.DB) error {
+func CreateUser(user_proto *userpb.User, password string, db *gorm.DB) error {
 	user, err := NewUserFromProto(user_proto, password)
 	if err != nil {
 		return status.Error(codes.Internal, "failed to create user object")
