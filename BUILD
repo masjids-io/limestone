@@ -15,7 +15,7 @@ gazelle(
 )
 
 go_library(
-    name = "limestone_lib",
+    name = "server_lib",
     srcs = ["main.go"],
     importpath = "github.com/mnadev/limestone",
     visibility = ["//visibility:private"],
@@ -23,7 +23,7 @@ go_library(
 )
 
 go_binary(
-    name = "limestone",
-    embed = [":limestone_lib"],
+    name = "server",
+    embed = [":server_lib"],
     visibility = ["//visibility:public"],
 )
