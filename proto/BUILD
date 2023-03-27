@@ -47,4 +47,5 @@ go_proto_library(
         ":user_proto",
         ":user_service_proto",
     ],
+    deps = [":user_go_proto"]
 )
