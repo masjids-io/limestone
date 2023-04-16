@@ -1,15 +1,13 @@
 package storage
 
 import (
-	"bytes"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/mnadev/limestone/auth"
 	userpb "github.com/mnadev/limestone/user/proto"
-	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gorm.io/gorm"
 )
 
 type gender string
@@ -18,6 +16,13 @@ const (
 	MALE   gender = "MALE"
 	FEMALE gender = "FEMALE"
 )
+
+func (g gender) String() string {
+	if g == MALE {
+		return "MALE"
+	}
+	return "FEMALE"
+}
 
 type role string
 
@@ -33,92 +38,64 @@ type masjidRole struct {
 	MasjidId string
 }
 
-// User represents a registered user with email/password authentication.
+// User represents a registered user with email/password authentication
 type User struct {
-	ID             uuid.UUID    `gorm:"primaryKey;type:char(36)"`
-	Email          string       `gorm:"unique;type:varchar(320)"`
-	Username       string       `gorm:"unique;type:varchar(255)"`
-	HashedPassword []byte       `gorm:"type:varchar(60)"`
-	IsVerified     bool         `gorm:"default:false"`
-	FirstName      string       `gorm:"type:varchar(255)"`
-	LastName       string       `gorm:"type:varchar(255)"`
-	PhoneNumber    string       `gorm:"type:varchar(255)"`
-	Gender         gender       `gorm:"type:enum('MALE', 'FEMALE');column:gender"`
-	MasjidRoles    []masjidRole `gorm:"embedded"`
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	ID             uuid.UUID `gorm:"primaryKey;type:char(36)"`
+	Email          string    `gorm:"unique;type:varchar(320)"`
+	Username       string    `gorm:"unique;type:varchar(255)"`
+	HashedPassword string    `gorm:"type:varchar(60)"`
+	IsVerified     bool      `gorm:"default:false"`
+	FirstName      string    `gorm:"type:varchar(255)"`
+	LastName       string    `gorm:"type:varchar(255)"`
+	PhoneNumber    string    `gorm:"type:varchar(255)"`
+	// TODO: support gender and masjid role fields
+	// Gender         gender    `gorm:"type:enum('MALE', 'FEMALE');column:gender"`
+	// MasjidRoles    masjidRole `gorm:"embedded"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
-func NewUserFromProto(user_proto *userpb.User, password string) (*User, error) {
-	if len(password) < 8 {
+// NewUser creates a new User struct given the User proto and plaintext password
+func NewUser(up *userpb.User, pwd string) (*User, error) {
+	if len(pwd) < 8 {
 		return nil, status.Error(codes.InvalidArgument, "password must be at least 8 characters long")
 	}
 
-	hash_pwd, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	hpwd, err := auth.HashPassword(pwd)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "failed to hash password")
 	}
 
 	var roles []masjidRole
 
-	for _, proto_role := range user_proto.GetMasjidRoles() {
+	for _, prole := range up.GetMasjidRoles() {
 		roles = append(roles, masjidRole{
-			Role:     role(proto_role.GetRole().String()),
-			MasjidId: proto_role.GetMasjidId(),
+			Role:     role(prole.GetRole().String()),
+			MasjidId: prole.GetMasjidId(),
 		})
 	}
 
 	return &User{
-		Email:          user_proto.GetEmail(),
-		Username:       user_proto.GetUsername(),
-		HashedPassword: hash_pwd,
-		IsVerified:     user_proto.GetIsEmailVerified(),
-		FirstName:      user_proto.GetFirstName(),
-		LastName:       user_proto.GetLastName(),
-		PhoneNumber:    user_proto.GetPhoneNumber(),
-		Gender:         gender(user_proto.GetGender().String()),
-		MasjidRoles:    roles,
+		Email:          up.GetEmail(),
+		Username:       up.GetUsername(),
+		HashedPassword: hpwd,
+		IsVerified:     up.GetIsEmailVerified(),
+		FirstName:      up.GetFirstName(),
+		LastName:       up.GetLastName(),
+		PhoneNumber:    up.GetPhoneNumber(),
+		// Gender:         gender(up.GetGender().String()),
+		// MasjidRoles:    roles,
 	}, nil
 }
 
-func CreateUser(user_proto *userpb.User, password string, db *gorm.DB) error {
-	user, err := NewUserFromProto(user_proto, password)
-	if err != nil {
-		return status.Error(codes.Internal, "failed to create user object")
+func (u *User) ToProto() *userpb.User {
+	return &userpb.User{
+		Email:    u.Email,
+		Username: u.Username,
+		// Gender:          userpb.User_Gender(userpb.User_Gender_value[u.Gender.String()]),
+		IsEmailVerified: u.IsVerified,
+		FirstName:       u.FirstName,
+		LastName:        u.LastName,
+		PhoneNumber:     u.PhoneNumber,
 	}
-
-	result := db.Create(&user)
-	return result.Error
-}
-
-func GetUserWithEmail(email string, password string, db *gorm.DB) (*User, error) {
-	var user User
-	db.Where("email = ?", email).First(&user)
-
-	hash_pwd, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to hash password")
-	}
-
-	if !bytes.Equal(user.HashedPassword, hash_pwd) {
-		return nil, status.Error(codes.PermissionDenied, "password did not match")
-	}
-
-	return &user, nil
-}
-
-func GetUserWithUsername(username string, password string, db *gorm.DB) (*User, error) {
-	var user User
-	db.Where("username = ?", username).First(&user)
-
-	hash_pwd, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to hash password")
-	}
-
-	if !bytes.Equal(user.HashedPassword, hash_pwd) {
-		return nil, status.Error(codes.PermissionDenied, "password did not match")
-	}
-
-	return &user, nil
 }
