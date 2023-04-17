@@ -26,6 +26,7 @@ const (
 
 func GetUserProto(email string) *userpb.User {
 	return &userpb.User{
+		UserId:      "00000000-0000-0000-0000-000000000000",
 		Email:       email,
 		Username:    Username,
 		FirstName:   FirstName,
@@ -37,6 +38,7 @@ func GetUserProto(email string) *userpb.User {
 
 func AssertUserProtoEqual(t *testing.T, expected, actual *userpb.User) bool {
 	actual_without_timestamp := userpb.User{
+		UserId:      actual.UserId,
 		Email:       actual.Email,
 		Username:    actual.Username,
 		FirstName:   actual.FirstName,
