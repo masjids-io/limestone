@@ -4,7 +4,7 @@ import "google/protobuf/timestamp.proto";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone";
+option go_package = "github.com/mnadev/limestone/user/proto";
 
 // Defines a specific role a user might have for a specific masjid.
 message MasjidRole {
@@ -29,23 +29,27 @@ message MasjidRole {
     Role role = 1;
     // The ID of the masjid associated with this role.
     string masjid_id = 2;
+    // The ID of the associated user.
+    string user_id = 3;
 }
 
 // Defines a User.
 message User {
+    // The ID of the user. This field is output only.
+    string user_id = 1;
     // The email of the user. This field is required and must be unique.
-    string email = 1;
+    string email = 2;
     // The username of the user. This field is required and must be unique.
-    string username = 2;
+    string username = 3;
     // Whether or not the email of the user was verified.
-    bool is_email_verified = 3;
+    bool is_email_verified = 4;
 
     // The first name of the user. 
-    string first_name = 4;
+    string first_name = 5;
     // The last name of the user.
-    string last_name = 5;
+    string last_name = 6;
     // The phone number associated with the user.
-    string phone_number = 6;
+    string phone_number = 7;
     
     // Defines an enum representing the gender of the user.
     enum Gender {
@@ -54,13 +58,10 @@ message User {
         MALE = 1;
         FEMALE = 2;
     }    
-    Gender gender = 7;
+    Gender gender = 8;
 
-    // The different MasjidRoles associated with this user. 
-    repeated MasjidRole masjid_roles = 8;
-
-    // The create time of the user.
+    // The create time of the user. This field is output only.
     google.protobuf.Timestamp create_time = 9; 
-    // The update time of the user.
+    // The update time of the user. This field is output only.
     google.protobuf.Timestamp update_time = 10; 
 }

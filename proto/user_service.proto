@@ -5,7 +5,7 @@ import "google/protobuf/empty.proto";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone";
+option go_package = "github.com/mnadev/limestone/userservice/proto";
 
 service UserService {
     // Creates a User.
