@@ -50,7 +50,7 @@ type User struct {
 	LastName       string    `gorm:"type:varchar(255)"`
 	PhoneNumber    string    `gorm:"type:varchar(255)"`
 	// TODO: support gender and masjid role fields
-	// Gender gender `gorm:"type:enum('MALE', 'FEMALE');column:gender"`
+	Gender gender `gorm:"type:gender"`
 	// MasjidRoles    masjidRole `gorm:"embedded"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -84,16 +84,16 @@ func NewUser(up *userpb.User, pwd string) (*User, error) {
 		FirstName:      up.GetFirstName(),
 		LastName:       up.GetLastName(),
 		PhoneNumber:    up.GetPhoneNumber(),
-		// Gender:         gender(up.GetGender().String()),
+		Gender:         gender(up.GetGender().String()),
 		// MasjidRoles:    roles,
 	}, nil
 }
 
 func (u *User) ToProto() *userpb.User {
 	return &userpb.User{
-		Email:    u.Email,
-		Username: u.Username,
-		// Gender:          userpb.User_Gender(userpb.User_Gender_value[u.Gender.String()]),
+		Email:           u.Email,
+		Username:        u.Username,
+		Gender:          userpb.User_Gender(userpb.User_Gender_value[u.Gender.String()]),
 		IsEmailVerified: u.IsVerified,
 		FirstName:       u.FirstName,
 		LastName:        u.LastName,

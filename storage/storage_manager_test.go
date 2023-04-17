@@ -31,7 +31,7 @@ func GetUserProto(email string) *userpb.User {
 		FirstName:   FirstName,
 		LastName:    LastName,
 		PhoneNumber: PhoneNumber,
-		// Gender:      userpb.User_MALE,
+		Gender:      userpb.User_FEMALE,
 	}
 }
 
@@ -42,6 +42,7 @@ func AssertUserProtoEqual(t *testing.T, expected, actual *userpb.User) bool {
 		FirstName:   actual.FirstName,
 		LastName:    actual.LastName,
 		PhoneNumber: actual.PhoneNumber,
+		Gender:      actual.Gender,
 	}
 
 	assert.Equal(t, *expected, actual_without_timestamp)
