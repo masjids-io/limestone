@@ -56,9 +56,6 @@ message User {
     }    
     Gender gender = 7;
 
-    // The different MasjidRoles associated with this user. 
-    repeated MasjidRole masjid_roles = 8;
-
     // The create time of the user.
     google.protobuf.Timestamp create_time = 9; 
     // The update time of the user.
