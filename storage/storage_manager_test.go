@@ -3,11 +3,13 @@ package storage
 import (
 	"database/sql"
 	"testing"
+	"time"
 
 	userpb "github.com/mnadev/limestone/user/proto"
 	_ "github.com/proullon/ramsql/driver"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -31,6 +33,22 @@ func GetUserProto(email string) *userpb.User {
 		PhoneNumber: PhoneNumber,
 		// Gender:      userpb.User_MALE,
 	}
+}
+
+func AssertUserProtoEqual(t *testing.T, expected, actual *userpb.User) bool {
+	actual_without_timestamp := userpb.User{
+		Email:       actual.Email,
+		Username:    actual.Username,
+		FirstName:   actual.FirstName,
+		LastName:    actual.LastName,
+		PhoneNumber: actual.PhoneNumber,
+	}
+
+	assert.Equal(t, *expected, actual_without_timestamp)
+	assert.LessOrEqual(t, time.Now().Unix()-actual.CreateTime.GetSeconds(), int64(1))
+	assert.LessOrEqual(t, time.Now().Unix()-actual.UpdateTime.GetSeconds(), int64(1))
+
+	return true
 }
 
 func InitStorageManager(testName string) (*StorageManager, error) {
@@ -85,7 +103,7 @@ func TestGetUserWithEmail_Success(t *testing.T) {
 	assert.Nil(t, err)
 
 	user, err := s.GetUserWithEmail(UserEmail, Password)
-	assert.Equal(t, *GetUserProto(UserEmail), *user.ToProto())
+	AssertUserProtoEqual(t, GetUserProto(UserEmail), user.ToProto())
 	assert.Nil(t, err)
 }
 
@@ -121,7 +139,7 @@ func TestGetUserWithUsername_Success(t *testing.T) {
 	assert.Nil(t, err)
 
 	user, err := s.GetUserWithUsername(Username, Password)
-	assert.Equal(t, *GetUserProto(UserEmail), *user.ToProto())
+	AssertUserProtoEqual(t, GetUserProto(UserEmail), user.ToProto())
 	assert.Nil(t, err)
 }
 

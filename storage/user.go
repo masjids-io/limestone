@@ -8,6 +8,7 @@ import (
 	userpb "github.com/mnadev/limestone/user/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type gender string
@@ -49,7 +50,7 @@ type User struct {
 	LastName       string    `gorm:"type:varchar(255)"`
 	PhoneNumber    string    `gorm:"type:varchar(255)"`
 	// TODO: support gender and masjid role fields
-	// Gender         gender    `gorm:"type:enum('MALE', 'FEMALE');column:gender"`
+	// Gender gender `gorm:"type:enum('MALE', 'FEMALE');column:gender"`
 	// MasjidRoles    masjidRole `gorm:"embedded"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -97,5 +98,7 @@ func (u *User) ToProto() *userpb.User {
 		FirstName:       u.FirstName,
 		LastName:        u.LastName,
 		PhoneNumber:     u.PhoneNumber,
+		CreateTime:      timestamppb.New(u.CreatedAt),
+		UpdateTime:      timestamppb.New(u.UpdatedAt),
 	}
 }
