@@ -8,15 +8,16 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/userservice/proto";
 
 service UserService {
-    // Creates a User.
-    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
-    // Updates a User to the given User in the request.
-    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
-    // Deletes a User from the database.
+    // Creates the given User with the given password.
+    rpc CreateUser(CreateUserRequest) returns (User) {}
+    // Gets a User from the database provided the password is valid.
+    rpc GetUser(GetUserRequest) returns (User) {}
+    // Updates a User to the given User in the request provided the password is valid.
+    rpc UpdateUser(UpdateUserRequest) returns (User) {}
+    // Deletes a User from the database provided the password is valid.
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
 }
 
-// Creates the given user with the given password.
 message CreateUserRequest {
     // The user to create.
     User user = 1;
@@ -27,9 +28,16 @@ message CreateUserRequest {
     string password = 2;
 }
 
-message CreateUserResponse {
-    // The created user proto.
-    User created_user = 1;
+message GetUserRequest {
+    oneof id {
+        // The unique email associated with the user.
+        string email = 1;
+        // The unique username associated with the user.
+        string username = 2;
+    }
+
+    // The password for the user account.
+    string password = 3;
 }
 
 message UpdateUserRequest {
@@ -38,11 +46,6 @@ message UpdateUserRequest {
 
     // The password for the user account.
     string password = 2;
-}
-
-message UpdateUserResponse {
-    // The updated user proto.
-    User updated_user = 2;
 }
 
 message DeleteUserRequest {
