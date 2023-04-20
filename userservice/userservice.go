@@ -8,50 +8,51 @@ import (
 	userservicepb "github.com/mnadev/limestone/userservice/proto"
 )
 
-type userServiceServer struct {
-	sm *storage.StorageManager
+type UserServiceServer struct {
+	SM *storage.StorageManager
+	userservicepb.UnimplementedUserServiceServer
 }
 
-func (srvr *userServiceServer) CreateUser(ctx context.Context, in *userservicepb.CreateUserRequest) (*userpb.User, error) {
-	user, err := srvr.sm.CreateUser(in.GetUser(), in.GetPassword())
+func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *userservicepb.CreateUserRequest) (*userpb.User, error) {
+	user, err := srvr.SM.CreateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
 	return user.ToProto(), nil
 }
 
-func (srvr *userServiceServer) GetUser(ctx context.Context, in *userservicepb.GetUserRequest) (*userpb.User, error) {
+func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.GetUserRequest) (*userpb.User, error) {
 	if in.GetEmail() != "" {
-		user, err := srvr.sm.GetUserWithEmail(in.GetEmail(), in.GetPassword())
+		user, err := srvr.SM.GetUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
 		return user.ToProto(), nil
 
 	}
-	user, err := srvr.sm.GetUserWithUsername(in.GetUsername(), in.GetPassword())
+	user, err := srvr.SM.GetUserWithUsername(in.GetUsername(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
 	return user.ToProto(), nil
 }
 
-func (srvr *userServiceServer) UpdateUser(ctx context.Context, in *userservicepb.UpdateUserRequest) (*userpb.User, error) {
-	user, err := srvr.sm.UpdateUser(in.GetUser(), in.GetPassword())
+func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *userservicepb.UpdateUserRequest) (*userpb.User, error) {
+	user, err := srvr.SM.UpdateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
 	return user.ToProto(), nil
 }
 
-func (srvr *userServiceServer) DeleteUser(ctx context.Context, in *userservicepb.DeleteUserRequest) (*userservicepb.DeleteUserResponse, error) {
+func (srvr *UserServiceServer) DeleteUser(ctx context.Context, in *userservicepb.DeleteUserRequest) (*userservicepb.DeleteUserResponse, error) {
 	if in.GetEmail() != "" {
-		err := srvr.sm.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
+		err := srvr.SM.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		err := srvr.sm.DeleteUserWithUsername(in.GetUsername(), in.GetPassword())
+		err := srvr.SM.DeleteUserWithUsername(in.GetUsername(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
