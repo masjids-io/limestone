@@ -4,5 +4,5 @@ use (
 	.
 	./auth
 	./storage
-	./userservice
+	./user_service
 )

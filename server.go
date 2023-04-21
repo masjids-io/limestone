@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/mnadev/limestone/storage"
-	"github.com/mnadev/limestone/userservice"
+	"github.com/mnadev/limestone/user_service"
 	userservicepb "github.com/mnadev/limestone/userservice/proto"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
