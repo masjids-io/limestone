@@ -18,7 +18,7 @@ type StorageManager struct {
 func (s *StorageManager) CreateUser(up *userservicepb.User, pwd string) (*User, error) {
 	user, err := NewUser(up, pwd)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to create user object")
+		return nil, err
 	}
 
 	result := s.DB.Create(user)
