@@ -16,10 +16,17 @@ gazelle(
 
 go_library(
     name = "server_lib",
-    srcs = ["main.go"],
+    srcs = ["server.go"],
     importpath = "github.com/mnadev/limestone",
     visibility = ["//visibility:private"],
-    deps = ["@org_golang_google_grpc//:go_default_library"],
+    deps = [
+        "//proto:user_service_go_proto",
+        "//storage:storage_manager",
+        "//user_service:user_service",
+        "@io_gorm_driver_postgres//:postgres",
+        "@io_gorm_gorm//:gorm",
+        "@org_golang_google_grpc//:go_default_library",
+    ],
 )
 
 go_binary(

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	userpb "github.com/mnadev/limestone/user/proto"
+	userservicepb "github.com/mnadev/limestone/userservice/proto"
 	_ "github.com/proullon/ramsql/driver"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -24,20 +24,20 @@ const (
 	PhoneNumber = "+1234567890"
 )
 
-func GetUserProto(email string) *userpb.User {
-	return &userpb.User{
+func GetUserProto(email string) *userservicepb.User {
+	return &userservicepb.User{
 		UserId:      "00000000-0000-0000-0000-000000000000",
 		Email:       email,
 		Username:    Username,
 		FirstName:   FirstName,
 		LastName:    LastName,
 		PhoneNumber: PhoneNumber,
-		Gender:      userpb.User_FEMALE,
+		Gender:      userservicepb.User_FEMALE,
 	}
 }
 
-func AssertUserProtoEqual(t *testing.T, expected, actual *userpb.User) bool {
-	actual_without_timestamp := userpb.User{
+func AssertUserProtoEqual(t *testing.T, expected, actual *userservicepb.User) bool {
+	actual_without_timestamp := userservicepb.User{
 		UserId:      actual.UserId,
 		Email:       actual.Email,
 		Username:    actual.Username,
