@@ -6,7 +6,6 @@ go_library(
     importpath = "github.com/mnadev/limestone/user_service",
     visibility = ["//visibility:public"],
     deps = [
-        "//proto:user_go_proto",
         "//proto:user_service_go_proto",
         "//storage:storage_manager",
     ],

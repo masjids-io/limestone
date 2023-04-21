@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/mnadev/limestone/auth"
-	userpb "github.com/mnadev/limestone/user/proto"
+	userservicepb "github.com/mnadev/limestone/userservice/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
@@ -15,7 +15,7 @@ type StorageManager struct {
 }
 
 // CreateUser creates a User in the database for the given User and password
-func (s *StorageManager) CreateUser(up *userpb.User, pwd string) (*User, error) {
+func (s *StorageManager) CreateUser(up *userservicepb.User, pwd string) (*User, error) {
 	user, err := NewUser(up, pwd)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "failed to create user object")
@@ -33,7 +33,7 @@ func (s *StorageManager) CreateUser(up *userpb.User, pwd string) (*User, error) 
 }
 
 // UpdateUser updates a User in the database for the given User and password if it exists
-func (s *StorageManager) UpdateUser(up *userpb.User, pwd string) (*User, error) {
+func (s *StorageManager) UpdateUser(up *userservicepb.User, pwd string) (*User, error) {
 	var old_user User
 	result := s.DB.Where("id = ?", up.GetUserId()).First(&old_user)
 

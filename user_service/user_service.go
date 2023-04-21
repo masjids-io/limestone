@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/mnadev/limestone/storage"
-	userpb "github.com/mnadev/limestone/user/proto"
 	userservicepb "github.com/mnadev/limestone/userservice/proto"
 )
 
@@ -13,7 +12,7 @@ type UserServiceServer struct {
 	userservicepb.UnimplementedUserServiceServer
 }
 
-func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *userservicepb.CreateUserRequest) (*userpb.User, error) {
+func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *userservicepb.CreateUserRequest) (*userservicepb.User, error) {
 	user, err := srvr.SM.CreateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
@@ -21,7 +20,7 @@ func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *userservicepb
 	return user.ToProto(), nil
 }
 
-func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.GetUserRequest) (*userpb.User, error) {
+func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.GetUserRequest) (*userservicepb.User, error) {
 	if in.GetEmail() != "" {
 		user, err := srvr.SM.GetUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
@@ -37,7 +36,7 @@ func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.Ge
 	return user.ToProto(), nil
 }
 
-func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *userservicepb.UpdateUserRequest) (*userpb.User, error) {
+func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *userservicepb.UpdateUserRequest) (*userservicepb.User, error) {
 	user, err := srvr.SM.UpdateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err

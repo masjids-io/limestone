@@ -7,7 +7,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//auth:password",
-        "//proto:user_go_proto",
+        "//proto:user_service_go_proto",
         "@com_github_google_uuid//:uuid",
         "@io_gorm_gorm//:gorm",
         "@org_golang_google_grpc//codes",
@@ -26,7 +26,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//auth:password",
-        "//proto:user_go_proto",
+        "//proto:user_service_go_proto",
         "@com_github_google_uuid//:uuid",
         "@io_gorm_gorm//:gorm",
         "@org_golang_google_grpc//codes",
@@ -42,7 +42,7 @@ go_test(
         ":storage_manager",
     ],
     deps = [
-        "//proto:user_go_proto",
+        "//proto:user_service_go_proto",
         "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//assert",
         "@com_github_stretchr_testify//require",
