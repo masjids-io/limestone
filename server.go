@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/mnadev/limestone/storage"
+	"github.com/mnadev/limestone/user_service"
 	userservicepb "github.com/mnadev/limestone/user_service/proto"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
@@ -36,7 +37,7 @@ func main() {
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	DB.AutoMigrate(storage.User{})
-	userservicepb.RegisterUserServiceServer(server, &userservice.UserServiceServer{
+	userservicepb.RegisterUserServiceServer(server, &user_service.UserServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
