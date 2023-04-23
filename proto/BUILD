@@ -28,7 +28,7 @@ go_proto_library(
 go_grpc_library(
     name = "user_service_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "github.com/mnadev/limestone/userservice/proto",
+    importpath = "github.com/mnadev/limestone/user_service/proto",
     protos = [
         ":user_service_proto",
     ],

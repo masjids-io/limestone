@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/mnadev/limestone/auth"
-	userservicepb "github.com/mnadev/limestone/userservice/proto"
+	userservicepb "github.com/mnadev/limestone/user_service/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
