@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/mnadev/limestone/storage"
-	userservicepb "github.com/mnadev/limestone/userservice/proto"
+	userservicepb "github.com/mnadev/limestone/user_service/proto"
 )
 
 type UserServiceServer struct {

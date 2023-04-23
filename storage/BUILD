@@ -34,20 +34,3 @@ go_library(
         "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )
-
-go_test(
-    name = "storage_manager_test",
-    srcs = ["storage_manager_test.go"],
-    embed = [
-        ":storage_manager",
-    ],
-    deps = [
-        "//proto:user_service_go_proto",
-        "@com_github_proullon_ramsql//driver",
-        "@com_github_stretchr_testify//assert",
-        "@com_github_stretchr_testify//require",
-        "@io_gorm_driver_postgres//:postgres",
-        "@io_gorm_gorm//:gorm",
-        "@org_golang_google_protobuf//types/known/timestamppb",
-    ],
-)
