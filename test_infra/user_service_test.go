@@ -34,7 +34,7 @@ func (suite *IntegrationTestSuite) TestCreateUser_PasswordTooShort() {
 	suite.Error(err)
 }
 
-func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_Success() {
+func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -45,15 +45,15 @@ func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_Success() {
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
+		User:     GetUserProto(UserEmail, "new_name"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, "new_name"), out)
 	suite.Nil(err)
 }
 
-func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_BadPassword() {
+func (suite *IntegrationTestSuite) TestUpdateUser_BadPassword() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -64,7 +64,7 @@ func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_BadPassword() {
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
+		User:     GetUserProto(UserEmail, "new_name"),
 		Password: BadPassword,
 	})
 
@@ -72,7 +72,7 @@ func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_BadPassword() {
 	suite.Nil(out)
 }
 
-func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_NotFound() {
+func (suite *IntegrationTestSuite) TestUpdateUser_NotFound() {
 	ctx := context.Background()
 
 	user := GetUserProto(UserEmail, Username)
