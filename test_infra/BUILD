@@ -46,13 +46,29 @@ go_test(
     ],
     deps = [
         "//proto:user_service_go_proto",
-        # "//storage:storage_manager",
         "//user_service:user_service",
         "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//assert",
         "@com_github_stretchr_testify//suite",
         "@io_gorm_driver_postgres//:postgres",
-        # "@io_gorm_gorm//:gorm",
+        "@org_golang_google_protobuf//types/known/timestamppb",
+    ],
+)
+
+go_test(
+    name = "storage_manager_test",
+    srcs = ["storage_manager_test.go"],
+    embed = [
+        ":unit_test_suite",
+    ],
+    deps = [
+        "//proto:user_service_go_proto",
+        "//storage:storage_manager",
+        "@com_github_proullon_ramsql//driver",
+        "@com_github_stretchr_testify//assert",
+        "@com_github_stretchr_testify//suite",
+        "@io_gorm_driver_postgres//:postgres",
+        "@io_gorm_gorm//:gorm",
         "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )
