@@ -76,7 +76,6 @@ func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_NotFound() {
 	ctx := context.Background()
 
 	user := GetUserProto("e@example.com", "user4")
-	user.UserId = "00000000-0000-0000-0000-000000000001"
 
 	out, err := suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
 		User:     user,
