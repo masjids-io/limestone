@@ -3,53 +3,11 @@ package test_infra
 import (
 	"context"
 	"testing"
-	"time"
 
 	userservicepb "github.com/mnadev/limestone/user_service/proto"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 )
-
-const (
-	UserEmail   = "example@example.com"
-	Password    = "password"
-	BadPassword = "passwor"
-	Username    = "coolguy1234"
-	FirstName   = "John"
-	LastName    = "Doe"
-	PhoneNumber = "+1234567890"
-)
-
-func GetUserProto(email string, username string) *userservicepb.User {
-	return &userservicepb.User{
-		UserId:      "00000000-0000-0000-0000-000000000000",
-		Email:       email,
-		Username:    username,
-		FirstName:   FirstName,
-		LastName:    LastName,
-		PhoneNumber: PhoneNumber,
-		Gender:      userservicepb.User_FEMALE,
-	}
-}
-
-func AssertUserProtoEqual(t *testing.T, expected, actual *userservicepb.User) bool {
-	actual_without_timestamp := userservicepb.User{
-		UserId:      actual.UserId,
-		Email:       actual.Email,
-		Username:    actual.Username,
-		FirstName:   actual.FirstName,
-		LastName:    actual.LastName,
-		PhoneNumber: actual.PhoneNumber,
-		Gender:      actual.Gender,
-	}
-
-	assert.Equal(t, *expected, actual_without_timestamp)
-	assert.LessOrEqual(t, time.Now().Unix()-actual.CreateTime.GetSeconds(), int64(1))
-	assert.LessOrEqual(t, time.Now().Unix()-actual.UpdateTime.GetSeconds(), int64(1))
-
-	return true
-}
 
 func TestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
