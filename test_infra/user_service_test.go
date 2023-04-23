@@ -5,8 +5,9 @@ import (
 	"testing"
 	"time"
 
-	userservicepb "github.com/mnadev/limestone/userservice/proto"
+	userservicepb "github.com/mnadev/limestone/user_service/proto"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -50,341 +51,295 @@ func AssertUserProtoEqual(t *testing.T, expected, actual *userservicepb.User) bo
 	return true
 }
 
-func TestCreateUser_Success(t *testing.T) {
-	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
+func TestSuite(t *testing.T) {
+	suite.Run(t, new(IntegrationTestSuite))
+}
 
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+func (suite *IntegrationTestSuite) TestCreateUser_Success() {
+	ctx := context.Background()
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto(UserEmail, Username), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	suite.Nil(err)
 }
 
-func TestCreateUser_PasswordTooShort(t *testing.T) {
+func (suite *IntegrationTestSuite) TestCreateUser_PasswordTooShort() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("a@example.com", "user1"),
 		Password: BadPassword,
 	})
 
-	assert.Nil(t, out)
-	assert.Error(t, err)
+	suite.Nil(out)
+	suite.Error(err)
 }
 
-func TestUpdateUserWithEmail_Success(t *testing.T) {
+func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_Success() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("a@example.com", "user2"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("a@example.com", "user2"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("a@example.com", "user2"), out)
+	suite.Nil(err)
 
-	out, err = client.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
+	out, err = suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
 		User:     GetUserProto("b@example.com", "user2"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("b@example.com", "user2"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("b@example.com", "user2"), out)
+	suite.Nil(err)
 }
 
-func TestUpdateUserWithEmail_BadPassword(t *testing.T) {
+func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_BadPassword() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("c@example.com", "user3"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("c@example.com", "user3"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("c@example.com", "user3"), out)
+	suite.Nil(err)
 
-	out, err = client.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
+	out, err = suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
 		User:     GetUserProto("d@example.com", "user3"),
 		Password: BadPassword,
 	})
 
-	assert.Error(t, err)
-	assert.Nil(t, out)
+	suite.Error(err)
+	suite.Nil(out)
 }
 
-func TestUpdateUserWithEmail_NotFound(t *testing.T) {
+func (suite *IntegrationTestSuite) TestUpdateUserWithEmail_NotFound() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
 
 	user := GetUserProto("e@example.com", "user4")
 	user.UserId = "00000000-0000-0000-0000-000000000001"
 
-	out, err := client.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
+	out, err := suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
 		User:     user,
 		Password: Password,
 	})
 
-	assert.Error(t, err)
-	assert.Nil(t, out)
+	suite.Error(err)
+	suite.Nil(out)
 }
 
-func TestGetUserWithEmail_Success(t *testing.T) {
+func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("f@example.com", "user5"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("f@example.com", "user5"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("f@example.com", "user5"), out)
+	suite.Nil(err)
 
-	out, err = client.GetUser(ctx, &userservicepb.GetUserRequest{
+	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
 		Id: &userservicepb.GetUserRequest_Email{
 			Email: "f@example.com",
 		},
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("f@example.com", "user5"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("f@example.com", "user5"), out)
+	suite.Nil(err)
 }
 
-func TestGetUserWithEmail_BadPassword(t *testing.T) {
+func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("g@example.com", "user6"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("g@example.com", "user6"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("g@example.com", "user6"), out)
+	suite.Nil(err)
 
-	out, err = client.GetUser(ctx, &userservicepb.GetUserRequest{
+	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
 		Id: &userservicepb.GetUserRequest_Email{
 			Email: "g@example.com",
 		},
 		Password: BadPassword,
 	})
 
-	assert.Error(t, err)
-	assert.Nil(t, out)
+	suite.Error(err)
+	suite.Nil(out)
 }
 
-func TestGetUserWithEmail_NotFound(t *testing.T) {
+func (suite *IntegrationTestSuite) TestGetUserWithEmail_NotFound() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.GetUser(ctx, &userservicepb.GetUserRequest{
+	out, err := suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
 		Id: &userservicepb.GetUserRequest_Email{
 			Email: "h@example.com",
 		},
 		Password: Password,
 	})
 
-	assert.Error(t, err)
-	assert.Nil(t, out)
+	suite.Error(err)
+	suite.Nil(out)
 }
 
-func TestGetUserWithUsername_Success(t *testing.T) {
+func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("i@example.com", "user7"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("i@example.com", "user7"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("i@example.com", "user7"), out)
+	suite.Nil(err)
 
-	out, err = client.GetUser(ctx, &userservicepb.GetUserRequest{
+	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
 		Id: &userservicepb.GetUserRequest_Username{
 			Username: "user7",
 		},
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("i@example.com", "user7"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("i@example.com", "user7"), out)
+	suite.Nil(err)
 }
 
-func TestGetUserWithUsername_BadPassword(t *testing.T) {
+func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("j@example.com", "user8"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("j@example.com", "user8"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("j@example.com", "user8"), out)
+	suite.Nil(err)
 
-	out, err = client.GetUser(ctx, &userservicepb.GetUserRequest{
+	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
 		Id: &userservicepb.GetUserRequest_Username{
 			Username: "user8",
 		},
 		Password: BadPassword,
 	})
 
-	assert.Error(t, err)
-	assert.Nil(t, out)
+	suite.Error(err)
+	suite.Nil(out)
 }
 
-func TestGetUserWithUsername_NotFound(t *testing.T) {
+func (suite *IntegrationTestSuite) TestGetUserWithUsername_NotFound() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.GetUser(ctx, &userservicepb.GetUserRequest{
+	out, err := suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
 		Id: &userservicepb.GetUserRequest_Username{
 			Username: "user9",
 		},
 		Password: Password,
 	})
 
-	assert.Error(t, err)
-	assert.Nil(t, out)
+	suite.Error(err)
+	suite.Nil(out)
 }
 
-func TestDeleteUserWithEmail_Success(t *testing.T) {
+func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("k@example.com", "user10"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("k@example.com", "user10"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("k@example.com", "user10"), out)
+	suite.Nil(err)
 
-	_, err = client.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
+	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
 		Id: &userservicepb.DeleteUserRequest_Email{
 			Email: "k@example.com",
 		},
 		Password: Password,
 	})
 
-	assert.Nil(t, err)
+	suite.Nil(err)
 }
 
-func TestDeleteUserWithEmail_BadPassword(t *testing.T) {
+func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_BadPassword() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("l@example.com", "user11"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("l@example.com", "user11"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("l@example.com", "user11"), out)
+	suite.Nil(err)
 
-	_, err = client.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
+	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
 		Id: &userservicepb.DeleteUserRequest_Email{
 			Email: "l@example.com",
 		},
 		Password: BadPassword,
 	})
 
-	assert.Error(t, err)
+	suite.Error(err)
 }
 
-func TestDeleteUserWithEmail_NotFound(t *testing.T) {
+func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_NotFound() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	_, err := client.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
+	_, err := suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
 		Id: &userservicepb.DeleteUserRequest_Email{
 			Email: "m@example.com",
 		},
 		Password: Password,
 	})
 
-	assert.Error(t, err)
+	suite.Error(err)
 }
 
-func TestDeleteUserWithUsername_Success(t *testing.T) {
+func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_Success() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("n@example.com", "user12"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("n@example.com", "user12"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("n@example.com", "user12"), out)
+	suite.Nil(err)
 
-	_, err = client.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
+	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
 		Id: &userservicepb.DeleteUserRequest_Username{
 			Username: "user12",
 		},
 		Password: Password,
 	})
 
-	assert.Nil(t, err)
+	suite.Nil(err)
 }
 
-func TestDeleteUserWithUsername_BadPassword(t *testing.T) {
+func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_BadPassword() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	out, err := client.CreateUser(ctx, &userservicepb.CreateUserRequest{
+	out, err := suite.UserServiceClient.CreateUser(ctx, &userservicepb.CreateUserRequest{
 		User:     GetUserProto("o@example.com", "user13"),
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(t, GetUserProto("o@example.com", "user13"), out)
-	assert.Nil(t, err)
+	AssertUserProtoEqual(suite.T(), GetUserProto("o@example.com", "user13"), out)
+	suite.Nil(err)
 
-	_, err = client.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
+	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
 		Id: &userservicepb.DeleteUserRequest_Username{
 			Username: "user13",
 		},
 		Password: BadPassword,
 	})
 
-	assert.Error(t, err)
+	suite.Error(err)
 }
 
-func TestDeleteUserWithUsername_NotFound(t *testing.T) {
+func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_NotFound() {
 	ctx := context.Background()
-	client, closer := UserServiceClient(ctx)
-	defer closer()
-
-	_, err := client.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
+	_, err := suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
 		Id: &userservicepb.DeleteUserRequest_Username{
 			Username: "user14",
 		},
 		Password: Password,
 	})
 
-	assert.Error(t, err)
+	suite.Error(err)
 }

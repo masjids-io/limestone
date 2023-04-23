@@ -1,9 +1,9 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 
 go_library(
-    name = "test_server",
-    srcs = ["test_server.go"],
+    name = "unit_test_suite",
     testonly = 1,
+    srcs = ["unit_test_suite.go"],
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
@@ -11,6 +11,26 @@ go_library(
         "//storage:storage_manager",
         "//user_service:user_service",
         "@com_github_proullon_ramsql//driver",
+        "@com_github_stretchr_testify//suite",
+        "@io_gorm_driver_postgres//:postgres",
+        "@io_gorm_gorm//:gorm",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//test/bufconn",
+    ],
+)
+
+go_library(
+    name = "integration_test_suite",
+    testonly = 1,
+    srcs = ["integration_test_suite.go"],
+    importpath = "github.com/mnadev/limestone/test_infra",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//proto:user_service_go_proto",
+        "//storage:storage_manager",
+        "//user_service:user_service",
+        "@com_github_proullon_ramsql//driver",
+        "@com_github_stretchr_testify//suite",
         "@io_gorm_driver_postgres//:postgres",
         "@io_gorm_gorm//:gorm",
         "@org_golang_google_grpc//:go_default_library",
@@ -22,7 +42,7 @@ go_test(
     name = "user_service_test",
     srcs = ["user_service_test.go"],
     embed = [
-        ":test_server",
+        ":integration_test_suite",
     ],
     deps = [
         "//proto:user_service_go_proto",
@@ -30,7 +50,7 @@ go_test(
         "//user_service:user_service",
         "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//assert",
-        "@com_github_stretchr_testify//require",
+        "@com_github_stretchr_testify//suite",
         "@io_gorm_driver_postgres//:postgres",
         # "@io_gorm_gorm//:gorm",
         "@org_golang_google_protobuf//types/known/timestamppb",
