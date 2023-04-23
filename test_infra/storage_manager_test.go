@@ -3,6 +3,7 @@ package test_infra
 import (
 	"testing"
 
+	userservicepb "github.com/mnadev/limestone/user_service/proto"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -12,7 +13,9 @@ func TestSuite(t *testing.T) {
 
 func (suite *UnitTestSuite) TestCreateUser_Success() {
 	user, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), user.ToProto())
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
 
@@ -28,7 +31,9 @@ func (suite *UnitTestSuite) TestUpdateUserWithEmail_Success() {
 
 	user.Email = "a@example.com"
 	user, err = suite.StorageManager.UpdateUser(user.ToProto(), Password)
-	AssertUserProtoEqual(suite.T(), GetUserProto("a@example.com", Username), user.ToProto())
+	AssertProtoEqual(suite.T(), *GetUserProto("a@example.com", Username), *user.ToProto(),
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
 
@@ -52,7 +57,9 @@ func (suite *UnitTestSuite) TestGetUserWithEmail_Success() {
 	suite.Nil(err)
 
 	user, err := suite.StorageManager.GetUserWithEmail(UserEmail, Password)
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), user.ToProto())
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
 
@@ -79,7 +86,9 @@ func (suite *UnitTestSuite) TestGetUserWithUsername_Success() {
 	suite.Nil(err)
 
 	user, err := suite.StorageManager.GetUserWithUsername(Username, Password)
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), user.ToProto())
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
 

@@ -19,7 +19,9 @@ func (suite *IntegrationTestSuite) TestCreateUser_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 }
 
@@ -41,7 +43,9 @@ func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
@@ -49,7 +53,9 @@ func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, "new_name"), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, "new_name"), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 }
 
@@ -60,7 +66,9 @@ func (suite *IntegrationTestSuite) TestUpdateUser_BadPassword() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.UpdateUser(ctx, &userservicepb.UpdateUserRequest{
@@ -93,7 +101,9 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
@@ -103,7 +113,9 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 }
 
@@ -114,7 +126,9 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
@@ -148,7 +162,9 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
@@ -158,7 +174,9 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 }
 
@@ -169,7 +187,9 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.GetUser(ctx, &userservicepb.GetUserRequest{
@@ -203,7 +223,9 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
@@ -223,7 +245,9 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_BadPassword() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
@@ -255,7 +279,9 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_Success() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{
@@ -275,7 +301,9 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_BadPassword() {
 		Password: Password,
 	})
 
-	AssertUserProtoEqual(suite.T(), GetUserProto(UserEmail, Username), out)
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+		userservicepb.User{}, "CreateTime", "UpdateTime")
+	AssertTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &userservicepb.DeleteUserRequest{

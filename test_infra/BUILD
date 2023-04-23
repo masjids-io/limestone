@@ -10,6 +10,8 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//proto:user_service_go_proto",
+        "@com_github_google_go_cmp//cmp:go_default_library",
+        "@com_github_google_go_cmp//cmp/cmpopts:go_default_library",
         "@com_github_stretchr_testify//assert",
     ],
 )
@@ -73,6 +75,7 @@ go_test(
         ":test_data",
     ],
     deps = [
+        "//proto:user_service_go_proto",
         "//storage:storage_manager",
         "@com_github_stretchr_testify//suite",
     ],
