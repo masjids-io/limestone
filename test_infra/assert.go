@@ -6,7 +6,6 @@ import (
 
 	userservicepb "github.com/mnadev/limestone/user_service/proto"
 	"github.com/stretchr/testify/assert"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func AssertUserProtoEqual(t *testing.T, expected, actual *userservicepb.User) bool {

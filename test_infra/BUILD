@@ -11,7 +11,6 @@ go_library(
     deps = [
         "//proto:user_service_go_proto",
         "@com_github_stretchr_testify//assert",
-        "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )
 
@@ -42,7 +41,6 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//proto:user_service_go_proto",
-        "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )
 
@@ -76,11 +74,7 @@ go_test(
     ],
     deps = [
         "//storage:storage_manager",
-        "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//suite",
-        "@io_gorm_driver_postgres//:postgres",
-        "@io_gorm_gorm//:gorm",
-        "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )
 
@@ -96,9 +90,6 @@ go_test(
     deps = [
         "//proto:user_service_go_proto",
         "//user_service:user_service",
-        "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//suite",
-        "@io_gorm_driver_postgres//:postgres",
-        "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )

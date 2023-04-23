@@ -2,7 +2,6 @@ package test_infra
 
 import (
 	userservicepb "github.com/mnadev/limestone/user_service/proto"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const (

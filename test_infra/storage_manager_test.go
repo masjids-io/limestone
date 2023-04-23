@@ -3,9 +3,7 @@ package test_infra
 import (
 	"testing"
 
-	_ "github.com/proullon/ramsql/driver"
 	"github.com/stretchr/testify/suite"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func TestSuite(t *testing.T) {
