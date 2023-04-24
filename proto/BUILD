@@ -6,7 +6,9 @@ package(default_visibility = ["//visibility:public"])
 proto_library(
     name = "auth_service_proto",
     srcs = ["auth_service.proto"],
-    deps = [],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
+    ],
 )
 
 proto_library(
