@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 package limestone;
 
 option go_package = "github.com/mnadev/limestone/authservice/proto";
@@ -24,10 +26,14 @@ message GetTokenRequest {
 }
 
 message GetTokenResponse {
+    // The id of the token.
+    string id = 1;
     // The access JWT for the user.
-    string access_token = 1;
+    string access_token = 2;
     // The refresh JWT for the user.
-    string refresh_token = 2;
+    string refresh_token = 3;
+    // The timestamp at which the token expires.
+    google.protobuf.Timestamp expires_at = 4;
 }
 
 message RefreshTokenRequest {
@@ -36,8 +42,12 @@ message RefreshTokenRequest {
 }   
 
 message RefreshTokenResponse {
+    // The id of the token.
+    string id = 1;
     // The new access JWT for the user.
-    string access_token = 1;
+    string access_token = 2;
     // The new refresh JWT for the user.
-    string refresh_token = 2;
+    string refresh_token = 3;
+    // The timestamp at which the token expires.
+    google.protobuf.Timestamp expires_at = 4;
 }
