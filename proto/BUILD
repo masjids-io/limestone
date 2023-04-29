@@ -20,7 +20,7 @@ proto_library(
     ],
 )
 
-go_proto_library(
+go_grpc_library(
     name = "auth_service_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
     importpath = "github.com/mnadev/limestone/authservice/proto",
