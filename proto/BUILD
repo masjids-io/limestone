@@ -12,6 +12,15 @@ proto_library(
 )
 
 proto_library(
+    name = "masjid_service_proto",
+    srcs = ["masjid_service.proto"],
+    deps = [
+        "@com_google_protobuf//:empty_proto",
+        "@com_google_protobuf//:timestamp_proto",
+    ],
+)
+
+proto_library(
     name = "user_service_proto",
     srcs = ["user_service.proto"],
     deps = [
@@ -25,6 +34,13 @@ go_grpc_library(
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
     importpath = "github.com/mnadev/limestone/authservice/proto",
     protos = [":auth_service_proto"],
+)
+
+go_grpc_library(
+    name = "masjid_service_go_proto",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "github.com/mnadev/limestone/masjid_service/proto",
+    protos = [":masjid_service_proto"],
 )
 
 go_grpc_library(
