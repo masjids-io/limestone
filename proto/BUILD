@@ -12,6 +12,15 @@ proto_library(
 )
 
 proto_library(
+    name = "event_service_proto",
+    srcs = ["event_service.proto"],
+    deps = [
+        "@com_google_protobuf//:empty_proto",
+        "@com_google_protobuf//:timestamp_proto",
+    ],
+)
+
+proto_library(
     name = "masjid_service_proto",
     srcs = ["masjid_service.proto"],
     deps = [
@@ -37,6 +46,13 @@ go_grpc_library(
 )
 
 go_grpc_library(
+    name = "event_service_go_proto",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "github.com/mnadev/limestone/event_service/proto",
+    protos = [":event_service_proto"],
+)
+
+go_grpc_library(
     name = "masjid_service_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
     importpath = "github.com/mnadev/limestone/masjid_service/proto",
@@ -47,8 +63,5 @@ go_grpc_library(
     name = "user_service_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
     importpath = "github.com/mnadev/limestone/user_service/proto",
-    protos = [
-        ":user_service_proto",
-    ],
-    deps = [],
+    protos = [":user_service_proto"],
 )
