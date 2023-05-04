@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/adhan_service/proto";
+
+service AdhanService {
+    // Returns the prayer times configuration for a masjid.
+    rpc GetPrayerTimesConfiguration(GetPrayerTimesConfigurationRequest) returns (PrayerTimesConfiguration) {}
+    // Creates an adhan audio file in the database for a masjid.
+    rpc CreateAdhanFile(CreateAdhanFileRequest) returns (AdhanFile) {}
+    // Updates an adhan audio file in the database for a masjid.
+    rpc UpdateAdhanFile(UpdateAdhanFileRequest) returns (AdhanFile) {}
+    // Get an adhan audio file from the database for a masjid.
+    rpc GetAdhanFile(GetAdhanFileRequest) returns (AdhanFile) {}
+    // Deletes an adhan audio from the database for a masjid.
+    rpc DeleteAdhanFile(DeleteAdhanFileRequest) returns (google.protobuf.Empty) {}
+}
+
+// A message that holds prayer times configuration. This message contains all the fields
+// necessary to calculate prayer times.
+message PrayerTimesConfiguration {
+    // Defines the calculation method to use. If this field is set (excluding OTHER), then the Fajr 
+    // and Isha angle fields are automatically set.
+    enum CalculationMethod {
+        // A custom calculation method.
+        OTHER = 0;
+        // Muslim World League
+        // Uses Fajr angle of 18 and an Isha angle of 17
+        MUSLIM_WORLD_LEAGUE = 1;
+        // Egyptian General Authority of Survey
+        // Uses Fajr angle of 19.5 and an Isha angle of 17.5
+        EGYPTIAN = 2;
+        // University of Islamic Sciences, Karachi
+        // Uses Fajr angle of 18 and an Isha angle of 18
+        KARACHI = 3;
+        // Umm al-Qura University, Makkah
+        // Uses a Fajr angle of 18.5 and an Isha angle of 90. Note: You should add a +30 minute custom
+        // adjustment of Isha during Ramadan.
+        UMM_AL_QURA = 4;
+        // The Gulf Region
+        // Uses Fajr and Isha angles of 18.2 degrees.
+        DUBAI = 5;
+        // Moonsighting Committee
+        // Uses a Fajr angle of 18 and an Isha angle of 18. Also uses seasonal adjustment values.
+        MOON_SIGHTING_COMMITTEE = 6;
+        // Referred to as the ISNA method
+        // This method is included for completeness, but is not recommended.
+        // Uses a Fajr angle of 15 and an Isha angle of 15.
+        NORTH_AMERICA = 7;
+        // Kuwait
+        // Uses a Fajr angle of 18 and an Isha angle of 17.5
+        KUWAIT = 8;
+        // Qatar
+        // Modified version of Umm al-Qura that uses a Fajr angle of 18.
+        QATAR = 9;
+        // Singapore
+        // Uses a Fajr angle of 20 and an Isha angle of 18
+        SINGAPORE = 10;
+        // UOIF
+        // Uses a Fajr angle of 12 and an Isha angle of 12
+        UOIF  = 11;
+    } 
+
+    // The Juristic method to use for calculating Asr prayer times.
+    enum AsrJuristicMethod {
+        // Use the Shafi/Hanbali/Maliki method to calculate Asr timings.
+        SHAFI_HANBALI_MALIKI = 0;
+        // Use the Hanafi method to calculate Asr timings.
+        HANAFI = 1;
+    }
+
+    // The high latitude rule for calculating Fajr and Isha prayers.
+    enum HighLatitudeRule {
+        NO_HIGH_LATITUDE_RULE = 0;
+        // Fajr will never be earlier than the middle of the night, and Isha will never be later than
+        // the middle of the night.
+        MIDDLE_OF_THE_NIGHT = 1;
+        // Fajr will never be earlier than the beginning of the last seventh of the night, and Isha will
+        // never be later than the end of the first seventh of the night.
+        SEVENTH_OF_THE_NIGHT = 2;
+        // Similar to SEVENTH_OF_THE_NIGHT, but instead of 1/7th, the fraction of the night used
+        // is fajr_angle / 60 and isha_angle / 60.
+        TWILIGHT_ANGLE = 3;
+    }
+
+    // The manual adjustments to apply to the prayer timings. The value that each field is set to is 
+    // the offset which will be added to the calculated time to obtain the final prayer time.
+    message PrayerAdjustments {
+        // Adjustment offset for Fajr in minutes. Value can be negative.
+        int32 fajr_adjustment = 1;
+        // Adjustment offset for Dhuhr in minutes. Value can be negative.
+        int32 dhuhr_adjustment = 2;
+        // Adjustment offset for Asr in minutes. Value can be negative.
+        int32 asr_adjustment = 3;
+        // Adjustment offset for Maghrib in minutes. Value can be negative.
+        int32 maghrib_adjustment = 4;
+        // Adjustment offset for Isha in minutes. Value can be negative.
+        int32 isha_adjustment = 5;
+    }
+
+    // The calculation method to use.
+    CalculationMethod method = 1;
+    // The Fajr angle to use. This does not need to be set if the calculation method is set.
+    // If both fields are set, then the calculation method field takes precedence.
+    double fajr_angle = 2;
+    // The Isha angle to use. This does not need to be set if the calculation method is set.
+    // If both fields are set, then the calculation method field takes precedence.
+    double isha_angle = 3;
+    // Minutes after Maghrib (if set, the time for Isha will be Maghrib plus the Isha interval).
+    int32 isha_interval = 4;
+    // The juristic method to use for calculating Asr timings.
+    AsrJuristicMethod asr_method = 5;
+    // The high latitude rule to use to calculate Fajr and Isha prayers.
+    HighLatitudeRule high_latitude_rule = 6;
+    // The prayer adjusments (aka offsets) to apply to the calculated prayer times.
+    PrayerAdjustments adjustments = 7;
+}
+
+message GetPrayerTimesConfigurationRequest {
+    // The masjid id to get the prayer configuration for.
+    string masjid_id = 1;
+}
+
+message AdhanFile {
+    // The unique id associated with this file.
+    string id = 1;
+    // The masjid id associated with this file.
+    string masjid_id = 2;
+    // The bytes of the audio file. This should be in LINEAR16 format at 
+    // a sample rate of 16 kHz.
+    bytes file = 3;
+    // The create time of the file. This field is output only.
+    google.protobuf.Timestamp create_time = 4; 
+    // The update time of the file. This field is output only.
+    google.protobuf.Timestamp update_time = 5; 
+}
+
+message CreateAdhanFileRequest {
+    // The adhan file to create.
+    AdhanFile adhan_file = 1;
+}
+
+message UpdateAdhanFileRequest {
+    // The adhan file to update to. The file associated with the id
+    // will be updated to this given adhan file.
+    AdhanFile adhan_file = 1;
+}
+
+message GetAdhanFileRequest {
+    // The masjid id to get the adhan file for.
+    string masjid_id = 1;   
+}
+
+message DeleteAdhanFileRequest {
+    // The adhan file id of the file to delete.
+    string id = 1;
+}
