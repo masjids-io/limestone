@@ -1,12 +1,29 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
-    name = "user",
-    srcs = ["user.go"],
+    name = "masjid",
+    srcs = ["masjid.go"],
+    importpath = "github.com/mnadev/limestone/storage",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//proto:masjid_service_go_proto",
+        "@com_github_google_uuid//:uuid",
+        "@org_golang_google_protobuf//types/known/timestamppb",
+    ],
+)
+
+go_library(
+    name = "storage_manager",
+    srcs = [
+        "masjid.go",
+        "storage_manager.go",
+        "user.go",
+    ],
     importpath = "github.com/mnadev/limestone/storage",
     visibility = ["//visibility:public"],
     deps = [
         "//auth:password",
+        "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "@com_github_google_uuid//:uuid",
         "@io_gorm_gorm//:gorm",
@@ -17,11 +34,8 @@ go_library(
 )
 
 go_library(
-    name = "storage_manager",
-    srcs = [
-        "storage_manager.go",
-        "user.go",
-    ],
+    name = "user",
+    srcs = ["user.go"],
     importpath = "github.com/mnadev/limestone/storage",
     visibility = ["//visibility:public"],
     deps = [
