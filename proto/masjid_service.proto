@@ -162,7 +162,7 @@ message Masjid {
     // The name of the masjid.
     string name = 2;
     // Whether or not the masjid has been verified. 
-    string is_verified = 3;
+    bool is_verified = 3;
     // The main address of the masjid.
     Address address = 4;
     // The main phone number to contact for the masjid.
