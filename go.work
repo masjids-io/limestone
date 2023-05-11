@@ -3,6 +3,7 @@ go 1.19
 use (
 	.
 	./auth
+	./masjid_service
 	./storage
 	./user_service
 )
