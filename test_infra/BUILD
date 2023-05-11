@@ -99,6 +99,7 @@ go_test(
         "//proto:user_service_go_proto",
         "//user_service",
         "@com_github_stretchr_testify//suite",
+        "@org_golang_google_protobuf//testing/protocmp",
     ],
 )
 
