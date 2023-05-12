@@ -31,6 +31,7 @@ func (suite *UnitTestSuite) BeforeTest(suiteName, testName string) {
 	}
 
 	db.AutoMigrate(&storage.User{})
+	db.AutoMigrate(&storage.Masjid{})
 
 	suite.StorageManager = &storage.StorageManager{
 		DB: db,

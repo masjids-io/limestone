@@ -9,10 +9,13 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "@com_github_google_go_cmp//cmp:go_default_library",
         "@com_github_google_go_cmp//cmp/cmpopts:go_default_library",
         "@com_github_stretchr_testify//assert",
+        "@org_golang_google_protobuf//testing/protocmp",
+        "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )
 
@@ -24,8 +27,10 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//proto:user_service_go_proto",
+        "//proto:masjid_service_go_proto",
         "//storage:storage_manager",
         "//user_service:user_service",
+        "//masjid_service:masjid_service",
         "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//suite",
         "@io_gorm_driver_postgres//:postgres",
@@ -42,6 +47,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
     ],
 )
@@ -55,7 +61,7 @@ go_library(
     deps = [
         "//proto:user_service_go_proto",
         "//storage:storage_manager",
-        "//user_service:user_service",
+        "//user_service",
         "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//suite",
         "@io_gorm_driver_postgres//:postgres",
@@ -75,13 +81,31 @@ go_test(
         ":test_data",
     ],
     deps = [
+        "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "//storage:storage_manager",
         "@com_github_stretchr_testify//suite",
+        "@org_golang_google_protobuf//testing/protocmp",
     ],
 )
 
 # Integration tests
+go_test(
+    name = "masjid_service_test",
+    srcs = ["masjid_service_test.go"],
+    embed = [
+        ":assert",
+        ":integration_test_suite",
+        ":test_data",
+    ],
+    deps = [
+        "//proto:masjid_service_go_proto",
+        "//masjid_service",
+        "@com_github_stretchr_testify//suite",
+        "@org_golang_google_protobuf//testing/protocmp",
+    ],
+)
+
 go_test(
     name = "user_service_test",
     srcs = ["user_service_test.go"],
@@ -92,7 +116,8 @@ go_test(
     ],
     deps = [
         "//proto:user_service_go_proto",
-        "//user_service:user_service",
+        "//user_service",
         "@com_github_stretchr_testify//suite",
+        "@org_golang_google_protobuf//testing/protocmp",
     ],
 )

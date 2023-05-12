@@ -4,7 +4,8 @@ import (
 	"errors"
 
 	"github.com/mnadev/limestone/auth"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
+	mpb "github.com/mnadev/limestone/masjid_service/proto"
+	upb "github.com/mnadev/limestone/user_service/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
@@ -15,7 +16,7 @@ type StorageManager struct {
 }
 
 // CreateUser creates a User in the database for the given User and password
-func (s *StorageManager) CreateUser(up *userservicepb.User, pwd string) (*User, error) {
+func (s *StorageManager) CreateUser(up *upb.User, pwd string) (*User, error) {
 	user, err := NewUser(up, pwd)
 	if err != nil {
 		return nil, err
@@ -33,7 +34,7 @@ func (s *StorageManager) CreateUser(up *userservicepb.User, pwd string) (*User, 
 }
 
 // UpdateUser updates a User in the database for the given User and password if it exists
-func (s *StorageManager) UpdateUser(up *userservicepb.User, pwd string) (*User, error) {
+func (s *StorageManager) UpdateUser(up *upb.User, pwd string) (*User, error) {
 	var old_user User
 	result := s.DB.Where("id = ?", up.GetUserId()).First(&old_user)
 
@@ -121,5 +122,74 @@ func (s *StorageManager) DeleteUserWithUsername(username string, pwd string) err
 	}
 
 	result := s.DB.Delete(user, user.ID)
+	return result.Error
+}
+
+// CreateMasjid creates a Masjid in the database for the given Masjid proto.
+func (s *StorageManager) CreateMasjid(mp *mpb.Masjid) (*Masjid, error) {
+	masjid, err := NewMasjid(mp)
+	if err != nil {
+		return nil, err
+	}
+
+	result := s.DB.Create(masjid)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return masjid, nil
+}
+
+// UpdateMasjid updates a Masjid in the database for the given Masjid proto.
+func (s *StorageManager) UpdateMasjid(mp *mpb.Masjid) (*Masjid, error) {
+	var old_masjid Masjid
+	result := s.DB.Where("id = ?", mp.GetId()).First(&old_masjid)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	result = s.DB.Model(old_masjid).Where("id = ?", old_masjid.ID).
+		Updates(
+			map[string]interface{}{
+				"name":        mp.GetName(),
+				"is_verified": mp.GetIsVerified(),
+				// "address":      mp.GetFirstName(),
+				// "phone_number": mp.GetPhoneNumber(),
+			})
+
+	if result.Error != nil {
+		return nil, status.Error(codes.Internal, "failed to update masjid object")
+	}
+
+	var updated_masjid Masjid
+	result = s.DB.Where("id = ?", mp.GetId()).First(&updated_masjid)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &updated_masjid, nil
+}
+
+// GetMasjid returns a Masjid with the given id.
+func (s *StorageManager) GetMasjid(id string) (*Masjid, error) {
+	var masjid Masjid
+	result := s.DB.First(&masjid, "id = ?", id)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &masjid, nil
+}
+
+// DeleteMasjid deletes a Masjid with the given id.
+func (s *StorageManager) DeleteMasjid(id string) error {
+	masjid, err := s.GetMasjid(id)
+	if err != nil {
+		return err
+	}
+
+	result := s.DB.Delete(masjid, masjid.ID)
 	return result.Error
 }

@@ -33,7 +33,6 @@ proto_library(
     name = "masjid_service_proto",
     srcs = ["masjid_service.proto"],
     deps = [
-        "@com_google_protobuf//:empty_proto",
         "@com_google_protobuf//:timestamp_proto",
     ],
 )

@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -14,7 +13,7 @@ service MasjidService {
     // masjid (i.e. all fields are overwritten).
     rpc UpdateMasjid(UpdateMasjidRequest) returns (Masjid) {}
     // Deletes a masjid from the database with the given id.
-    rpc DeleteMasjid(DeleteMasjidRequest) returns (google.protobuf.Empty) {}
+    rpc DeleteMasjid(DeleteMasjidRequest) returns (DeleteMasjidResponse) {}
     // Gets a masjid from the database with the given id.
     rpc GetMasjid(GetMasjidRequest) returns (Masjid) {}
     // Returns a paginated list of masjids from the database.
@@ -162,7 +161,7 @@ message Masjid {
     // The name of the masjid.
     string name = 2;
     // Whether or not the masjid has been verified. 
-    string is_verified = 3;
+    bool is_verified = 3;
     // The main address of the masjid.
     Address address = 4;
     // The main phone number to contact for the masjid.
@@ -189,6 +188,8 @@ message DeleteMasjidRequest {
     // The unique id of the masjid that should be deleted.
     string masjid_id = 1;
 }
+
+message DeleteMasjidResponse {}
 
 message GetMasjidRequest {
     // The unique id of the masjid that should be returned.
