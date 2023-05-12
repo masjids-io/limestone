@@ -5,9 +5,11 @@ import (
 	"database/sql"
 	"net"
 
+	"github.com/mnadev/limestone/masjid_service"
+	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	"github.com/mnadev/limestone/storage"
 	user_service "github.com/mnadev/limestone/user_service"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
+	upb "github.com/mnadev/limestone/user_service/proto"
 	_ "github.com/proullon/ramsql/driver"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc"
@@ -18,9 +20,10 @@ import (
 
 type IntegrationTestSuite struct {
 	suite.Suite
-	DB                *gorm.DB
-	Server            *grpc.Server
-	UserServiceClient userservicepb.UserServiceClient
+	DB                  *gorm.DB
+	Server              *grpc.Server
+	UserServiceClient   upb.UserServiceClient
+	MasjidServiceClient mpb.MasjidServiceClient
 }
 
 func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
@@ -46,7 +49,13 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 	}
 
 	suite.DB.AutoMigrate(&storage.User{})
-	userservicepb.RegisterUserServiceServer(suite.Server, &user_service.UserServiceServer{
+	suite.DB.AutoMigrate(&storage.Masjid{})
+	upb.RegisterUserServiceServer(suite.Server, &user_service.UserServiceServer{
+		SM: &storage.StorageManager{
+			DB: suite.DB,
+		},
+	})
+	mpb.RegisterMasjidServiceServer(suite.Server, &masjid_service.MasjidServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
 		},
@@ -62,7 +71,8 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 		return listener.Dial()
 	}), grpc.WithInsecure(), grpc.WithBlock())
 
-	suite.UserServiceClient = userservicepb.NewUserServiceClient(conn)
+	suite.UserServiceClient = upb.NewUserServiceClient(conn)
+	suite.MasjidServiceClient = mpb.NewMasjidServiceClient(conn)
 }
 
 func (suite *IntegrationTestSuite) AfterTest(suiteName, testName string) {
