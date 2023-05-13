@@ -20,20 +20,23 @@ func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *userservicepb
 	return user.ToProto(), nil
 }
 
-func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.GetUserRequest) (*userservicepb.User, error) {
+func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.GetUserRequest) (*userservicepb.GetUserResponse, error) {
 	if in.GetEmail() != "" {
 		user, err := srvr.SM.GetUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
-		return user.ToProto(), nil
-
+		return &userservicepb.GetUserResponse{
+			User: user.ToProto(),
+		}, nil
 	}
 	user, err := srvr.SM.GetUserWithUsername(in.GetUsername(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
-	return user.ToProto(), nil
+	return &userservicepb.GetUserResponse{
+		User: user.ToProto(),
+	}, nil
 }
 
 func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *userservicepb.UpdateUserRequest) (*userservicepb.User, error) {
