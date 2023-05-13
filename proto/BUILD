@@ -1,5 +1,5 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@rules_proto_grpc//go:defs.bzl", "go_grpc_library", "go_proto_library")
+load("@rules_proto_grpc//go:defs.bzl", "go_grpc_library")
 
 package(default_visibility = ["//visibility:public"])
 
