@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -14,7 +13,7 @@ service EventService {
     // event (i.e. all fields are overwritten).
     rpc UpdateEvent(UpdateEventRequest) returns (Event) {}
     // Deletes a event from the database with the given id.
-    rpc DeleteEvent(DeleteEventRequest) returns (google.protobuf.Empty) {}
+    rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse) {}
     // Gets a event from the database with the given id.
     rpc GetEvent(GetEventRequest) returns (Event) {}
     // Returns a paginated list of events from the database.
@@ -108,6 +107,8 @@ message DeleteEventRequest {
     // The unique id of the event that should be deleted.
     string event_id = 1;
 }
+
+message DeleteEventResponse {}
 
 message GetEventRequest {
     // The unique id of the event that should be returned.

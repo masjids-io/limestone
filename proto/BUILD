@@ -7,7 +7,6 @@ proto_library(
     name = "adhan_service_proto",
     srcs = ["adhan_service.proto"],
     deps = [
-        "@com_google_protobuf//:empty_proto",
         "@com_google_protobuf//:timestamp_proto",
     ],
 )
@@ -24,7 +23,6 @@ proto_library(
     name = "event_service_proto",
     srcs = ["event_service.proto"],
     deps = [
-        "@com_google_protobuf//:empty_proto",
         "@com_google_protobuf//:timestamp_proto",
     ],
 )
