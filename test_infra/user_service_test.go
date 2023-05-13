@@ -107,16 +107,16 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
-	out, err = suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
+	resp, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
 		Id: &upb.GetUserRequest_Email{
 			Email: out.GetEmail(),
 		},
 		Password: Password,
 	})
 
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *resp.GetUser(),
 		upb.User{}, protocmp.IgnoreFields(&upb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
+	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
 	suite.Nil(err)
 }
 
@@ -132,7 +132,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
-	out, err = suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
+	resp, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
 		Id: &upb.GetUserRequest_Email{
 			Email: out.GetEmail(),
 		},
@@ -140,12 +140,12 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
 	})
 
 	suite.Error(err)
-	suite.Nil(out)
+	suite.Nil(resp)
 }
 
 func (suite *IntegrationTestSuite) TestGetUserWithEmail_NotFound() {
 	ctx := context.Background()
-	out, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
+	resp, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
 		Id: &upb.GetUserRequest_Email{
 			Email: "bad@example.com",
 		},
@@ -153,7 +153,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_NotFound() {
 	})
 
 	suite.Error(err)
-	suite.Nil(out)
+	suite.Nil(resp)
 }
 
 func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
@@ -168,16 +168,16 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
-	out, err = suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
+	resp, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
 		Id: &upb.GetUserRequest_Username{
 			Username: out.GetUsername(),
 		},
 		Password: Password,
 	})
 
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
+	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *resp.GetUser(),
 		upb.User{}, protocmp.IgnoreFields(&upb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
+	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
 	suite.Nil(err)
 }
 
@@ -193,7 +193,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
-	out, err = suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
+	resp, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
 		Id: &upb.GetUserRequest_Username{
 			Username: out.GetUsername(),
 		},
@@ -201,12 +201,12 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
 	})
 
 	suite.Error(err)
-	suite.Nil(out)
+	suite.Nil(resp)
 }
 
 func (suite *IntegrationTestSuite) TestGetUserWithUsername_NotFound() {
 	ctx := context.Background()
-	out, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
+	resp, err := suite.UserServiceClient.GetUser(ctx, &upb.GetUserRequest{
 		Id: &upb.GetUserRequest_Username{
 			Username: "bad_user",
 		},
@@ -214,7 +214,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_NotFound() {
 	})
 
 	suite.Error(err)
-	suite.Nil(out)
+	suite.Nil(resp)
 }
 
 func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {

@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -10,12 +9,14 @@ option go_package = "github.com/mnadev/limestone/user_service/proto";
 service UserService {
     // Creates the given User with the given password.
     rpc CreateUser(CreateUserRequest) returns (User) {}
-    // Gets a User from the database provided the password is valid.
-    rpc GetUser(GetUserRequest) returns (User) {}
+    // Gets a User from the database and tokens provided the password is valid.
+    rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
     // Updates a User to the given User in the request provided the password is valid.
     rpc UpdateUser(UpdateUserRequest) returns (User) {}
     // Deletes a User from the database provided the password is valid.
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+    // Refreshes an access token.
+    rpc RefreshToken(RefreshTokenRequest) returns (TokenResponse) {}
 }
 
 // Defines a specific role a user might have for a specific masjid.
@@ -100,6 +101,24 @@ message GetUserRequest {
     string password = 3;
 }
 
+message TokenResponse {
+    // The id of the token.
+    string id = 1;
+    // The access JWT for the user.
+    string access_token = 2;
+    // The refresh JWT for the user.
+    string refresh_token = 3;
+    // The timestamp at which the token expires.
+    google.protobuf.Timestamp expires_at = 4;
+}
+
+message GetUserResponse {
+    // The authenticated user.
+    User user = 1;
+    // The token response for the user.
+    TokenResponse token_response = 2;
+}
+
 message UpdateUserRequest {
     // The updated user proto.
     User user = 1;
@@ -122,3 +141,8 @@ message DeleteUserRequest {
 
 // Empty response returned for DeleteUser RPC.
 message DeleteUserResponse {}
+
+message RefreshTokenRequest {
+    // The refresh JWT for the user.
+    string refresh_token = 1;
+}   
