@@ -2,7 +2,10 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
     name = "masjid",
-    srcs = ["masjid.go"],
+    srcs = [
+        "masjid.go",
+        "prayer_config.go",
+    ],
     importpath = "github.com/mnadev/limestone/storage",
     visibility = ["//visibility:public"],
     deps = [
@@ -13,9 +16,20 @@ go_library(
 )
 
 go_library(
+    name = "prayer_config",
+    srcs = ["prayer_config.go"],
+    importpath = "github.com/mnadev/limestone/storage",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//proto:masjid_service_go_proto",
+    ],
+)
+
+go_library(
     name = "storage_manager",
     srcs = [
         "masjid.go",
+        "prayer_config.go",
         "storage_manager.go",
         "user.go",
     ],
