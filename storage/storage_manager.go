@@ -149,26 +149,17 @@ func (s *StorageManager) UpdateMasjid(mp *mpb.Masjid) (*Masjid, error) {
 		return nil, result.Error
 	}
 
-	result = s.DB.Model(old_masjid).Where("id = ?", old_masjid.ID).
-		Updates(
-			map[string]interface{}{
-				"name":        mp.GetName(),
-				"is_verified": mp.GetIsVerified(),
-				// "address":      mp.GetFirstName(),
-				// "phone_number": mp.GetPhoneNumber(),
-			})
+	new_masjid, err := NewMasjid(mp)
+	if err != nil {
+		return nil, err
+	}
 
+	result = s.DB.Save(new_masjid)
 	if result.Error != nil {
 		return nil, status.Error(codes.Internal, "failed to update masjid object")
 	}
 
-	var updated_masjid Masjid
-	result = s.DB.Where("id = ?", mp.GetId()).First(&updated_masjid)
-
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &updated_masjid, nil
+	return new_masjid, nil
 }
 
 // GetMasjid returns a Masjid with the given id.
