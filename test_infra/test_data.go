@@ -73,12 +73,16 @@ func GetMasjidProto() *mpb.Masjid {
 
 func GetEventProto() *epb.Event {
 	return &epb.Event{
-		Id:                DefaultId,
-		Owner:             &epb.Event_MasjidId{MasjidId: DefaultId},
-		Name:              EventName,
-		Description:       EventDescription,
-		StartTime:         timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
-		EndTime:           timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
+		Id:          DefaultId,
+		Owner:       &epb.Event_MasjidId{MasjidId: DefaultId},
+		Name:        EventName,
+		Description: EventDescription,
+		StartTime:   timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
+		EndTime:     timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
+		Types: []epb.Event_EventType{
+			epb.Event_COMMUNITY,
+			epb.Event_ATHLETIC,
+		},
 		GenderRestriction: epb.Event_MALE_ONLY,
 		IsPaid:            true,
 		RequiresRsvp:      true,
