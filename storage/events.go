@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,20 +17,6 @@ const (
 	FEMALE_ONLY
 )
 
-type EventType int64
-
-const (
-	WORSHIP EventType = iota
-	EDUCATIONAL
-	COMMUNITY
-	ATHLETIC
-	FUNDRAISING
-	YOUTH
-	CHILDREN_SPECIFIC
-	MATRIMONIAL
-	FUNERAL
-)
-
 type Event struct {
 	ID                uuid.UUID `gorm:"primaryKey;type:char(36)"`
 	UserId            string
@@ -42,8 +29,7 @@ type Event struct {
 														'MALE_ONLY',
 														'FEMALE_ONLY')" 
 														gorm:"column:gender_restriction"`
-	// The different event types associated with this event.
-	// EventType       EventType
+	EventTypes      string
 	IsPaid          bool
 	RequiresRsvp    bool
 	MaxParticipants int32
@@ -71,6 +57,14 @@ func NewEvent(ep *epb.Event) (*Event, error) {
 		e.MasjidId = ep.GetMasjidId()
 	}
 
+	types := []string{}
+
+	for _, t := range ep.Types {
+		types = append(types, FromProtoToInternalEventType(t))
+	}
+
+	e.EventTypes = strings.Join(types, ",")
+
 	return &e, nil
 }
 
@@ -95,7 +89,38 @@ func (e *Event) ToProto() *epb.Event {
 		ep.Owner = &epb.Event_MasjidId{MasjidId: e.MasjidId}
 	}
 
+	types := e.EventTypes
+	typespb := []epb.Event_EventType{}
+	for _, t := range strings.Split(types, ",") {
+		typespb = append(typespb, FromInternalToProtoEvent(t))
+	}
+	ep.Types = typespb
+
 	return &ep
+}
+
+func FromProtoToInternalEventType(et epb.Event_EventType) string {
+	switch et {
+	case epb.Event_EDUCATIONAL:
+		return "EDUCATIONAL"
+	case epb.Event_COMMUNITY:
+		return "COMMUNITY"
+	case epb.Event_ATHLETIC:
+		return "ATHLETIC"
+	case epb.Event_FUNDRAISING:
+		return "FUNDRAISING"
+	case epb.Event_YOUTH:
+		return "YOUTH"
+	case epb.Event_CHILDREN_SPECIFIC:
+		return "CHILDREN_SPECIFIC"
+	case epb.Event_MATRIMONIAL:
+		return "MATRIMONIAL"
+	case epb.Event_FUNERAL:
+		return "FUNERAL"
+	case epb.Event_WORSHIP:
+		return "WORSHIP"
+	}
+	return ""
 }
 
 func FromProtoToInternalGenderRestriction(g epb.Event_GenderRestriction) GenderRestriction {
@@ -106,6 +131,28 @@ func FromProtoToInternalGenderRestriction(g epb.Event_GenderRestriction) GenderR
 		return FEMALE_ONLY
 	}
 	return NO_RESTRICTION
+}
+
+func FromInternalToProtoEvent(s string) epb.Event_EventType {
+	switch s {
+	case "EDUCATIONAL":
+		return epb.Event_EDUCATIONAL
+	case "COMMUNITY":
+		return epb.Event_COMMUNITY
+	case "ATHLETIC":
+		return epb.Event_ATHLETIC
+	case "FUNDRAISING":
+		return epb.Event_FUNDRAISING
+	case "YOUTH":
+		return epb.Event_YOUTH
+	case "CHILDREN_SPECIFIC":
+		return epb.Event_CHILDREN_SPECIFIC
+	case "MATRIMONIAL":
+		return epb.Event_MATRIMONIAL
+	case "FUNERAL":
+		return epb.Event_FUNERAL
+	}
+	return epb.Event_WORSHIP
 }
 
 func FromInternalToProtoGenderRestriction(g GenderRestriction) epb.Event_GenderRestriction {
