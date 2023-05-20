@@ -7,12 +7,13 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	epb "github.com/mnadev/limestone/event_service/proto"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
-	upb "github.com/mnadev/limestone/user_service/proto"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	epb "github.com/mnadev/limestone/event_service/proto"
+	mpb "github.com/mnadev/limestone/masjid_service/proto"
+	upb "github.com/mnadev/limestone/user_service/proto"
 )
 
 type Resource struct {

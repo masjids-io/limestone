@@ -3,13 +3,14 @@ package storage
 import (
 	"errors"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"gorm.io/gorm"
+
 	"github.com/mnadev/limestone/auth"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"gorm.io/gorm"
 )
 
 type StorageManager struct {

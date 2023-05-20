@@ -6,16 +6,16 @@ import (
 	"net"
 	"os"
 
-	"github.com/mnadev/limestone/storage"
-	"github.com/mnadev/limestone/user_service"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/mnadev/limestone/storage"
+	"github.com/mnadev/limestone/user_service"
+	userservicepb "github.com/mnadev/limestone/user_service/proto"
 )
 
 func main() {
-
 	lis, err := net.Listen("tcp", ":10000")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

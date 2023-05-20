@@ -4,8 +4,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	mpb "github.com/mnadev/limestone/masjid_service/proto"
 )
 
 type Address struct {
