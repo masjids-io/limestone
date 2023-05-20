@@ -3,6 +3,7 @@ package test_infra
 import (
 	"testing"
 
+	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
 	"github.com/stretchr/testify/suite"
@@ -217,5 +218,65 @@ func (suite *UnitTestSuite) TestDeleteMasjid_Success() {
 
 func (suite *UnitTestSuite) TestDeleteMasjid_NotFound() {
 	err := suite.StorageManager.DeleteMasjid(DefaultId)
+	suite.Error(err)
+}
+
+func (suite *UnitTestSuite) TestCreateEvent_Success() {
+	event, err := suite.StorageManager.CreateEvent(GetEventProto())
+	AssertProtoEqual(suite.T(), *GetEventProto(), *event.ToProto(),
+		epb.Event{}, protocmp.IgnoreFields(&epb.Event{}, "create_time", "update_time"))
+	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestUpdateEvent_Success() {
+	event, err := suite.StorageManager.CreateEvent(GetEventProto())
+	suite.Nil(err)
+
+	event.Name = "Event 2"
+	event, err = suite.StorageManager.UpdateEvent(event.ToProto())
+
+	want := GetEventProto()
+	want.Name = "Event 2"
+
+	AssertProtoEqual(suite.T(), *want, *event.ToProto(), epb.Event{},
+		protocmp.IgnoreFields(&epb.Event{}, "create_time", "update_time"))
+	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestUpdateEvent_NotFound() {
+	event, err := suite.StorageManager.UpdateEvent(GetEventProto())
+	suite.Error(err)
+	suite.Nil(event)
+}
+
+func (suite *UnitTestSuite) TestGetEvent_Success() {
+	_, err := suite.StorageManager.CreateEvent(GetEventProto())
+	suite.Nil(err)
+
+	event, err := suite.StorageManager.GetEvent(DefaultId)
+	AssertProtoEqual(suite.T(), *GetEventProto(), *event.ToProto(),
+		epb.Event{}, protocmp.IgnoreFields(&epb.Event{}, "create_time", "update_time"))
+	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestGetEvent_NotFound() {
+	event, err := suite.StorageManager.GetEvent(DefaultId)
+	suite.Error(err)
+	suite.Nil(event)
+}
+
+func (suite *UnitTestSuite) TestDeleteEvent_Success() {
+	_, err := suite.StorageManager.CreateEvent(GetEventProto())
+	suite.Nil(err)
+
+	err = suite.StorageManager.DeleteEvent(DefaultId)
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestDeleteEvent_NotFound() {
+	err := suite.StorageManager.DeleteEvent(DefaultId)
 	suite.Error(err)
 }

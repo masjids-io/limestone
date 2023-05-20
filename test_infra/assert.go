@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
 	"github.com/stretchr/testify/assert"
@@ -54,4 +55,11 @@ func AssertUserTimestampsCurrent(t *testing.T, u *upb.User) {
 func AssertMasjidTimestampsCurrent(t *testing.T, m *mpb.Masjid) {
 	assert.LessOrEqual(t, time.Now().Unix()-m.CreateTime.GetSeconds(), int64(1))
 	assert.LessOrEqual(t, time.Now().Unix()-m.UpdateTime.GetSeconds(), int64(1))
+}
+
+// AssertEventTimestampsCurrent asserts that the create and update timestamps of the event are current.
+// By current, it means that the timestamps are within a range of 1 second from now).
+func AssertEventTimestampsCurrent(t *testing.T, e *epb.Event) {
+	assert.LessOrEqual(t, time.Now().Unix()-e.CreateTime.GetSeconds(), int64(1))
+	assert.LessOrEqual(t, time.Now().Unix()-e.UpdateTime.GetSeconds(), int64(1))
 }
