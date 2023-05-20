@@ -1,20 +1,27 @@
 package test_infra
 
 import (
+	"time"
+
+	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const (
-	DefaultId   = "00000000-0000-0000-0000-000000000000"
-	UserEmail   = "example@example.com"
-	Password    = "password"
-	BadPassword = "passwor"
-	Username    = "coolguy1234"
-	FirstName   = "John"
-	LastName    = "Doe"
-	PhoneNumber = "+1234567890"
-	MasjidName  = "Masjid 1"
+	DefaultId        = "00000000-0000-0000-0000-000000000000"
+	UserEmail        = "example@example.com"
+	Password         = "password"
+	BadPassword      = "passwor"
+	Username         = "coolguy1234"
+	FirstName        = "John"
+	LastName         = "Doe"
+	PhoneNumber      = "+1234567890"
+	MasjidName       = "Masjid 1"
+	EventName        = "Event 1"
+	EventDescription = "Some Event"
+	LivestreamLink   = "http://example.com"
 )
 
 func GetUserProto(email string, username string) *upb.User {
@@ -61,5 +68,21 @@ func GetMasjidProto() *mpb.Masjid {
 				IshaAdjustment:    2,
 			},
 		},
+	}
+}
+
+func GetEventProto() *epb.Event {
+	return &epb.Event{
+		Id:                DefaultId,
+		Owner:             &epb.Event_MasjidId{MasjidId: DefaultId},
+		Name:              EventName,
+		Description:       EventDescription,
+		StartTime:         timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
+		EndTime:           timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
+		GenderRestriction: epb.Event_MALE_ONLY,
+		IsPaid:            true,
+		RequiresRsvp:      true,
+		MaxParticipants:   500,
+		LivestreamLink:    LivestreamLink,
 	}
 }

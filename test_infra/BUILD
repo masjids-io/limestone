@@ -9,6 +9,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "@com_github_google_go_cmp//cmp:go_default_library",
@@ -47,8 +48,10 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
+        "@org_golang_google_protobuf//types/known/timestamppb",
     ],
 )
 
