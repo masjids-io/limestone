@@ -76,6 +76,7 @@ func NewEvent(ep *epb.Event) (*Event, error) {
 
 func (e *Event) ToProto() *epb.Event {
 	ep := epb.Event{
+		Id:                e.ID.String(),
 		Name:              e.Name,
 		Description:       e.Description,
 		StartTime:         timestamppb.New(e.StartTime),
