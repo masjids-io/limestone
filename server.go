@@ -10,9 +10,13 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"github.com/mnadev/limestone/event_service"
+	epb "github.com/mnadev/limestone/event_service/proto"
+	"github.com/mnadev/limestone/masjid_service"
+	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	"github.com/mnadev/limestone/storage"
 	"github.com/mnadev/limestone/user_service"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
+	upb "github.com/mnadev/limestone/user_service/proto"
 )
 
 func main() {
@@ -36,8 +40,21 @@ func main() {
 		password,
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB.AutoMigrate(storage.Event{})
+	DB.AutoMigrate(storage.Masjid{})
 	DB.AutoMigrate(storage.User{})
-	userservicepb.RegisterUserServiceServer(server, &user_service.UserServiceServer{
+
+	epb.RegisterEventServiceServer(server, &event_service.EventServiceServer{
+		SM: &storage.StorageManager{
+			DB: DB,
+		},
+	})
+	mpb.RegisterMasjidServiceServer(server, &masjid_service.MasjidServiceServer{
+		SM: &storage.StorageManager{
+			DB: DB,
+		},
+	})
+	upb.RegisterUserServiceServer(server, &user_service.UserServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
