@@ -5,6 +5,13 @@ import (
 	"database/sql"
 	"net"
 
+	_ "github.com/proullon/ramsql/driver"
+	"github.com/stretchr/testify/suite"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/test/bufconn"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+
 	"github.com/mnadev/limestone/event_service"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	"github.com/mnadev/limestone/masjid_service"
@@ -12,12 +19,6 @@ import (
 	"github.com/mnadev/limestone/storage"
 	user_service "github.com/mnadev/limestone/user_service"
 	upb "github.com/mnadev/limestone/user_service/proto"
-	_ "github.com/proullon/ramsql/driver"
-	"github.com/stretchr/testify/suite"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/test/bufconn"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 type IntegrationTestSuite struct {
@@ -38,7 +39,6 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 	suite.Server = grpc.NewServer()
 
 	sqlDB, err := sql.Open("ramsql", "Test"+testName)
-
 	if err != nil {
 		panic(err)
 	}

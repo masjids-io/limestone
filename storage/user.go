@@ -4,11 +4,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/mnadev/limestone/auth"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	"github.com/mnadev/limestone/auth"
+	userservicepb "github.com/mnadev/limestone/user_service/proto"
 )
 
 type gender string

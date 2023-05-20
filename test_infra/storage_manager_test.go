@@ -3,11 +3,12 @@ package test_infra
 import (
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+	"google.golang.org/protobuf/testing/protocmp"
+
 	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
-	"github.com/stretchr/testify/suite"
-	"google.golang.org/protobuf/testing/protocmp"
 )
 
 func TestSuite(t *testing.T) {

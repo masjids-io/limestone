@@ -5,8 +5,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	epb "github.com/mnadev/limestone/event_service/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
+
+	epb "github.com/mnadev/limestone/event_service/proto"
 )
 
 type GenderRestriction int64

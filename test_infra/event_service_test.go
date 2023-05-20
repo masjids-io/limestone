@@ -4,9 +4,10 @@ import (
 	"context"
 	"testing"
 
-	epb "github.com/mnadev/limestone/event_service/proto"
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/protobuf/testing/protocmp"
+
+	epb "github.com/mnadev/limestone/event_service/proto"
 )
 
 func TestSuite(t *testing.T) {
