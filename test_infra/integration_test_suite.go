@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"net"
 
+	"github.com/mnadev/limestone/event_service"
+	epb "github.com/mnadev/limestone/event_service/proto"
 	"github.com/mnadev/limestone/masjid_service"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	"github.com/mnadev/limestone/storage"
@@ -22,8 +24,9 @@ type IntegrationTestSuite struct {
 	suite.Suite
 	DB                  *gorm.DB
 	Server              *grpc.Server
-	UserServiceClient   upb.UserServiceClient
+	EventServiceClient  epb.EventServiceClient
 	MasjidServiceClient mpb.MasjidServiceClient
+	UserServiceClient   upb.UserServiceClient
 }
 
 func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
@@ -50,12 +53,18 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 
 	suite.DB.AutoMigrate(&storage.User{})
 	suite.DB.AutoMigrate(&storage.Masjid{})
-	upb.RegisterUserServiceServer(suite.Server, &user_service.UserServiceServer{
+	suite.DB.AutoMigrate(&storage.Event{})
+	epb.RegisterEventServiceServer(suite.Server, &event_service.EventServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})
 	mpb.RegisterMasjidServiceServer(suite.Server, &masjid_service.MasjidServiceServer{
+		SM: &storage.StorageManager{
+			DB: suite.DB,
+		},
+	})
+	upb.RegisterUserServiceServer(suite.Server, &user_service.UserServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
 		},
@@ -71,8 +80,9 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 		return listener.Dial()
 	}), grpc.WithInsecure(), grpc.WithBlock())
 
-	suite.UserServiceClient = upb.NewUserServiceClient(conn)
+	suite.EventServiceClient = epb.NewEventServiceClient(conn)
 	suite.MasjidServiceClient = mpb.NewMasjidServiceClient(conn)
+	suite.UserServiceClient = upb.NewUserServiceClient(conn)
 }
 
 func (suite *IntegrationTestSuite) AfterTest(suiteName, testName string) {
