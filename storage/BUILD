@@ -1,6 +1,18 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library")
 
 go_library(
+    name = "events",
+    srcs = ["events.go"],
+    importpath = "github.com/mnadev/limestone/storage",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//proto:event_service_go_proto",
+        "@com_github_google_uuid//:uuid",
+        "@org_golang_google_protobuf//types/known/timestamppb",
+    ],
+)
+
+go_library(
     name = "masjid",
     srcs = [
         "masjid.go",
@@ -28,6 +40,7 @@ go_library(
 go_library(
     name = "storage_manager",
     srcs = [
+        "events.go",
         "masjid.go",
         "prayer_config.go",
         "storage_manager.go",
@@ -37,6 +50,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//auth:password",
+        "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "@com_github_google_uuid//:uuid",

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/mnadev/limestone/auth"
+	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
 	"google.golang.org/grpc/codes"
@@ -182,5 +183,65 @@ func (s *StorageManager) DeleteMasjid(id string) error {
 	}
 
 	result := s.DB.Delete(masjid, masjid.ID)
+	return result.Error
+}
+
+// CreateEvent creates a Event in the database for the given Event proto.
+func (s *StorageManager) CreateEvent(e *epb.Event) (*Event, error) {
+	event, err := NewEvent(e)
+	if err != nil {
+		return nil, err
+	}
+
+	result := s.DB.Create(event)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return event, nil
+}
+
+// UpdateEvent updates a Event in the database for the given Event proto.
+func (s *StorageManager) UpdateEvent(e *epb.Event) (*Event, error) {
+	var old_event Event
+	result := s.DB.Where("id = ?", e.GetId()).First(&old_event)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	new_event, err := NewEvent(e)
+	if err != nil {
+		return nil, err
+	}
+
+	result = s.DB.Save(new_event)
+	if result.Error != nil {
+		return nil, status.Error(codes.Internal, "failed to update event object")
+	}
+
+	return new_event, nil
+}
+
+// GetEvent returns a Event with the given id.
+func (s *StorageManager) GetEvent(id string) (*Event, error) {
+	var event Event
+	result := s.DB.First(&event, "id = ?", id)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &event, nil
+}
+
+// DeleteEvent deletes a Event with the given id.
+func (s *StorageManager) DeleteEvent(id string) error {
+	event, err := s.GetEvent(id)
+	if err != nil {
+		return err
+	}
+
+	result := s.DB.Delete(event, event.ID)
 	return result.Error
 }
