@@ -20,6 +20,10 @@ go_library(
     importpath = "github.com/mnadev/limestone",
     visibility = ["//visibility:private"],
     deps = [
+        "//event_service:event_service",
+        "//masjid_service:masjid_service",
+        "//proto:event_service_go_proto",
+        "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "//storage:storage_manager",
         "//user_service:user_service",
