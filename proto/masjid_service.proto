@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -8,16 +9,38 @@ option go_package = "github.com/mnadev/limestone/masjid_service/proto";
 
 service MasjidService {
     // Creates a masjid in the database.
-    rpc CreateMasjid(CreateMasjidRequest) returns (Masjid) {}
+    rpc CreateMasjid(CreateMasjidRequest) returns (Masjid) {
+        option (google.api.http) = {
+          post: "/masjids/create"
+          body: "*"
+        };
+    }
     // Updates a masjid in the database with the corresponding id to the given
     // masjid (i.e. all fields are overwritten).
-    rpc UpdateMasjid(UpdateMasjidRequest) returns (Masjid) {}
+    rpc UpdateMasjid(UpdateMasjidRequest) returns (Masjid) {
+        option (google.api.http) = {
+          post: "/masjids/update"
+          body: "*"
+        };
+    }
     // Deletes a masjid from the database with the given id.
-    rpc DeleteMasjid(DeleteMasjidRequest) returns (DeleteMasjidResponse) {}
+    rpc DeleteMasjid(DeleteMasjidRequest) returns (DeleteMasjidResponse) {
+        option (google.api.http) = {
+          delete: "/masjids/{masjid_id}"
+        };
+    }
     // Gets a masjid from the database with the given id.
-    rpc GetMasjid(GetMasjidRequest) returns (Masjid) {}
+    rpc GetMasjid(GetMasjidRequest) returns (Masjid) {
+        option (google.api.http) = {
+          get: "/masjids/{masjid_id}"
+        };
+    }
     // Returns a paginated list of masjids from the database.
-    rpc ListMasjids(ListMasjidsRequest) returns (ListMasjidsResponse) {}
+    rpc ListMasjids(ListMasjidsRequest) returns (ListMasjidsResponse) {
+        option (google.api.http) = {
+          get: "/masjids/list"
+        };
+    }
 }
 
 // A message that holds prayer times configuration. This message contains all the fields

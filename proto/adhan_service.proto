@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -8,13 +9,31 @@ option go_package = "github.com/mnadev/limestone/adhan_service/proto";
 
 service AdhanService {
     // Creates an adhan audio file in the database for a masjid.
-    rpc CreateAdhanFile(CreateAdhanFileRequest) returns (AdhanFile) {}
+    rpc CreateAdhanFile(CreateAdhanFileRequest) returns (AdhanFile) {
+        option (google.api.http) = {
+          post: "/adhan/file/create"
+          body: "*"
+        };
+    }
     // Updates an adhan audio file in the database for a masjid.
-    rpc UpdateAdhanFile(UpdateAdhanFileRequest) returns (AdhanFile) {}
+    rpc UpdateAdhanFile(UpdateAdhanFileRequest) returns (AdhanFile) {
+        option (google.api.http) = {
+          post: "/adhan/file/update"
+          body: "*"
+        };
+    }
     // Get an adhan audio file from the database for a masjid.
-    rpc GetAdhanFile(GetAdhanFileRequest) returns (AdhanFile) {}
+    rpc GetAdhanFile(GetAdhanFileRequest) returns (AdhanFile) {
+        option (google.api.http) = {
+          get: "/adhan/file/{masjid_id}"
+        };
+    }
     // Deletes an adhan audio from the database for a masjid.
-    rpc DeleteAdhanFile(DeleteAdhanFileRequest) returns (DeleteAdhanFileResponse) {}
+    rpc DeleteAdhanFile(DeleteAdhanFileRequest) returns (DeleteAdhanFileResponse) {
+        option (google.api.http) = {
+          delete: "/adhan/file/{id}"
+        };
+    }
 }
 
 message AdhanFile {
