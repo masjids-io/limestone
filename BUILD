@@ -27,7 +27,7 @@ go_library(
         "//proto:user_service_go_proto",
         "//storage:storage_manager",
         "//user_service:user_service",
-        "@com_github_grpc_ecosystem_grpc_gateway_v2//runtime:go_default_library",
+        "@grpc_ecosystem_grpc_gateway//runtime:go_default_library",
         "@io_gorm_driver_postgres//:postgres",
         "@io_gorm_gorm//:gorm",
         "@org_golang_google_grpc//:go_default_library",

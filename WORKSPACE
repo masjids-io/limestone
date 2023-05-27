@@ -57,16 +57,3 @@ rules_proto_grpc_go_repos()
 load("@rules_proto_grpc//grpc-gateway:repositories.bzl", rules_proto_grpc_gateway_repos = "gateway_repos")
 
 rules_proto_grpc_gateway_repos()
-
-http_archive(
-    name = "com_github_grpc_ecosystem_grpc_gateway_v2",
-    sha256 = "c405cd8f1fb54761933c20be2ad02cce4f9a498d7bdb92a5d3789704884b8360",
-    strip_prefix = "grpc-gateway-2.7.3",
-    urls = [
-        "https://github.com/grpc-ecosystem/grpc-gateway/archive/refs/tags/v2.7.3.tar.gz",
-    ],
-)
-
-load("@com_github_grpc_ecosystem_grpc_gateway_v2//:repositories.bzl", "go_repositories")
-
-go_repositories()

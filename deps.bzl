@@ -201,6 +201,12 @@ def go_dependencies():
         sum = "h1:gmcG1KaJ57LophUzW0Hy8NmPhnMZb4M0+kPpLofRdBo=",
         version = "v1.16.0",
     )
+    go_repository(
+        name = "com_github_grpc_ecosystem_grpc_gateway_v2",
+        importpath = "github.com/grpc-ecosystem/grpc-gateway/v2",
+        sum = "h1:lLT7ZLSzGLI08vc9cpd+tYmNWjdKDqyr/2L+f6U12Fk=",
+        version = "v2.11.3",
+    )
 
     go_repository(
         name = "com_github_iancoleman_strcase",
