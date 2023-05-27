@@ -1,14 +1,19 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"os"
 
 	"google.golang.org/grpc"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/mnadev/limestone/event_service"
 	epb "github.com/mnadev/limestone/event_service/proto"
@@ -19,8 +24,13 @@ import (
 	upb "github.com/mnadev/limestone/user_service/proto"
 )
 
+var (
+	grpcEndpoint = flag.String("grpc_endpoint", "localhost:8081", "gRPC server endpoint")
+	httpEndpoint = flag.String("http_endpoint", "localhost:8080", "HTTP server endpoint")
+)
+
 func main() {
-	lis, err := net.Listen("tcp", ":10000")
+	lis, err := net.Listen("tcp", *grpcEndpoint)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -44,23 +54,51 @@ func main() {
 	DB.AutoMigrate(storage.Masjid{})
 	DB.AutoMigrate(storage.User{})
 
-	epb.RegisterEventServiceServer(server, &event_service.EventServiceServer{
+	event_server := event_service.EventServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
-	})
-	mpb.RegisterMasjidServiceServer(server, &masjid_service.MasjidServiceServer{
+	}
+	epb.RegisterEventServiceServer(server, &event_server)
+	masjid_server := masjid_service.MasjidServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
-	})
-	upb.RegisterUserServiceServer(server, &user_service.UserServiceServer{
+	}
+	mpb.RegisterMasjidServiceServer(server, &masjid_server)
+	user_server := user_service.UserServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
-	})
+	}
+	upb.RegisterUserServiceServer(server, &user_server)
 
-	if err := server.Serve(lis); err != nil {
+	go func() {
+		if err := server.Serve(lis); err != nil {
+			log.Fatalf("failed to serve gRPC traffic: %s", err)
+		}
+	}()
+
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	mux := runtime.NewServeMux()
+	// opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	err = epb.RegisterEventServiceHandlerServer(ctx, mux, &event_server)
+	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
+	}
+	err = mpb.RegisterMasjidServiceHandlerServer(ctx, mux, &masjid_server)
+	if err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
+	err = upb.RegisterUserServiceHandlerServer(ctx, mux, &user_server)
+	if err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
+
+	if err = http.ListenAndServe(*httpEndpoint, mux); err != nil {
+		log.Fatalf("failed to serve HTTP traffic: %s", err)
 	}
 }

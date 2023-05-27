@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -8,15 +9,37 @@ option go_package = "github.com/mnadev/limestone/user_service/proto";
 
 service UserService {
     // Creates the given User with the given password.
-    rpc CreateUser(CreateUserRequest) returns (User) {}
+    rpc CreateUser(CreateUserRequest) returns (User) {
+        option (google.api.http) = {
+          post: "/users/create"
+          body: "*"
+        };
+    }
     // Gets a User from the database and tokens provided the password is valid.
-    rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+    rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+        option (google.api.http) = {
+          get: "/users"
+        };
+    }
     // Updates a User to the given User in the request provided the password is valid.
-    rpc UpdateUser(UpdateUserRequest) returns (User) {}
+    rpc UpdateUser(UpdateUserRequest) returns (User) {
+        option (google.api.http) = {
+          post: "/users/update"
+          body: "*"
+        };
+    }
     // Deletes a User from the database provided the password is valid.
-    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+        option (google.api.http) = {
+          delete: "/users"
+        };
+    }
     // Refreshes an access token.
-    rpc RefreshToken(RefreshTokenRequest) returns (TokenResponse) {}
+    rpc RefreshToken(RefreshTokenRequest) returns (TokenResponse) {
+        option (google.api.http) = {
+          get: "/token/refresh"
+        };
+    }
 }
 
 // Defines a specific role a user might have for a specific masjid.

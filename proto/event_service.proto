@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -8,16 +9,38 @@ option go_package = "github.com/mnadev/limestone/event_service/proto";
 
 service EventService {
     // Creates a event in the database.
-    rpc CreateEvent(CreateEventRequest) returns (Event) {}
+    rpc CreateEvent(CreateEventRequest) returns (Event) {
+        option (google.api.http) = {
+          post: "/events/create"
+          body: "*"
+        };
+    }
     // Updates a event in the database with the corresponding id to the given
     // event (i.e. all fields are overwritten).
-    rpc UpdateEvent(UpdateEventRequest) returns (Event) {}
+    rpc UpdateEvent(UpdateEventRequest) returns (Event) {
+        option (google.api.http) = {
+          post: "/events/update"
+          body: "*"
+        };
+    }
     // Deletes a event from the database with the given id.
-    rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse) {}
+    rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse) {
+        option (google.api.http) = {
+          delete: "/events/{event_id}"
+        };
+    }
     // Gets a event from the database with the given id.
-    rpc GetEvent(GetEventRequest) returns (Event) {}
+    rpc GetEvent(GetEventRequest) returns (Event) {
+        option (google.api.http) = {
+          get: "/events/{event_id}"
+        };
+    }
     // Returns a paginated list of events from the database.
-    rpc ListEvents(ListEventsRequest) returns (ListEventsResponse) {}
+    rpc ListEvents(ListEventsRequest) returns (ListEventsResponse) {
+        option (google.api.http) = {
+          get: "/events/list"
+        };
+    }
 }
 
 message Event {
