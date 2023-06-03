@@ -9,6 +9,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:adhan_service_go_proto",
         "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
@@ -50,6 +51,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:adhan_service_go_proto",
         "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
@@ -64,9 +66,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
-        "//proto:user_service_go_proto",
         "//storage:storage_manager",
-        "//user_service",
         "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//suite",
         "@io_gorm_driver_postgres//:postgres",
@@ -86,6 +86,8 @@ go_test(
         ":test_data",
     ],
     deps = [
+        "//proto:adhan_service_go_proto",
+        "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "//storage:storage_manager",

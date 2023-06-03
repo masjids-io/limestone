@@ -11,6 +11,7 @@ import (
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	apb "github.com/mnadev/limestone/adhan_service/proto"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
@@ -63,4 +64,11 @@ func AssertMasjidTimestampsCurrent(t *testing.T, m *mpb.Masjid) {
 func AssertEventTimestampsCurrent(t *testing.T, e *epb.Event) {
 	assert.LessOrEqual(t, time.Now().Unix()-e.CreateTime.GetSeconds(), int64(1))
 	assert.LessOrEqual(t, time.Now().Unix()-e.UpdateTime.GetSeconds(), int64(1))
+}
+
+// AssertAdhanFileTimestampsCurrent asserts that the create and update timestamps of the event are current.
+// By current, it means that the timestamps are within a range of 1 second from now).
+func AssertAdhanFileTimestampsCurrent(t *testing.T, a *apb.AdhanFile) {
+	assert.LessOrEqual(t, time.Now().Unix()-a.CreateTime.GetSeconds(), int64(1))
+	assert.LessOrEqual(t, time.Now().Unix()-a.UpdateTime.GetSeconds(), int64(1))
 }

@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
+	apb "github.com/mnadev/limestone/adhan_service/proto"
 	"github.com/mnadev/limestone/auth"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
@@ -244,5 +245,64 @@ func (s *StorageManager) DeleteEvent(id string) error {
 	}
 
 	result := s.DB.Delete(event, event.ID)
+	return result.Error
+}
+
+// CreateAdhanFile creates a AdhanFile in the database for the given AdhanFile proto.
+func (s *StorageManager) CreateAdhanFile(a *apb.AdhanFile) (*AdhanFile, error) {
+	file, err := NewAdhanFile(a)
+	if err != nil {
+		return nil, err
+	}
+
+	result := s.DB.Create(file)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return file, nil
+}
+
+// UpdateAdhanFile updates a AdhanFile in the database for the given AdhanFile proto.
+func (s *StorageManager) UpdateAdhanFile(a *apb.AdhanFile) (*AdhanFile, error) {
+	var old_file AdhanFile
+	result := s.DB.Where("id = ?", a.GetId()).First(&old_file)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	new_file, err := NewAdhanFile(a)
+	if err != nil {
+		return nil, err
+	}
+
+	result = s.DB.Save(new_file)
+	if result.Error != nil {
+		return nil, status.Error(codes.Internal, "failed to update file object")
+	}
+
+	return new_file, nil
+}
+
+// GetAdhanFile returns a AdhanFile with the given id.
+func (s *StorageManager) GetAdhanFile(masjid_id string) (*AdhanFile, error) {
+	var file AdhanFile
+	result := s.DB.First(&file, "masjid_id = ?", masjid_id)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &file, nil
+}
+
+// DeleteAdhanFile deletes a AdhanFile with the given id.
+func (s *StorageManager) DeleteAdhanFile(id string) error {
+	file, err := s.GetAdhanFile(id)
+	if err != nil {
+		return err
+	}
+
+	result := s.DB.Delete(file, file.ID)
 	return result.Error
 }
