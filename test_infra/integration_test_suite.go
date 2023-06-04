@@ -12,6 +12,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"github.com/mnadev/limestone/adhan_service"
+	apb "github.com/mnadev/limestone/adhan_service/proto"
 	"github.com/mnadev/limestone/event_service"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	"github.com/mnadev/limestone/masjid_service"
@@ -25,6 +27,7 @@ type IntegrationTestSuite struct {
 	suite.Suite
 	DB                  *gorm.DB
 	Server              *grpc.Server
+	AdhanServiceClient  apb.AdhanServiceClient
 	EventServiceClient  epb.EventServiceClient
 	MasjidServiceClient mpb.MasjidServiceClient
 	UserServiceClient   upb.UserServiceClient
@@ -51,9 +54,16 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 		panic(err)
 	}
 
-	suite.DB.AutoMigrate(&storage.User{})
-	suite.DB.AutoMigrate(&storage.Masjid{})
+	suite.DB.AutoMigrate(&storage.AdhanFile{})
 	suite.DB.AutoMigrate(&storage.Event{})
+	suite.DB.AutoMigrate(&storage.Masjid{})
+	suite.DB.AutoMigrate(&storage.User{})
+
+	apb.RegisterAdhanServiceServer(suite.Server, &adhan_service.AdhanServiceServer{
+		SM: &storage.StorageManager{
+			DB: suite.DB,
+		},
+	})
 	epb.RegisterEventServiceServer(suite.Server, &event_service.EventServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
@@ -80,6 +90,7 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 		return listener.Dial()
 	}), grpc.WithInsecure(), grpc.WithBlock())
 
+	suite.AdhanServiceClient = apb.NewAdhanServiceClient(conn)
 	suite.EventServiceClient = epb.NewEventServiceClient(conn)
 	suite.MasjidServiceClient = mpb.NewMasjidServiceClient(conn)
 	suite.UserServiceClient = upb.NewUserServiceClient(conn)

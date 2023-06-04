@@ -5,6 +5,7 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	apb "github.com/mnadev/limestone/adhan_service/proto"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
@@ -89,5 +90,13 @@ func GetEventProto() *epb.Event {
 		RequiresRsvp:      true,
 		MaxParticipants:   500,
 		LivestreamLink:    LivestreamLink,
+	}
+}
+
+func GetAdhanFileProto() *apb.AdhanFile {
+	return &apb.AdhanFile{
+		Id:       DefaultId,
+		MasjidId: DefaultId,
+		File:     []byte("SomeData"),
 	}
 }

@@ -9,6 +9,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:adhan_service_go_proto",
         "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
@@ -27,8 +28,10 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//adhan_service:adhan_service",
         "//event_service:event_service",
         "//masjid_service:masjid_service",
+        "//proto:adhan_service_go_proto",
         "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
@@ -50,6 +53,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
+        "//proto:adhan_service_go_proto",
         "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
@@ -64,9 +68,7 @@ go_library(
     importpath = "github.com/mnadev/limestone/test_infra",
     visibility = ["//visibility:public"],
     deps = [
-        "//proto:user_service_go_proto",
         "//storage:storage_manager",
-        "//user_service",
         "@com_github_proullon_ramsql//driver",
         "@com_github_stretchr_testify//suite",
         "@io_gorm_driver_postgres//:postgres",
@@ -86,6 +88,8 @@ go_test(
         ":test_data",
     ],
     deps = [
+        "//proto:adhan_service_go_proto",
+        "//proto:event_service_go_proto",
         "//proto:masjid_service_go_proto",
         "//proto:user_service_go_proto",
         "//storage:storage_manager",
@@ -95,6 +99,22 @@ go_test(
 )
 
 # Integration tests
+go_test(
+    name = "adhan_service_test",
+    srcs = ["adhan_service_test.go"],
+    embed = [
+        ":assert",
+        ":integration_test_suite",
+        ":test_data",
+    ],
+    deps = [
+        "//proto:adhan_service_go_proto",
+        "//adhan_service:adhan_service",
+        "@com_github_stretchr_testify//suite",
+        "@org_golang_google_protobuf//testing/protocmp",
+    ],
+)
+
 go_test(
     name = "event_service_test",
     srcs = ["event_service_test.go"],

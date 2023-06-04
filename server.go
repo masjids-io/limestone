@@ -15,6 +15,8 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
+	"github.com/mnadev/limestone/adhan_service"
+	apb "github.com/mnadev/limestone/adhan_service/proto"
 	"github.com/mnadev/limestone/event_service"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	"github.com/mnadev/limestone/masjid_service"
@@ -50,10 +52,17 @@ func main() {
 		password,
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB.AutoMigrate(storage.AdhanFile{})
 	DB.AutoMigrate(storage.Event{})
 	DB.AutoMigrate(storage.Masjid{})
 	DB.AutoMigrate(storage.User{})
 
+	adhan_service_server := adhan_service.AdhanServiceServer{
+		SM: &storage.StorageManager{
+			DB: DB,
+		},
+	}
+	apb.RegisterAdhanServiceServer(server, &adhan_service_server)
 	event_server := event_service.EventServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
@@ -84,7 +93,10 @@ func main() {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
-	// opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	err = apb.RegisterAdhanServiceHandlerServer(ctx, mux, &adhan_service_server)
+	if err != nil {
+		log.Fatalf("failed to serve: %s", err)
+	}
 	err = epb.RegisterEventServiceHandlerServer(ctx, mux, &event_server)
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)

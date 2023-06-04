@@ -29,9 +29,10 @@ func (suite *UnitTestSuite) BeforeTest(suiteName, testName string) {
 		panic(err)
 	}
 
-	db.AutoMigrate(&storage.User{})
-	db.AutoMigrate(&storage.Masjid{})
+	db.AutoMigrate(&storage.AdhanFile{})
 	db.AutoMigrate(&storage.Event{})
+	db.AutoMigrate(&storage.Masjid{})
+	db.AutoMigrate(&storage.User{})
 
 	suite.StorageManager = &storage.StorageManager{
 		DB: db,

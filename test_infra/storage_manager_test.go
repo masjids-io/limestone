@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/protobuf/testing/protocmp"
 
+	apb "github.com/mnadev/limestone/adhan_service/proto"
 	epb "github.com/mnadev/limestone/event_service/proto"
 	mpb "github.com/mnadev/limestone/masjid_service/proto"
 	upb "github.com/mnadev/limestone/user_service/proto"
@@ -279,5 +280,65 @@ func (suite *UnitTestSuite) TestDeleteEvent_Success() {
 
 func (suite *UnitTestSuite) TestDeleteEvent_NotFound() {
 	err := suite.StorageManager.DeleteEvent(DefaultId)
+	suite.Error(err)
+}
+
+func (suite *UnitTestSuite) TestCreateAdhanFile_Success() {
+	file, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
+	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *file.ToProto(),
+		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestUpdateAdhanFile_Success() {
+	file, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
+	suite.Nil(err)
+
+	file.File = []byte("xyz")
+	got, err := suite.StorageManager.UpdateAdhanFile(file.ToProto())
+
+	want := GetAdhanFileProto()
+	want.File = []byte("xyz")
+
+	AssertProtoEqual(suite.T(), *want, *got.ToProto(), apb.AdhanFile{},
+		protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestUpdateAdhanFile_NotFound() {
+	file, err := suite.StorageManager.UpdateAdhanFile(GetAdhanFileProto())
+	suite.Error(err)
+	suite.Nil(file)
+}
+
+func (suite *UnitTestSuite) TestGetAdhanFile_Success() {
+	_, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
+	suite.Nil(err)
+
+	file, err := suite.StorageManager.GetAdhanFile(DefaultId)
+	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *file.ToProto(),
+		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestGetAdhanFile_NotFound() {
+	file, err := suite.StorageManager.GetAdhanFile(DefaultId)
+	suite.Error(err)
+	suite.Nil(file)
+}
+
+func (suite *UnitTestSuite) TestDeleteAdhanFile_Success() {
+	_, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
+	suite.Nil(err)
+
+	err = suite.StorageManager.DeleteAdhanFile(DefaultId)
+	suite.Nil(err)
+}
+
+func (suite *UnitTestSuite) TestDeleteAdhanFile_NotFound() {
+	err := suite.StorageManager.DeleteAdhanFile(DefaultId)
 	suite.Error(err)
 }
