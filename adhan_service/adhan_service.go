@@ -12,7 +12,7 @@ type AdhanServiceServer struct {
 	apb.UnimplementedAdhanServiceServer
 }
 
-func (srvr *AdhanServiceServer) CreateAdhan(ctx context.Context, in *apb.CreateAdhanFileRequest) (*apb.AdhanFile, error) {
+func (srvr *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *apb.CreateAdhanFileRequest) (*apb.AdhanFile, error) {
 	adhan_file, err := srvr.SM.CreateAdhanFile(in.GetAdhanFile())
 	if err != nil {
 		return nil, err
@@ -20,7 +20,7 @@ func (srvr *AdhanServiceServer) CreateAdhan(ctx context.Context, in *apb.CreateA
 	return adhan_file.ToProto(), nil
 }
 
-func (srvr *AdhanServiceServer) GetAdhan(ctx context.Context, in *apb.GetAdhanFileRequest) (*apb.AdhanFile, error) {
+func (srvr *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *apb.GetAdhanFileRequest) (*apb.AdhanFile, error) {
 	adhan_file, err := srvr.SM.GetAdhanFile(in.GetMasjidId())
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (srvr *AdhanServiceServer) GetAdhan(ctx context.Context, in *apb.GetAdhanFi
 	return adhan_file.ToProto(), nil
 }
 
-func (srvr *AdhanServiceServer) UpdateAdhan(ctx context.Context, in *apb.UpdateAdhanFileRequest) (*apb.AdhanFile, error) {
+func (srvr *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *apb.UpdateAdhanFileRequest) (*apb.AdhanFile, error) {
 	adhan_file, err := srvr.SM.UpdateAdhanFile(in.GetAdhanFile())
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (srvr *AdhanServiceServer) UpdateAdhan(ctx context.Context, in *apb.UpdateA
 	return adhan_file.ToProto(), nil
 }
 
-func (srvr *AdhanServiceServer) DeleteAdhan(ctx context.Context, in *apb.DeleteAdhanFileRequest) (*apb.DeleteAdhanFileResponse, error) {
+func (srvr *AdhanServiceServer) DeleteAdhanFile(ctx context.Context, in *apb.DeleteAdhanFileRequest) (*apb.DeleteAdhanFileResponse, error) {
 	err := srvr.SM.DeleteAdhanFile(in.GetId())
 	if err != nil {
 		return nil, err
