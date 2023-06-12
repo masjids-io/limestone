@@ -21,8 +21,6 @@ func (suite *IntegrationTestSuite) TestCreateAdhanFile_Success() {
 		AdhanFile: GetAdhanFileProto(),
 	})
 
-	fmt.Printf("DO NOT SUBMIT %+v\n", out)
-	fmt.Printf("DO NOT SUBMIT ERR %+v\n", err)
 	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
 		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
