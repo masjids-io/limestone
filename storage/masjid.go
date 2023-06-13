@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 type Address struct {
@@ -36,7 +36,7 @@ type Masjid struct {
 }
 
 // NewMasjid creates a new Masjid struct given the Masjid proto.
-func NewMasjid(m *mpb.Masjid) (*Masjid, error) {
+func NewMasjid(m *pb.Masjid) (*Masjid, error) {
 	return &Masjid{
 		Name:       m.GetName(),
 		IsVerified: m.GetIsVerified(),
@@ -71,12 +71,12 @@ func NewMasjid(m *mpb.Masjid) (*Masjid, error) {
 	}, nil
 }
 
-func (m *Masjid) ToProto() *mpb.Masjid {
-	return &mpb.Masjid{
+func (m *Masjid) ToProto() *pb.Masjid {
+	return &pb.Masjid{
 		Id:         m.ID.String(),
 		Name:       m.Name,
 		IsVerified: m.IsVerified,
-		Address: &mpb.Masjid_Address{
+		Address: &pb.Masjid_Address{
 			AddressLine_1: m.Address.AddressLine1,
 			AddressLine_2: m.Address.AddressLine2,
 			ZoneCode:      m.Address.ZoneCode,
@@ -84,19 +84,19 @@ func (m *Masjid) ToProto() *mpb.Masjid {
 			City:          m.Address.City,
 			CountryCode:   m.Address.CountryCode,
 		},
-		PhoneNumber: &mpb.Masjid_PhoneNumber{
+		PhoneNumber: &pb.Masjid_PhoneNumber{
 			CountryCode: m.PhoneNumber.PhoneCountryCode,
 			Number:      m.PhoneNumber.Number,
 			Extension:   m.PhoneNumber.Extension,
 		},
-		PrayerConfig: &mpb.PrayerTimesConfiguration{
+		PrayerConfig: &pb.PrayerTimesConfiguration{
 			Method:           FromInternalToMasjidCalculationMethodEnum(m.PrayerConfig.CalculationMethod),
 			FajrAngle:        m.PrayerConfig.FajrAngle,
 			IshaAngle:        m.PrayerConfig.IshaAngle,
 			IshaInterval:     m.PrayerConfig.IshaInterval,
 			AsrMethod:        FromInternalToMasjidAsrMethodEnum(m.PrayerConfig.AsrMethod),
 			HighLatitudeRule: FromInternalToMasjidHighLatitudeEnum(m.PrayerConfig.HighLatitudeRule),
-			Adjustments: &mpb.PrayerTimesConfiguration_PrayerAdjustments{
+			Adjustments: &pb.PrayerTimesConfiguration_PrayerAdjustments{
 				FajrAdjustment:    m.PrayerConfig.Adjustments.FajrAdjustment,
 				DhuhrAdjustment:   m.PrayerConfig.Adjustments.DhuhrAdjustment,
 				AsrAdjustment:     m.PrayerConfig.Adjustments.AsrAdjustment,

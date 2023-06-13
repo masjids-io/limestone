@@ -1,7 +1,7 @@
 package storage
 
 import (
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 // The manual adjustments to apply to the prayer timings. The value that each field is set to is
@@ -130,110 +130,110 @@ type PrayerTimesConfiguration struct {
 	Adjustments PrayerAdjustments `gorm:"embedded"`
 }
 
-func FromMasjidToInternalCalculationMethodEnum(c mpb.PrayerTimesConfiguration_CalculationMethod) CalculationMethod {
+func FromMasjidToInternalCalculationMethodEnum(c pb.PrayerTimesConfiguration_CalculationMethod) CalculationMethod {
 	switch c {
-	case mpb.PrayerTimesConfiguration_OTHER:
+	case pb.PrayerTimesConfiguration_OTHER:
 		return OTHER
-	case mpb.PrayerTimesConfiguration_MUSLIM_WORLD_LEAGUE:
+	case pb.PrayerTimesConfiguration_MUSLIM_WORLD_LEAGUE:
 		return MUSLIM_WORLD_LEAGUE
-	case mpb.PrayerTimesConfiguration_EGYPTIAN:
+	case pb.PrayerTimesConfiguration_EGYPTIAN:
 		return EGYPTIAN
-	case mpb.PrayerTimesConfiguration_KARACHI:
+	case pb.PrayerTimesConfiguration_KARACHI:
 		return KARACHI
-	case mpb.PrayerTimesConfiguration_UMM_AL_QURA:
+	case pb.PrayerTimesConfiguration_UMM_AL_QURA:
 		return UMM_AL_QURA
-	case mpb.PrayerTimesConfiguration_DUBAI:
+	case pb.PrayerTimesConfiguration_DUBAI:
 		return DUBAI
-	case mpb.PrayerTimesConfiguration_MOON_SIGHTING_COMMITTEE:
+	case pb.PrayerTimesConfiguration_MOON_SIGHTING_COMMITTEE:
 		return MOON_SIGHTING_COMMITTEE
-	case mpb.PrayerTimesConfiguration_NORTH_AMERICA:
+	case pb.PrayerTimesConfiguration_NORTH_AMERICA:
 		return NORTH_AMERICA
-	case mpb.PrayerTimesConfiguration_KUWAIT:
+	case pb.PrayerTimesConfiguration_KUWAIT:
 		return KUWAIT
-	case mpb.PrayerTimesConfiguration_QATAR:
+	case pb.PrayerTimesConfiguration_QATAR:
 		return QATAR
-	case mpb.PrayerTimesConfiguration_SINGAPORE:
+	case pb.PrayerTimesConfiguration_SINGAPORE:
 		return SINGAPORE
-	case mpb.PrayerTimesConfiguration_UOIF:
+	case pb.PrayerTimesConfiguration_UOIF:
 		return UOIF
 	}
 	return OTHER
 }
 
-func FromMasjidToInternalAsrMethodEnum(a mpb.PrayerTimesConfiguration_AsrJuristicMethod) AsrJuristicMethod {
+func FromMasjidToInternalAsrMethodEnum(a pb.PrayerTimesConfiguration_AsrJuristicMethod) AsrJuristicMethod {
 	switch a {
-	case mpb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI:
+	case pb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI:
 		return SHAFI_HANBALI_MALIKI
-	case mpb.PrayerTimesConfiguration_HANAFI:
+	case pb.PrayerTimesConfiguration_HANAFI:
 		return HANAFI
 	}
 	return SHAFI_HANBALI_MALIKI
 }
 
-func FromMasjidToInternalHighLatitudeEnum(h mpb.PrayerTimesConfiguration_HighLatitudeRule) HighLatitudeRule {
+func FromMasjidToInternalHighLatitudeEnum(h pb.PrayerTimesConfiguration_HighLatitudeRule) HighLatitudeRule {
 	switch h {
-	case mpb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE:
+	case pb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE:
 		return NO_HIGH_LATITUDE_RULE
-	case mpb.PrayerTimesConfiguration_MIDDLE_OF_THE_NIGHT:
+	case pb.PrayerTimesConfiguration_MIDDLE_OF_THE_NIGHT:
 		return MIDDLE_OF_THE_NIGHT
-	case mpb.PrayerTimesConfiguration_SEVENTH_OF_THE_NIGHT:
+	case pb.PrayerTimesConfiguration_SEVENTH_OF_THE_NIGHT:
 		return SEVENTH_OF_THE_NIGHT
-	case mpb.PrayerTimesConfiguration_TWILIGHT_ANGLE:
+	case pb.PrayerTimesConfiguration_TWILIGHT_ANGLE:
 		return TWILIGHT_ANGLE
 	}
 	return NO_HIGH_LATITUDE_RULE
 }
 
-func FromInternalToMasjidCalculationMethodEnum(c CalculationMethod) mpb.PrayerTimesConfiguration_CalculationMethod {
+func FromInternalToMasjidCalculationMethodEnum(c CalculationMethod) pb.PrayerTimesConfiguration_CalculationMethod {
 	switch c {
 	case OTHER:
-		return mpb.PrayerTimesConfiguration_OTHER
+		return pb.PrayerTimesConfiguration_OTHER
 	case MUSLIM_WORLD_LEAGUE:
-		return mpb.PrayerTimesConfiguration_MUSLIM_WORLD_LEAGUE
+		return pb.PrayerTimesConfiguration_MUSLIM_WORLD_LEAGUE
 	case EGYPTIAN:
-		return mpb.PrayerTimesConfiguration_EGYPTIAN
+		return pb.PrayerTimesConfiguration_EGYPTIAN
 	case KARACHI:
-		return mpb.PrayerTimesConfiguration_KARACHI
+		return pb.PrayerTimesConfiguration_KARACHI
 	case UMM_AL_QURA:
-		return mpb.PrayerTimesConfiguration_UMM_AL_QURA
+		return pb.PrayerTimesConfiguration_UMM_AL_QURA
 	case DUBAI:
-		return mpb.PrayerTimesConfiguration_DUBAI
+		return pb.PrayerTimesConfiguration_DUBAI
 	case MOON_SIGHTING_COMMITTEE:
-		return mpb.PrayerTimesConfiguration_MOON_SIGHTING_COMMITTEE
+		return pb.PrayerTimesConfiguration_MOON_SIGHTING_COMMITTEE
 	case NORTH_AMERICA:
-		return mpb.PrayerTimesConfiguration_NORTH_AMERICA
+		return pb.PrayerTimesConfiguration_NORTH_AMERICA
 	case KUWAIT:
-		return mpb.PrayerTimesConfiguration_KUWAIT
+		return pb.PrayerTimesConfiguration_KUWAIT
 	case QATAR:
-		return mpb.PrayerTimesConfiguration_QATAR
+		return pb.PrayerTimesConfiguration_QATAR
 	case SINGAPORE:
-		return mpb.PrayerTimesConfiguration_SINGAPORE
+		return pb.PrayerTimesConfiguration_SINGAPORE
 	case UOIF:
-		return mpb.PrayerTimesConfiguration_UOIF
+		return pb.PrayerTimesConfiguration_UOIF
 	}
-	return mpb.PrayerTimesConfiguration_OTHER
+	return pb.PrayerTimesConfiguration_OTHER
 }
 
-func FromInternalToMasjidAsrMethodEnum(a AsrJuristicMethod) mpb.PrayerTimesConfiguration_AsrJuristicMethod {
+func FromInternalToMasjidAsrMethodEnum(a AsrJuristicMethod) pb.PrayerTimesConfiguration_AsrJuristicMethod {
 	switch a {
 	case SHAFI_HANBALI_MALIKI:
-		return mpb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI
+		return pb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI
 	case HANAFI:
-		return mpb.PrayerTimesConfiguration_HANAFI
+		return pb.PrayerTimesConfiguration_HANAFI
 	}
-	return mpb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI
+	return pb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI
 }
 
-func FromInternalToMasjidHighLatitudeEnum(h HighLatitudeRule) mpb.PrayerTimesConfiguration_HighLatitudeRule {
+func FromInternalToMasjidHighLatitudeEnum(h HighLatitudeRule) pb.PrayerTimesConfiguration_HighLatitudeRule {
 	switch h {
 	case NO_HIGH_LATITUDE_RULE:
-		return mpb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE
+		return pb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE
 	case MIDDLE_OF_THE_NIGHT:
-		return mpb.PrayerTimesConfiguration_MIDDLE_OF_THE_NIGHT
+		return pb.PrayerTimesConfiguration_MIDDLE_OF_THE_NIGHT
 	case SEVENTH_OF_THE_NIGHT:
-		return mpb.PrayerTimesConfiguration_SEVENTH_OF_THE_NIGHT
+		return pb.PrayerTimesConfiguration_SEVENTH_OF_THE_NIGHT
 	case TWILIGHT_ANGLE:
-		return mpb.PrayerTimesConfiguration_TWILIGHT_ANGLE
+		return pb.PrayerTimesConfiguration_TWILIGHT_ANGLE
 	}
-	return mpb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE
+	return pb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE
 }

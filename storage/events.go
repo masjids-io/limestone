@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	epb "github.com/mnadev/limestone/event_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 type GenderRestriction int64
@@ -40,7 +40,7 @@ type Event struct {
 }
 
 // NewEvent creates a new Event struct given the Event proto.
-func NewEvent(ep *epb.Event) (*Event, error) {
+func NewEvent(ep *pb.Event) (*Event, error) {
 	e := Event{
 		Name:              ep.GetName(),
 		Description:       ep.GetDescription(),
@@ -69,8 +69,8 @@ func NewEvent(ep *epb.Event) (*Event, error) {
 	return &e, nil
 }
 
-func (e *Event) ToProto() *epb.Event {
-	ep := epb.Event{
+func (e *Event) ToProto() *pb.Event {
+	ep := pb.Event{
 		Id:                e.ID.String(),
 		Name:              e.Name,
 		Description:       e.Description,
@@ -85,13 +85,13 @@ func (e *Event) ToProto() *epb.Event {
 		UpdateTime:        timestamppb.New(e.UpdatedAt),
 	}
 	if e.UserId != "" {
-		ep.Owner = &epb.Event_UserId{UserId: e.UserId}
+		ep.Owner = &pb.Event_UserId{UserId: e.UserId}
 	} else {
-		ep.Owner = &epb.Event_MasjidId{MasjidId: e.MasjidId}
+		ep.Owner = &pb.Event_MasjidId{MasjidId: e.MasjidId}
 	}
 
 	types := e.EventTypes
-	typespb := []epb.Event_EventType{}
+	typespb := []pb.Event_EventType{}
 	for _, t := range strings.Split(types, ",") {
 		typespb = append(typespb, FromInternalToProtoEvent(t))
 	}
@@ -100,68 +100,68 @@ func (e *Event) ToProto() *epb.Event {
 	return &ep
 }
 
-func FromProtoToInternalEventType(et epb.Event_EventType) string {
+func FromProtoToInternalEventType(et pb.Event_EventType) string {
 	switch et {
-	case epb.Event_EDUCATIONAL:
+	case pb.Event_EDUCATIONAL:
 		return "EDUCATIONAL"
-	case epb.Event_COMMUNITY:
+	case pb.Event_COMMUNITY:
 		return "COMMUNITY"
-	case epb.Event_ATHLETIC:
+	case pb.Event_ATHLETIC:
 		return "ATHLETIC"
-	case epb.Event_FUNDRAISING:
+	case pb.Event_FUNDRAISING:
 		return "FUNDRAISING"
-	case epb.Event_YOUTH:
+	case pb.Event_YOUTH:
 		return "YOUTH"
-	case epb.Event_CHILDREN_SPECIFIC:
+	case pb.Event_CHILDREN_SPECIFIC:
 		return "CHILDREN_SPECIFIC"
-	case epb.Event_MATRIMONIAL:
+	case pb.Event_MATRIMONIAL:
 		return "MATRIMONIAL"
-	case epb.Event_FUNERAL:
+	case pb.Event_FUNERAL:
 		return "FUNERAL"
-	case epb.Event_WORSHIP:
+	case pb.Event_WORSHIP:
 		return "WORSHIP"
 	}
 	return ""
 }
 
-func FromProtoToInternalGenderRestriction(g epb.Event_GenderRestriction) GenderRestriction {
+func FromProtoToInternalGenderRestriction(g pb.Event_GenderRestriction) GenderRestriction {
 	switch g {
-	case epb.Event_MALE_ONLY:
+	case pb.Event_MALE_ONLY:
 		return MALE_ONLY
-	case epb.Event_FEMALE_ONLY:
+	case pb.Event_FEMALE_ONLY:
 		return FEMALE_ONLY
 	}
 	return NO_RESTRICTION
 }
 
-func FromInternalToProtoEvent(s string) epb.Event_EventType {
+func FromInternalToProtoEvent(s string) pb.Event_EventType {
 	switch s {
 	case "EDUCATIONAL":
-		return epb.Event_EDUCATIONAL
+		return pb.Event_EDUCATIONAL
 	case "COMMUNITY":
-		return epb.Event_COMMUNITY
+		return pb.Event_COMMUNITY
 	case "ATHLETIC":
-		return epb.Event_ATHLETIC
+		return pb.Event_ATHLETIC
 	case "FUNDRAISING":
-		return epb.Event_FUNDRAISING
+		return pb.Event_FUNDRAISING
 	case "YOUTH":
-		return epb.Event_YOUTH
+		return pb.Event_YOUTH
 	case "CHILDREN_SPECIFIC":
-		return epb.Event_CHILDREN_SPECIFIC
+		return pb.Event_CHILDREN_SPECIFIC
 	case "MATRIMONIAL":
-		return epb.Event_MATRIMONIAL
+		return pb.Event_MATRIMONIAL
 	case "FUNERAL":
-		return epb.Event_FUNERAL
+		return pb.Event_FUNERAL
 	}
-	return epb.Event_WORSHIP
+	return pb.Event_WORSHIP
 }
 
-func FromInternalToProtoGenderRestriction(g GenderRestriction) epb.Event_GenderRestriction {
+func FromInternalToProtoGenderRestriction(g GenderRestriction) pb.Event_GenderRestriction {
 	switch g {
 	case MALE_ONLY:
-		return epb.Event_MALE_ONLY
+		return pb.Event_MALE_ONLY
 	case FEMALE_ONLY:
-		return epb.Event_FEMALE_ONLY
+		return pb.Event_FEMALE_ONLY
 	}
-	return epb.Event_NO_RESTRICTION
+	return pb.Event_NO_RESTRICTION
 }

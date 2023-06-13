@@ -9,7 +9,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/mnadev/limestone/auth"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 type gender string
@@ -42,7 +42,7 @@ type User struct {
 }
 
 // NewUser creates a new User struct given the User proto and plaintext password
-func NewUser(up *userservicepb.User, pwd string) (*User, error) {
+func NewUser(up *pb.User, pwd string) (*User, error) {
 	if len(pwd) < 8 {
 		return nil, status.Error(codes.InvalidArgument, "password must be at least 8 characters long")
 	}
@@ -64,12 +64,12 @@ func NewUser(up *userservicepb.User, pwd string) (*User, error) {
 	}, nil
 }
 
-func (u *User) ToProto() *userservicepb.User {
-	return &userservicepb.User{
+func (u *User) ToProto() *pb.User {
+	return &pb.User{
 		UserId:          u.ID.String(),
 		Email:           u.Email,
 		Username:        u.Username,
-		Gender:          userservicepb.User_Gender(userservicepb.User_Gender_value[u.Gender.String()]),
+		Gender:          pb.User_Gender(pb.User_Gender_value[u.Gender.String()]),
 		IsEmailVerified: u.IsVerified,
 		FirstName:       u.FirstName,
 		LastName:        u.LastName,
