@@ -5,7 +5,7 @@ import "google/protobuf/timestamp.proto";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone/adhan_service/proto";
+option go_package = "github.com/mnadev/limestone/proto";
 
 service AdhanService {
     // Creates an adhan audio file in the database for a masjid.

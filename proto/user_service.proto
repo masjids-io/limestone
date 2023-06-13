@@ -5,7 +5,7 @@ import "google/protobuf/timestamp.proto";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone/user_service/proto";
+option go_package = "github.com/mnadev/limestone/proto";
 
 service UserService {
     // Creates the given User with the given password.
