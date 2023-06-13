@@ -3,6 +3,8 @@ managed:
   enabled: true
   go_package_prefix:
     default: github.com/mnadev/limestone/proto
+    except:
+      - buf.build/googleapis/googleapis
 plugins:
   - plugin: buf.build/grpc-ecosystem/gateway:v2.16.0
     out: .
