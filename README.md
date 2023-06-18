@@ -15,10 +15,14 @@ In order to run the server, you will need to install and be familiar with the fo
 
 * [Go](https://go.dev/)
 * [Protobuf](https://protobuf.dev/downloads/)
-* [Bazel](https://bazel.build/)
+* [Buf](https://buf.build/)
 * [Docker](https://bazel.build/)
 
 NOTE: I may remove Bazel from this repository and move to using Buf to generate the gRPC code.
+
+## Regenerating protos
+
+To regenerate the Go proto libraries, first run `cd proto` to go into the proto directory. Then run `buf generate .` to regenerate the proto libraries. You should do this every time you make a change to the protos.
 
 ## Running the server
 To run the server, run the command:
