@@ -5,10 +5,7 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	apb "github.com/mnadev/limestone/adhan_service/proto"
-	epb "github.com/mnadev/limestone/event_service/proto"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
-	upb "github.com/mnadev/limestone/user_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 const (
@@ -26,43 +23,43 @@ const (
 	LivestreamLink   = "http://example.com"
 )
 
-func GetUserProto(email string, username string) *upb.User {
-	return &upb.User{
+func GetUserProto(email string, username string) *pb.User {
+	return &pb.User{
 		UserId:      DefaultId,
 		Email:       email,
 		Username:    username,
 		FirstName:   FirstName,
 		LastName:    LastName,
 		PhoneNumber: PhoneNumber,
-		Gender:      upb.User_FEMALE,
+		Gender:      pb.User_FEMALE,
 	}
 }
 
-func GetMasjidProto() *mpb.Masjid {
-	return &mpb.Masjid{
+func GetMasjidProto() *pb.Masjid {
+	return &pb.Masjid{
 		Id:         DefaultId,
 		Name:       MasjidName,
 		IsVerified: false,
-		Address: &mpb.Masjid_Address{
+		Address: &pb.Masjid_Address{
 			AddressLine_1: "123 Maple Ave",
 			ZoneCode:      "TX",
 			PostalCode:    "12345",
 			City:          "Springfield",
 			CountryCode:   "US",
 		},
-		PhoneNumber: &mpb.Masjid_PhoneNumber{
+		PhoneNumber: &pb.Masjid_PhoneNumber{
 			CountryCode: "+1",
 			Number:      "111-111-1111",
 			Extension:   "1111",
 		},
-		PrayerConfig: &mpb.PrayerTimesConfiguration{
-			Method:           mpb.PrayerTimesConfiguration_NORTH_AMERICA,
+		PrayerConfig: &pb.PrayerTimesConfiguration{
+			Method:           pb.PrayerTimesConfiguration_NORTH_AMERICA,
 			FajrAngle:        15,
 			IshaAngle:        10,
 			IshaInterval:     0,
-			AsrMethod:        mpb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI,
-			HighLatitudeRule: mpb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE,
-			Adjustments: &mpb.PrayerTimesConfiguration_PrayerAdjustments{
+			AsrMethod:        pb.PrayerTimesConfiguration_SHAFI_HANBALI_MALIKI,
+			HighLatitudeRule: pb.PrayerTimesConfiguration_NO_HIGH_LATITUDE_RULE,
+			Adjustments: &pb.PrayerTimesConfiguration_PrayerAdjustments{
 				FajrAdjustment:    -2,
 				DhuhrAdjustment:   -1,
 				AsrAdjustment:     0,
@@ -73,19 +70,19 @@ func GetMasjidProto() *mpb.Masjid {
 	}
 }
 
-func GetEventProto() *epb.Event {
-	return &epb.Event{
+func GetEventProto() *pb.Event {
+	return &pb.Event{
 		Id:          DefaultId,
-		Owner:       &epb.Event_MasjidId{MasjidId: DefaultId},
+		Owner:       &pb.Event_MasjidId{MasjidId: DefaultId},
 		Name:        EventName,
 		Description: EventDescription,
 		StartTime:   timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
 		EndTime:     timestamppb.New(time.Date(2020, 10, 20, 20, 20, 20, 20, time.UTC)),
-		Types: []epb.Event_EventType{
-			epb.Event_COMMUNITY,
-			epb.Event_ATHLETIC,
+		Types: []pb.Event_EventType{
+			pb.Event_COMMUNITY,
+			pb.Event_ATHLETIC,
 		},
-		GenderRestriction: epb.Event_MALE_ONLY,
+		GenderRestriction: pb.Event_MALE_ONLY,
 		IsPaid:            true,
 		RequiresRsvp:      true,
 		MaxParticipants:   500,
@@ -93,8 +90,8 @@ func GetEventProto() *epb.Event {
 	}
 }
 
-func GetAdhanFileProto() *apb.AdhanFile {
-	return &apb.AdhanFile{
+func GetAdhanFileProto() *pb.AdhanFile {
+	return &pb.AdhanFile{
 		Id:       DefaultId,
 		MasjidId: DefaultId,
 		File:     []byte("SomeData"),
