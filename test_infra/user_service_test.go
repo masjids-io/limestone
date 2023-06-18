@@ -21,10 +21,10 @@ func (suite *IntegrationTestSuite) TestCreateUser_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestCreateUser_PasswordTooShort() {
@@ -45,20 +45,20 @@ func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.UpdateUser(ctx, &pb.UpdateUserRequest{
 		User:     GetUserProto(UserEmail, "new_name"),
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, "new_name"), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateUser_BadPassword() {
@@ -68,10 +68,10 @@ func (suite *IntegrationTestSuite) TestUpdateUser_BadPassword() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	out, err = suite.UserServiceClient.UpdateUser(ctx, &pb.UpdateUserRequest{
 		User:     GetUserProto(UserEmail, "new_name"),
@@ -103,10 +103,10 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
 		Id: &pb.GetUserRequest_Email{
@@ -115,10 +115,10 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *resp.GetUser(),
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
@@ -128,10 +128,10 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
 		Id: &pb.GetUserRequest_Email{
@@ -164,10 +164,10 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
 		Id: &pb.GetUserRequest_Username{
@@ -176,10 +176,10 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *resp.GetUser(),
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
@@ -189,10 +189,10 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
 		Id: &pb.GetUserRequest_Username{
@@ -225,10 +225,10 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
 		Id: &pb.DeleteUserRequest_Email{
@@ -247,10 +247,10 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_BadPassword() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
 		Id: &pb.DeleteUserRequest_Email{
@@ -281,10 +281,10 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_Success() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
 		Id: &pb.DeleteUserRequest_Username{
@@ -303,10 +303,10 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_BadPassword() {
 		Password: Password,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
 		Id: &pb.DeleteUserRequest_Username{
