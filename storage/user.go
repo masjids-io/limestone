@@ -8,6 +8,10 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	_ "github.com/lib/pq"
+	_ "gorm.io/driver/postgres"
+	_ "gorm.io/gorm"
+
 	"github.com/mnadev/limestone/auth"
 	pb "github.com/mnadev/limestone/proto"
 )
@@ -27,10 +31,11 @@ func (g gender) String() string {
 }
 
 // User represents a registered user with email/password authentication
+// TODO: make username and email unique. It currently causes postgres to throw a unique constraint violation.
 type User struct {
 	ID             uuid.UUID `gorm:"primaryKey;type:char(36)"`
-	Email          string    `gorm:"unique;type:varchar(320)"`
-	Username       string    `gorm:"unique;type:varchar(255)"`
+	Email          string    `gorm:"type:varchar(320)"`
+	Username       string    `gorm:"type:varchar(255)"`
 	HashedPassword string    `gorm:"type:varchar(60)"`
 	IsVerified     bool      `gorm:"default:false"`
 	FirstName      string    `gorm:"type:varchar(255)"`

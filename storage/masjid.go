@@ -26,7 +26,7 @@ type PhoneNumber struct {
 
 type Masjid struct {
 	ID           uuid.UUID                `gorm:"primaryKey;type:char(36)"`
-	Name         string                   `gorm:"unique;type:varchar(320)"`
+	Name         string                   `gorm:"type:varchar(320)"`
 	IsVerified   bool                     `gorm:"default:false"`
 	Address      Address                  `gorm:"embedded"`
 	PhoneNumber  PhoneNumber              `gorm:"embedded"`
