@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	apb "github.com/mnadev/limestone/adhan_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 type AdhanFile struct {
@@ -18,15 +18,15 @@ type AdhanFile struct {
 }
 
 // NewAdhanFile creates a new AdhanFile struct given the AdhanFile proto.
-func NewAdhanFile(a *apb.AdhanFile) (*AdhanFile, error) {
+func NewAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
 	return &AdhanFile{
 		MasjidId: a.GetMasjidId(),
 		File:     a.GetFile(),
 	}, nil
 }
 
-func (a *AdhanFile) ToProto() *apb.AdhanFile {
-	return &apb.AdhanFile{
+func (a *AdhanFile) ToProto() *pb.AdhanFile {
+	return &pb.AdhanFile{
 		Id:         a.ID.String(),
 		MasjidId:   a.MasjidId,
 		File:       a.File,

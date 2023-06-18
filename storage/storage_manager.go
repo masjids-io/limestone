@@ -7,11 +7,8 @@ import (
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
-	apb "github.com/mnadev/limestone/adhan_service/proto"
 	"github.com/mnadev/limestone/auth"
-	epb "github.com/mnadev/limestone/event_service/proto"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
-	upb "github.com/mnadev/limestone/user_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 type StorageManager struct {
@@ -19,7 +16,7 @@ type StorageManager struct {
 }
 
 // CreateUser creates a User in the database for the given User and password
-func (s *StorageManager) CreateUser(up *upb.User, pwd string) (*User, error) {
+func (s *StorageManager) CreateUser(up *pb.User, pwd string) (*User, error) {
 	user, err := NewUser(up, pwd)
 	if err != nil {
 		return nil, err
@@ -37,7 +34,7 @@ func (s *StorageManager) CreateUser(up *upb.User, pwd string) (*User, error) {
 }
 
 // UpdateUser updates a User in the database for the given User and password if it exists
-func (s *StorageManager) UpdateUser(up *upb.User, pwd string) (*User, error) {
+func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 	var old_user User
 	result := s.DB.Where("id = ?", up.GetUserId()).First(&old_user)
 
@@ -129,7 +126,7 @@ func (s *StorageManager) DeleteUserWithUsername(username string, pwd string) err
 }
 
 // CreateMasjid creates a Masjid in the database for the given Masjid proto.
-func (s *StorageManager) CreateMasjid(mp *mpb.Masjid) (*Masjid, error) {
+func (s *StorageManager) CreateMasjid(mp *pb.Masjid) (*Masjid, error) {
 	masjid, err := NewMasjid(mp)
 	if err != nil {
 		return nil, err
@@ -144,7 +141,7 @@ func (s *StorageManager) CreateMasjid(mp *mpb.Masjid) (*Masjid, error) {
 }
 
 // UpdateMasjid updates a Masjid in the database for the given Masjid proto.
-func (s *StorageManager) UpdateMasjid(mp *mpb.Masjid) (*Masjid, error) {
+func (s *StorageManager) UpdateMasjid(mp *pb.Masjid) (*Masjid, error) {
 	var old_masjid Masjid
 	result := s.DB.Where("id = ?", mp.GetId()).First(&old_masjid)
 
@@ -189,7 +186,7 @@ func (s *StorageManager) DeleteMasjid(id string) error {
 }
 
 // CreateEvent creates a Event in the database for the given Event proto.
-func (s *StorageManager) CreateEvent(e *epb.Event) (*Event, error) {
+func (s *StorageManager) CreateEvent(e *pb.Event) (*Event, error) {
 	event, err := NewEvent(e)
 	if err != nil {
 		return nil, err
@@ -204,7 +201,7 @@ func (s *StorageManager) CreateEvent(e *epb.Event) (*Event, error) {
 }
 
 // UpdateEvent updates a Event in the database for the given Event proto.
-func (s *StorageManager) UpdateEvent(e *epb.Event) (*Event, error) {
+func (s *StorageManager) UpdateEvent(e *pb.Event) (*Event, error) {
 	var old_event Event
 	result := s.DB.Where("id = ?", e.GetId()).First(&old_event)
 
@@ -249,7 +246,7 @@ func (s *StorageManager) DeleteEvent(id string) error {
 }
 
 // CreateAdhanFile creates a AdhanFile in the database for the given AdhanFile proto.
-func (s *StorageManager) CreateAdhanFile(a *apb.AdhanFile) (*AdhanFile, error) {
+func (s *StorageManager) CreateAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
 	file, err := NewAdhanFile(a)
 	if err != nil {
 		return nil, err
@@ -264,7 +261,7 @@ func (s *StorageManager) CreateAdhanFile(a *apb.AdhanFile) (*AdhanFile, error) {
 }
 
 // UpdateAdhanFile updates a AdhanFile in the database for the given AdhanFile proto.
-func (s *StorageManager) UpdateAdhanFile(a *apb.AdhanFile) (*AdhanFile, error) {
+func (s *StorageManager) UpdateAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
 	var old_file AdhanFile
 	result := s.DB.Where("id = ?", a.GetId()).First(&old_file)
 	if result.Error != nil {

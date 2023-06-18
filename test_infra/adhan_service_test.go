@@ -2,51 +2,50 @@ package test_infra
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/protobuf/testing/protocmp"
 
-	apb "github.com/mnadev/limestone/adhan_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
-func TestSuite(t *testing.T) {
+func TestAdhanService(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
 func (suite *IntegrationTestSuite) TestCreateAdhanFile_Success() {
 	ctx := context.Background()
-	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &apb.CreateAdhanFileRequest{
+	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &pb.CreateAdhanFileRequest{
 		AdhanFile: GetAdhanFileProto(),
 	})
 
 	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateAdhanFile_Success() {
 	ctx := context.Background()
-	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &apb.CreateAdhanFileRequest{
+	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &pb.CreateAdhanFileRequest{
 		AdhanFile: GetAdhanFileProto(),
 	})
 
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
 	update := GetAdhanFileProto()
 	update.File = []byte("xyz")
 
-	out, err = suite.AdhanServiceClient.UpdateAdhanFile(ctx, &apb.UpdateAdhanFileRequest{
+	out, err = suite.AdhanServiceClient.UpdateAdhanFile(ctx, &pb.UpdateAdhanFileRequest{
 		AdhanFile: update,
 	})
 
 	AssertProtoEqual(suite.T(), *update, *out,
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 }
@@ -54,7 +53,7 @@ func (suite *IntegrationTestSuite) TestUpdateAdhanFile_Success() {
 func (suite *IntegrationTestSuite) TestUpdateAdhanFile_NotFound() {
 	ctx := context.Background()
 
-	out, err := suite.AdhanServiceClient.UpdateAdhanFile(ctx, &apb.UpdateAdhanFileRequest{
+	out, err := suite.AdhanServiceClient.UpdateAdhanFile(ctx, &pb.UpdateAdhanFileRequest{
 		AdhanFile: GetAdhanFileProto(),
 	})
 
@@ -64,28 +63,28 @@ func (suite *IntegrationTestSuite) TestUpdateAdhanFile_NotFound() {
 
 func (suite *IntegrationTestSuite) TestGetAdhanFile_Success() {
 	ctx := context.Background()
-	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &apb.CreateAdhanFileRequest{
+	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &pb.CreateAdhanFileRequest{
 		AdhanFile: GetAdhanFileProto(),
 	})
 
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
-	out, err = suite.AdhanServiceClient.GetAdhanFile(ctx, &apb.GetAdhanFileRequest{
+	out, err = suite.AdhanServiceClient.GetAdhanFile(ctx, &pb.GetAdhanFileRequest{
 		MasjidId: DefaultId,
 	})
 
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestGetAdhanFile_NotFound() {
 	ctx := context.Background()
-	out, err := suite.AdhanServiceClient.GetAdhanFile(ctx, &apb.GetAdhanFileRequest{
+	out, err := suite.AdhanServiceClient.GetAdhanFile(ctx, &pb.GetAdhanFileRequest{
 		MasjidId: DefaultId,
 	})
 
@@ -95,16 +94,16 @@ func (suite *IntegrationTestSuite) TestGetAdhanFile_NotFound() {
 
 func (suite *IntegrationTestSuite) TestDeleteAdhanFile_Success() {
 	ctx := context.Background()
-	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &apb.CreateAdhanFileRequest{
+	out, err := suite.AdhanServiceClient.CreateAdhanFile(ctx, &pb.CreateAdhanFileRequest{
 		AdhanFile: GetAdhanFileProto(),
 	})
 
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
 	suite.Nil(err)
 
-	_, err = suite.AdhanServiceClient.DeleteAdhanFile(ctx, &apb.DeleteAdhanFileRequest{
+	_, err = suite.AdhanServiceClient.DeleteAdhanFile(ctx, &pb.DeleteAdhanFileRequest{
 		Id: DefaultId,
 	})
 
@@ -113,7 +112,7 @@ func (suite *IntegrationTestSuite) TestDeleteAdhanFile_Success() {
 
 func (suite *IntegrationTestSuite) TestDeleteAdhanFile_NotFound() {
 	ctx := context.Background()
-	_, err := suite.AdhanServiceClient.DeleteAdhanFile(ctx, &apb.DeleteAdhanFileRequest{
+	_, err := suite.AdhanServiceClient.DeleteAdhanFile(ctx, &pb.DeleteAdhanFileRequest{
 		Id: DefaultId,
 	})
 

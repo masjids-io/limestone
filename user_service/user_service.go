@@ -3,16 +3,16 @@ package user_service
 import (
 	"context"
 
+	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
 )
 
 type UserServiceServer struct {
 	SM *storage.StorageManager
-	userservicepb.UnimplementedUserServiceServer
+	pb.UnimplementedUserServiceServer
 }
 
-func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *userservicepb.CreateUserRequest) (*userservicepb.User, error) {
+func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.User, error) {
 	user, err := srvr.SM.CreateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
@@ -20,13 +20,13 @@ func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *userservicepb
 	return user.ToProto(), nil
 }
 
-func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.GetUserRequest) (*userservicepb.GetUserResponse, error) {
+func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	if in.GetEmail() != "" {
 		user, err := srvr.SM.GetUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
-		return &userservicepb.GetUserResponse{
+		return &pb.GetUserResponse{
 			User: user.ToProto(),
 		}, nil
 	}
@@ -34,12 +34,12 @@ func (srvr *UserServiceServer) GetUser(ctx context.Context, in *userservicepb.Ge
 	if err != nil {
 		return nil, err
 	}
-	return &userservicepb.GetUserResponse{
+	return &pb.GetUserResponse{
 		User: user.ToProto(),
 	}, nil
 }
 
-func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *userservicepb.UpdateUserRequest) (*userservicepb.User, error) {
+func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.User, error) {
 	user, err := srvr.SM.UpdateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *userservicepb
 	return user.ToProto(), nil
 }
 
-func (srvr *UserServiceServer) DeleteUser(ctx context.Context, in *userservicepb.DeleteUserRequest) (*userservicepb.DeleteUserResponse, error) {
+func (srvr *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	if in.GetEmail() != "" {
 		err := srvr.SM.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
@@ -59,5 +59,5 @@ func (srvr *UserServiceServer) DeleteUser(ctx context.Context, in *userservicepb
 			return nil, err
 		}
 	}
-	return &userservicepb.DeleteUserResponse{}, nil
+	return &pb.DeleteUserResponse{}, nil
 }

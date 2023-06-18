@@ -16,14 +16,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/mnadev/limestone/adhan_service"
-	apb "github.com/mnadev/limestone/adhan_service/proto"
 	"github.com/mnadev/limestone/event_service"
-	epb "github.com/mnadev/limestone/event_service/proto"
 	"github.com/mnadev/limestone/masjid_service"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 	"github.com/mnadev/limestone/user_service"
-	upb "github.com/mnadev/limestone/user_service/proto"
 )
 
 var (
@@ -62,25 +59,25 @@ func main() {
 			DB: DB,
 		},
 	}
-	apb.RegisterAdhanServiceServer(server, &adhan_service_server)
+	pb.RegisterAdhanServiceServer(server, &adhan_service_server)
 	event_server := event_service.EventServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
 	}
-	epb.RegisterEventServiceServer(server, &event_server)
+	pb.RegisterEventServiceServer(server, &event_server)
 	masjid_server := masjid_service.MasjidServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
 	}
-	mpb.RegisterMasjidServiceServer(server, &masjid_server)
+	pb.RegisterMasjidServiceServer(server, &masjid_server)
 	user_server := user_service.UserServiceServer{
 		SM: &storage.StorageManager{
 			DB: DB,
 		},
 	}
-	upb.RegisterUserServiceServer(server, &user_server)
+	pb.RegisterUserServiceServer(server, &user_server)
 
 	go func() {
 		if err := server.Serve(lis); err != nil {
@@ -93,19 +90,19 @@ func main() {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
-	err = apb.RegisterAdhanServiceHandlerServer(ctx, mux, &adhan_service_server)
+	err = pb.RegisterAdhanServiceHandlerServer(ctx, mux, &adhan_service_server)
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
-	err = epb.RegisterEventServiceHandlerServer(ctx, mux, &event_server)
+	err = pb.RegisterEventServiceHandlerServer(ctx, mux, &event_server)
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
-	err = mpb.RegisterMasjidServiceHandlerServer(ctx, mux, &masjid_server)
+	err = pb.RegisterMasjidServiceHandlerServer(ctx, mux, &masjid_server)
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
-	err = upb.RegisterUserServiceHandlerServer(ctx, mux, &user_server)
+	err = pb.RegisterUserServiceHandlerServer(ctx, mux, &user_server)
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}

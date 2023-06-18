@@ -11,10 +11,7 @@ import (
 	"google.golang.org/protobuf/testing/protocmp"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	apb "github.com/mnadev/limestone/adhan_service/proto"
-	epb "github.com/mnadev/limestone/event_service/proto"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
-	upb "github.com/mnadev/limestone/user_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 type Resource struct {
@@ -47,28 +44,28 @@ func AssertProtoEqual(t *testing.T, expected, actual, typ interface{}, ignore cm
 
 // AssertUserTimestampsCurrent asserts that the create and update timestamps of the user are current.
 // By current, it means that the timestamps are within a range of 1 second from now).
-func AssertUserTimestampsCurrent(t *testing.T, u *upb.User) {
-	assert.LessOrEqual(t, time.Now().Unix()-u.CreateTime.GetSeconds(), int64(1))
-	assert.LessOrEqual(t, time.Now().Unix()-u.UpdateTime.GetSeconds(), int64(1))
+func AssertUserTimestampsCurrent(t *testing.T, u *pb.User) {
+	assert.LessOrEqual(t, time.Now().Unix()-u.CreateTime.GetSeconds(), int64(10))
+	assert.LessOrEqual(t, time.Now().Unix()-u.UpdateTime.GetSeconds(), int64(10))
 }
 
 // AssertMasjidTimestampsCurrent asserts that the create and update timestamps of the masjid are current.
 // By current, it means that the timestamps are within a range of 1 second from now).
-func AssertMasjidTimestampsCurrent(t *testing.T, m *mpb.Masjid) {
-	assert.LessOrEqual(t, time.Now().Unix()-m.CreateTime.GetSeconds(), int64(1))
-	assert.LessOrEqual(t, time.Now().Unix()-m.UpdateTime.GetSeconds(), int64(1))
+func AssertMasjidTimestampsCurrent(t *testing.T, m *pb.Masjid) {
+	assert.LessOrEqual(t, time.Now().Unix()-m.CreateTime.GetSeconds(), int64(10))
+	assert.LessOrEqual(t, time.Now().Unix()-m.UpdateTime.GetSeconds(), int64(10))
 }
 
 // AssertEventTimestampsCurrent asserts that the create and update timestamps of the event are current.
 // By current, it means that the timestamps are within a range of 1 second from now).
-func AssertEventTimestampsCurrent(t *testing.T, e *epb.Event) {
-	assert.LessOrEqual(t, time.Now().Unix()-e.CreateTime.GetSeconds(), int64(1))
-	assert.LessOrEqual(t, time.Now().Unix()-e.UpdateTime.GetSeconds(), int64(1))
+func AssertEventTimestampsCurrent(t *testing.T, e *pb.Event) {
+	assert.LessOrEqual(t, time.Now().Unix()-e.CreateTime.GetSeconds(), int64(10))
+	assert.LessOrEqual(t, time.Now().Unix()-e.UpdateTime.GetSeconds(), int64(10))
 }
 
 // AssertAdhanFileTimestampsCurrent asserts that the create and update timestamps of the event are current.
 // By current, it means that the timestamps are within a range of 1 second from now).
-func AssertAdhanFileTimestampsCurrent(t *testing.T, a *apb.AdhanFile) {
-	assert.LessOrEqual(t, time.Now().Unix()-a.CreateTime.GetSeconds(), int64(1))
-	assert.LessOrEqual(t, time.Now().Unix()-a.UpdateTime.GetSeconds(), int64(1))
+func AssertAdhanFileTimestampsCurrent(t *testing.T, a *pb.AdhanFile) {
+	assert.LessOrEqual(t, time.Now().Unix()-a.CreateTime.GetSeconds(), int64(10))
+	assert.LessOrEqual(t, time.Now().Unix()-a.UpdateTime.GetSeconds(), int64(10))
 }

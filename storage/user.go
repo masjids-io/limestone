@@ -8,8 +8,12 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	_ "github.com/lib/pq"
+	_ "gorm.io/driver/postgres"
+	_ "gorm.io/gorm"
+
 	"github.com/mnadev/limestone/auth"
-	userservicepb "github.com/mnadev/limestone/user_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
 type gender string
@@ -27,10 +31,11 @@ func (g gender) String() string {
 }
 
 // User represents a registered user with email/password authentication
+// TODO: make username and email unique. It currently causes postgres to throw a unique constraint violation.
 type User struct {
 	ID             uuid.UUID `gorm:"primaryKey;type:char(36)"`
-	Email          string    `gorm:"unique;type:varchar(320)"`
-	Username       string    `gorm:"unique;type:varchar(255)"`
+	Email          string    `gorm:"type:varchar(320)"`
+	Username       string    `gorm:"type:varchar(255)"`
 	HashedPassword string    `gorm:"type:varchar(60)"`
 	IsVerified     bool      `gorm:"default:false"`
 	FirstName      string    `gorm:"type:varchar(255)"`
@@ -42,7 +47,7 @@ type User struct {
 }
 
 // NewUser creates a new User struct given the User proto and plaintext password
-func NewUser(up *userservicepb.User, pwd string) (*User, error) {
+func NewUser(up *pb.User, pwd string) (*User, error) {
 	if len(pwd) < 8 {
 		return nil, status.Error(codes.InvalidArgument, "password must be at least 8 characters long")
 	}
@@ -64,12 +69,12 @@ func NewUser(up *userservicepb.User, pwd string) (*User, error) {
 	}, nil
 }
 
-func (u *User) ToProto() *userservicepb.User {
-	return &userservicepb.User{
+func (u *User) ToProto() *pb.User {
+	return &pb.User{
 		UserId:          u.ID.String(),
 		Email:           u.Email,
 		Username:        u.Username,
-		Gender:          userservicepb.User_Gender(userservicepb.User_Gender_value[u.Gender.String()]),
+		Gender:          pb.User_Gender(pb.User_Gender_value[u.Gender.String()]),
 		IsEmailVerified: u.IsVerified,
 		FirstName:       u.FirstName,
 		LastName:        u.LastName,

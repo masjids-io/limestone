@@ -6,20 +6,17 @@ import (
 	"github.com/stretchr/testify/suite"
 	"google.golang.org/protobuf/testing/protocmp"
 
-	apb "github.com/mnadev/limestone/adhan_service/proto"
-	epb "github.com/mnadev/limestone/event_service/proto"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
-	upb "github.com/mnadev/limestone/user_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 )
 
-func TestSuite(t *testing.T) {
+func TestStorageManager(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
 }
 
 func (suite *UnitTestSuite) TestCreateUser_Success() {
 	user, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
-		upb.User{}, protocmp.IgnoreFields(&upb.User{}, "create_time", "update_time"))
+		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
@@ -37,7 +34,7 @@ func (suite *UnitTestSuite) TestUpdateUserWithEmail_Success() {
 	user.Email = "a@example.com"
 	user, err = suite.StorageManager.UpdateUser(user.ToProto(), Password)
 	AssertProtoEqual(suite.T(), *GetUserProto("a@example.com", Username), *user.ToProto(),
-		upb.User{}, protocmp.IgnoreFields(&upb.User{}, "create_time", "update_time"))
+		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
@@ -63,7 +60,7 @@ func (suite *UnitTestSuite) TestGetUserWithEmail_Success() {
 
 	user, err := suite.StorageManager.GetUserWithEmail(UserEmail, Password)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
-		upb.User{}, protocmp.IgnoreFields(&upb.User{}, "create_time", "update_time"))
+		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
@@ -92,7 +89,7 @@ func (suite *UnitTestSuite) TestGetUserWithUsername_Success() {
 
 	user, err := suite.StorageManager.GetUserWithUsername(Username, Password)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
-		upb.User{}, protocmp.IgnoreFields(&upb.User{}, "create_time", "update_time"))
+		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 	suite.Nil(err)
 }
@@ -166,7 +163,7 @@ func (suite *UnitTestSuite) TestDeleteUserWithUsername_NotFound() {
 func (suite *UnitTestSuite) TestCreateMasjid_Success() {
 	masjid, err := suite.StorageManager.CreateMasjid(GetMasjidProto())
 	AssertProtoEqual(suite.T(), *GetMasjidProto(), *masjid.ToProto(),
-		mpb.Masjid{}, protocmp.IgnoreFields(&mpb.Masjid{}, "create_time", "update_time"))
+		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), masjid.ToProto())
 	suite.Nil(err)
 }
@@ -181,8 +178,8 @@ func (suite *UnitTestSuite) TestUpdateMasjid_Success() {
 	want := GetMasjidProto()
 	want.Name = "Masjid 2"
 
-	AssertProtoEqual(suite.T(), *want, *masjid.ToProto(), mpb.Masjid{},
-		protocmp.IgnoreFields(&mpb.Masjid{}, "create_time", "update_time"))
+	AssertProtoEqual(suite.T(), *want, *masjid.ToProto(), pb.Masjid{},
+		protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), masjid.ToProto())
 	suite.Nil(err)
 }
@@ -199,7 +196,7 @@ func (suite *UnitTestSuite) TestGetMasjid_Success() {
 
 	masjid, err := suite.StorageManager.GetMasjid(DefaultId)
 	AssertProtoEqual(suite.T(), *GetMasjidProto(), *masjid.ToProto(),
-		mpb.Masjid{}, protocmp.IgnoreFields(&mpb.Masjid{}, "create_time", "update_time"))
+		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), masjid.ToProto())
 	suite.Nil(err)
 }
@@ -226,7 +223,7 @@ func (suite *UnitTestSuite) TestDeleteMasjid_NotFound() {
 func (suite *UnitTestSuite) TestCreateEvent_Success() {
 	event, err := suite.StorageManager.CreateEvent(GetEventProto())
 	AssertProtoEqual(suite.T(), *GetEventProto(), *event.ToProto(),
-		epb.Event{}, protocmp.IgnoreFields(&epb.Event{}, "create_time", "update_time"))
+		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
 	suite.Nil(err)
 }
@@ -241,8 +238,8 @@ func (suite *UnitTestSuite) TestUpdateEvent_Success() {
 	want := GetEventProto()
 	want.Name = "Event 2"
 
-	AssertProtoEqual(suite.T(), *want, *event.ToProto(), epb.Event{},
-		protocmp.IgnoreFields(&epb.Event{}, "create_time", "update_time"))
+	AssertProtoEqual(suite.T(), *want, *event.ToProto(), pb.Event{},
+		protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
 	suite.Nil(err)
 }
@@ -259,7 +256,7 @@ func (suite *UnitTestSuite) TestGetEvent_Success() {
 
 	event, err := suite.StorageManager.GetEvent(DefaultId)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *event.ToProto(),
-		epb.Event{}, protocmp.IgnoreFields(&epb.Event{}, "create_time", "update_time"))
+		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
 	suite.Nil(err)
 }
@@ -286,7 +283,7 @@ func (suite *UnitTestSuite) TestDeleteEvent_NotFound() {
 func (suite *UnitTestSuite) TestCreateAdhanFile_Success() {
 	file, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *file.ToProto(),
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
 	suite.Nil(err)
 }
@@ -301,8 +298,8 @@ func (suite *UnitTestSuite) TestUpdateAdhanFile_Success() {
 	want := GetAdhanFileProto()
 	want.File = []byte("xyz")
 
-	AssertProtoEqual(suite.T(), *want, *got.ToProto(), apb.AdhanFile{},
-		protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+	AssertProtoEqual(suite.T(), *want, *got.ToProto(), pb.AdhanFile{},
+		protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
 	suite.Nil(err)
 }
@@ -319,7 +316,7 @@ func (suite *UnitTestSuite) TestGetAdhanFile_Success() {
 
 	file, err := suite.StorageManager.GetAdhanFile(DefaultId)
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *file.ToProto(),
-		apb.AdhanFile{}, protocmp.IgnoreFields(&apb.AdhanFile{}, "create_time", "update_time"))
+		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
 	suite.Nil(err)
 }

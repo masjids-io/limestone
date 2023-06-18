@@ -3,16 +3,16 @@ package event_service
 import (
 	"context"
 
-	epb "github.com/mnadev/limestone/event_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 )
 
 type EventServiceServer struct {
 	SM *storage.StorageManager
-	epb.UnimplementedEventServiceServer
+	pb.UnimplementedEventServiceServer
 }
 
-func (srvr *EventServiceServer) CreateEvent(ctx context.Context, in *epb.CreateEventRequest) (*epb.Event, error) {
+func (srvr *EventServiceServer) CreateEvent(ctx context.Context, in *pb.CreateEventRequest) (*pb.Event, error) {
 	event, err := srvr.SM.CreateEvent(in.GetEvent())
 	if err != nil {
 		return nil, err
@@ -20,7 +20,7 @@ func (srvr *EventServiceServer) CreateEvent(ctx context.Context, in *epb.CreateE
 	return event.ToProto(), nil
 }
 
-func (srvr *EventServiceServer) GetEvent(ctx context.Context, in *epb.GetEventRequest) (*epb.Event, error) {
+func (srvr *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventRequest) (*pb.Event, error) {
 	event, err := srvr.SM.GetEvent(in.GetEventId())
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (srvr *EventServiceServer) GetEvent(ctx context.Context, in *epb.GetEventRe
 	return event.ToProto(), nil
 }
 
-func (srvr *EventServiceServer) UpdateEvent(ctx context.Context, in *epb.UpdateEventRequest) (*epb.Event, error) {
+func (srvr *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEventRequest) (*pb.Event, error) {
 	event, err := srvr.SM.UpdateEvent(in.GetEvent())
 	if err != nil {
 		return nil, err
@@ -36,10 +36,10 @@ func (srvr *EventServiceServer) UpdateEvent(ctx context.Context, in *epb.UpdateE
 	return event.ToProto(), nil
 }
 
-func (srvr *EventServiceServer) DeleteEvent(ctx context.Context, in *epb.DeleteEventRequest) (*epb.DeleteEventResponse, error) {
+func (srvr *EventServiceServer) DeleteEvent(ctx context.Context, in *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
 	err := srvr.SM.DeleteEvent(in.GetEventId())
 	if err != nil {
 		return nil, err
 	}
-	return &epb.DeleteEventResponse{}, nil
+	return &pb.DeleteEventResponse{}, nil
 }

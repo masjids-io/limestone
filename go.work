@@ -7,5 +7,6 @@ use (
 	./event_service
 	./masjid_service
 	./storage
+	./test_infra
 	./user_service
 )

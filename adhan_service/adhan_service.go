@@ -3,16 +3,16 @@ package adhan_service
 import (
 	"context"
 
-	apb "github.com/mnadev/limestone/adhan_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 )
 
 type AdhanServiceServer struct {
 	SM *storage.StorageManager
-	apb.UnimplementedAdhanServiceServer
+	pb.UnimplementedAdhanServiceServer
 }
 
-func (srvr *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *apb.CreateAdhanFileRequest) (*apb.AdhanFile, error) {
+func (srvr *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *pb.CreateAdhanFileRequest) (*pb.AdhanFile, error) {
 	adhan_file, err := srvr.SM.CreateAdhanFile(in.GetAdhanFile())
 	if err != nil {
 		return nil, err
@@ -20,7 +20,7 @@ func (srvr *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *apb.Cre
 	return adhan_file.ToProto(), nil
 }
 
-func (srvr *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *apb.GetAdhanFileRequest) (*apb.AdhanFile, error) {
+func (srvr *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *pb.GetAdhanFileRequest) (*pb.AdhanFile, error) {
 	adhan_file, err := srvr.SM.GetAdhanFile(in.GetMasjidId())
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (srvr *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *apb.GetAdh
 	return adhan_file.ToProto(), nil
 }
 
-func (srvr *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *apb.UpdateAdhanFileRequest) (*apb.AdhanFile, error) {
+func (srvr *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *pb.UpdateAdhanFileRequest) (*pb.AdhanFile, error) {
 	adhan_file, err := srvr.SM.UpdateAdhanFile(in.GetAdhanFile())
 	if err != nil {
 		return nil, err
@@ -36,10 +36,10 @@ func (srvr *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *apb.Upd
 	return adhan_file.ToProto(), nil
 }
 
-func (srvr *AdhanServiceServer) DeleteAdhanFile(ctx context.Context, in *apb.DeleteAdhanFileRequest) (*apb.DeleteAdhanFileResponse, error) {
+func (srvr *AdhanServiceServer) DeleteAdhanFile(ctx context.Context, in *pb.DeleteAdhanFileRequest) (*pb.DeleteAdhanFileResponse, error) {
 	err := srvr.SM.DeleteAdhanFile(in.GetId())
 	if err != nil {
 		return nil, err
 	}
-	return &apb.DeleteAdhanFileResponse{}, nil
+	return &pb.DeleteAdhanFileResponse{}, nil
 }

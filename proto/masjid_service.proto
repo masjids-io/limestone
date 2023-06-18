@@ -5,7 +5,7 @@ import "google/protobuf/timestamp.proto";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone/masjid_service/proto";
+option go_package = "github.com/mnadev/limestone/proto";
 
 service MasjidService {
     // Creates a masjid in the database.

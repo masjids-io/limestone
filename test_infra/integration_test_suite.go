@@ -13,24 +13,21 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/mnadev/limestone/adhan_service"
-	apb "github.com/mnadev/limestone/adhan_service/proto"
 	"github.com/mnadev/limestone/event_service"
-	epb "github.com/mnadev/limestone/event_service/proto"
 	"github.com/mnadev/limestone/masjid_service"
-	mpb "github.com/mnadev/limestone/masjid_service/proto"
+	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
-	user_service "github.com/mnadev/limestone/user_service"
-	upb "github.com/mnadev/limestone/user_service/proto"
+	"github.com/mnadev/limestone/user_service"
 )
 
 type IntegrationTestSuite struct {
 	suite.Suite
 	DB                  *gorm.DB
 	Server              *grpc.Server
-	AdhanServiceClient  apb.AdhanServiceClient
-	EventServiceClient  epb.EventServiceClient
-	MasjidServiceClient mpb.MasjidServiceClient
-	UserServiceClient   upb.UserServiceClient
+	AdhanServiceClient  pb.AdhanServiceClient
+	EventServiceClient  pb.EventServiceClient
+	MasjidServiceClient pb.MasjidServiceClient
+	UserServiceClient   pb.UserServiceClient
 }
 
 func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
@@ -59,22 +56,22 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 	suite.DB.AutoMigrate(&storage.Masjid{})
 	suite.DB.AutoMigrate(&storage.User{})
 
-	apb.RegisterAdhanServiceServer(suite.Server, &adhan_service.AdhanServiceServer{
+	pb.RegisterAdhanServiceServer(suite.Server, &adhan_service.AdhanServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})
-	epb.RegisterEventServiceServer(suite.Server, &event_service.EventServiceServer{
+	pb.RegisterEventServiceServer(suite.Server, &event_service.EventServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})
-	mpb.RegisterMasjidServiceServer(suite.Server, &masjid_service.MasjidServiceServer{
+	pb.RegisterMasjidServiceServer(suite.Server, &masjid_service.MasjidServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})
-	upb.RegisterUserServiceServer(suite.Server, &user_service.UserServiceServer{
+	pb.RegisterUserServiceServer(suite.Server, &user_service.UserServiceServer{
 		SM: &storage.StorageManager{
 			DB: suite.DB,
 		},
@@ -90,10 +87,10 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 		return listener.Dial()
 	}), grpc.WithInsecure(), grpc.WithBlock())
 
-	suite.AdhanServiceClient = apb.NewAdhanServiceClient(conn)
-	suite.EventServiceClient = epb.NewEventServiceClient(conn)
-	suite.MasjidServiceClient = mpb.NewMasjidServiceClient(conn)
-	suite.UserServiceClient = upb.NewUserServiceClient(conn)
+	suite.AdhanServiceClient = pb.NewAdhanServiceClient(conn)
+	suite.EventServiceClient = pb.NewEventServiceClient(conn)
+	suite.MasjidServiceClient = pb.NewMasjidServiceClient(conn)
+	suite.UserServiceClient = pb.NewUserServiceClient(conn)
 }
 
 func (suite *IntegrationTestSuite) AfterTest(suiteName, testName string) {
