@@ -15,21 +15,16 @@ In order to run the server, you will need to install and be familiar with the fo
 
 * [Go](https://go.dev/)
 * [Protobuf](https://protobuf.dev/downloads/)
-* [Bazel](https://bazel.build/)
+* [Buf](https://buf.build/)
 * [Docker](https://bazel.build/)
 
-NOTE: I may remove Bazel from this repository and move to using Buf to generate the gRPC code.
+## Regenerating protos
+
+To regenerate protos, run `cd proto`, then run `buf generate .`. This MUST be done after each proto change.
 
 ## Running the server
-To run the server, run the command:
+To run the server, make sure the relevant environment variables are set; then, run the command:
 
-`bazel run //:server`
+`go run server.go`
 
-## Docker
-To build the container image, run:
-
-`bazel build //:server_image --@io_bazel_rules_docker//transitions:enable=false` 
-
-To run the container image, run: 
-
-`bazel run //:server_image --@io_bazel_rules_docker//transitions:enable=false` 
+from the root directory. This exposes both an HTTP server and a gRPC server. You can make calls to the gRPC server via [grpcurl](https://github.com/fullstorydev/grpcurl). But, for end-to-end testing, it's just easier to call the HTTP server, with any HTTP client (Postman or curl).
