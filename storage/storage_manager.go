@@ -2,7 +2,6 @@ package storage
 
 import (
 	"errors"
-	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -17,7 +16,6 @@ type StorageManager struct {
 }
 
 func gormToGrpcError(err error) error {
-	fmt.Printf("DO NOT SUBMIT %+v\n", err)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return status.Error(codes.NotFound, "Requested entity was not found.")
 	}
@@ -120,7 +118,10 @@ func (s *StorageManager) DeleteUserWithEmail(email string, pwd string) error {
 	}
 
 	result := s.DB.Delete(user, user.ID)
-	return gormToGrpcError(result.Error)
+	if result.Error != nil {
+		return gormToGrpcError(result.Error)
+	}
+	return nil
 }
 
 // DeleteUserWithUsername deletes a User with the given username and password if it exists
@@ -131,7 +132,10 @@ func (s *StorageManager) DeleteUserWithUsername(username string, pwd string) err
 	}
 
 	result := s.DB.Delete(user, user.ID)
-	return gormToGrpcError(result.Error)
+	if result.Error != nil {
+		return gormToGrpcError(result.Error)
+	}
+	return nil
 }
 
 // CreateMasjid creates a Masjid in the database for the given Masjid proto.
@@ -191,7 +195,10 @@ func (s *StorageManager) DeleteMasjid(id string) error {
 	}
 
 	result := s.DB.Delete(masjid, masjid.ID)
-	return gormToGrpcError(result.Error)
+	if result.Error != nil {
+		return gormToGrpcError(result.Error)
+	}
+	return nil
 }
 
 // CreateEvent creates a Event in the database for the given Event proto.
@@ -251,7 +258,10 @@ func (s *StorageManager) DeleteEvent(id string) error {
 	}
 
 	result := s.DB.Delete(event, event.ID)
-	return gormToGrpcError(result.Error)
+	if result.Error != nil {
+		return gormToGrpcError(result.Error)
+	}
+	return nil
 }
 
 // CreateAdhanFile creates a AdhanFile in the database for the given AdhanFile proto.
@@ -310,5 +320,8 @@ func (s *StorageManager) DeleteAdhanFile(id string) error {
 	}
 
 	result := s.DB.Delete(file, file.ID)
-	return gormToGrpcError(result.Error)
+	if result.Error != nil {
+		return gormToGrpcError(result.Error)
+	}
+	return nil
 }
