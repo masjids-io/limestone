@@ -2,6 +2,7 @@ package storage
 
 import (
 	"errors"
+	"fmt"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -13,6 +14,14 @@ import (
 
 type StorageManager struct {
 	DB *gorm.DB
+}
+
+func gormToGrpcError(err error) error {
+	fmt.Printf("DO NOT SUBMIT %+v\n", err)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return status.Error(codes.NotFound, "Requested entity was not found.")
+	}
+	return status.Error(codes.Internal, "Internal error occurred.")
 }
 
 // CreateUser creates a User in the database for the given User and password
@@ -28,7 +37,7 @@ func (s *StorageManager) CreateUser(up *pb.User, pwd string) (*User, error) {
 		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
 			return nil, status.Error(codes.AlreadyExists, "user already exists")
 		}
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 	return user, nil
 }
@@ -39,7 +48,7 @@ func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 	result := s.DB.Where("id = ?", up.GetUserId()).First(&old_user)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	if auth.CheckPassword(pwd, old_user.HashedPassword) != nil {
@@ -66,7 +75,7 @@ func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 	result = s.DB.Where("id = ?", up.GetUserId()).First(&updated_user)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 	return &updated_user, nil
 }
@@ -77,7 +86,7 @@ func (s *StorageManager) GetUserWithEmail(email string, pwd string) (*User, erro
 	result := s.DB.Where("email = ?", email).First(&user)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	if auth.CheckPassword(pwd, user.HashedPassword) != nil {
@@ -93,7 +102,7 @@ func (s *StorageManager) GetUserWithUsername(username string, pwd string) (*User
 	result := s.DB.Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	if auth.CheckPassword(pwd, user.HashedPassword) != nil {
@@ -111,7 +120,7 @@ func (s *StorageManager) DeleteUserWithEmail(email string, pwd string) error {
 	}
 
 	result := s.DB.Delete(user, user.ID)
-	return result.Error
+	return gormToGrpcError(result.Error)
 }
 
 // DeleteUserWithUsername deletes a User with the given username and password if it exists
@@ -122,7 +131,7 @@ func (s *StorageManager) DeleteUserWithUsername(username string, pwd string) err
 	}
 
 	result := s.DB.Delete(user, user.ID)
-	return result.Error
+	return gormToGrpcError(result.Error)
 }
 
 // CreateMasjid creates a Masjid in the database for the given Masjid proto.
@@ -135,7 +144,7 @@ func (s *StorageManager) CreateMasjid(mp *pb.Masjid) (*Masjid, error) {
 	result := s.DB.Create(masjid)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 	return masjid, nil
 }
@@ -146,7 +155,7 @@ func (s *StorageManager) UpdateMasjid(mp *pb.Masjid) (*Masjid, error) {
 	result := s.DB.Where("id = ?", mp.GetId()).First(&old_masjid)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	new_masjid, err := NewMasjid(mp)
@@ -168,7 +177,7 @@ func (s *StorageManager) GetMasjid(id string) (*Masjid, error) {
 	result := s.DB.First(&masjid, "id = ?", id)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	return &masjid, nil
@@ -182,7 +191,7 @@ func (s *StorageManager) DeleteMasjid(id string) error {
 	}
 
 	result := s.DB.Delete(masjid, masjid.ID)
-	return result.Error
+	return gormToGrpcError(result.Error)
 }
 
 // CreateEvent creates a Event in the database for the given Event proto.
@@ -195,7 +204,7 @@ func (s *StorageManager) CreateEvent(e *pb.Event) (*Event, error) {
 	result := s.DB.Create(event)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 	return event, nil
 }
@@ -206,7 +215,7 @@ func (s *StorageManager) UpdateEvent(e *pb.Event) (*Event, error) {
 	result := s.DB.Where("id = ?", e.GetId()).First(&old_event)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	new_event, err := NewEvent(e)
@@ -228,7 +237,7 @@ func (s *StorageManager) GetEvent(id string) (*Event, error) {
 	result := s.DB.First(&event, "id = ?", id)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	return &event, nil
@@ -242,7 +251,7 @@ func (s *StorageManager) DeleteEvent(id string) error {
 	}
 
 	result := s.DB.Delete(event, event.ID)
-	return result.Error
+	return gormToGrpcError(result.Error)
 }
 
 // CreateAdhanFile creates a AdhanFile in the database for the given AdhanFile proto.
@@ -255,7 +264,7 @@ func (s *StorageManager) CreateAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
 	result := s.DB.Create(file)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 	return file, nil
 }
@@ -265,7 +274,7 @@ func (s *StorageManager) UpdateAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
 	var old_file AdhanFile
 	result := s.DB.Where("id = ?", a.GetId()).First(&old_file)
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	new_file, err := NewAdhanFile(a)
@@ -287,7 +296,7 @@ func (s *StorageManager) GetAdhanFile(masjid_id string) (*AdhanFile, error) {
 	result := s.DB.First(&file, "masjid_id = ?", masjid_id)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	return &file, nil
@@ -301,5 +310,5 @@ func (s *StorageManager) DeleteAdhanFile(id string) error {
 	}
 
 	result := s.DB.Delete(file, file.ID)
-	return result.Error
+	return gormToGrpcError(result.Error)
 }
