@@ -20,10 +20,10 @@ func (suite *IntegrationTestSuite) TestCreateEvent_Success() {
 		Event: GetEventProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateEvent_Success() {
@@ -32,10 +32,10 @@ func (suite *IntegrationTestSuite) TestUpdateEvent_Success() {
 		Event: GetEventProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	update := GetEventProto()
 	update.Name = "Event 2"
@@ -44,10 +44,10 @@ func (suite *IntegrationTestSuite) TestUpdateEvent_Success() {
 		Event: update,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *update, *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateEvent_NotFound() {
@@ -67,19 +67,19 @@ func (suite *IntegrationTestSuite) TestGetEvent_Success() {
 		Event: GetEventProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	out, err = suite.EventServiceClient.GetEvent(ctx, &pb.GetEventRequest{
 		EventId: DefaultId,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestGetEvent_NotFound() {
@@ -98,10 +98,10 @@ func (suite *IntegrationTestSuite) TestDeleteEvent_Success() {
 		Event: GetEventProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	_, err = suite.EventServiceClient.DeleteEvent(ctx, &pb.DeleteEventRequest{
 		EventId: DefaultId,

@@ -20,10 +20,10 @@ func (suite *IntegrationTestSuite) TestCreateMasjid_Success() {
 		Masjid: GetMasjidProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetMasjidProto(), *out,
 		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateMasjid_Success() {
@@ -32,10 +32,10 @@ func (suite *IntegrationTestSuite) TestUpdateMasjid_Success() {
 		Masjid: GetMasjidProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetMasjidProto(), *out,
 		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	update := GetMasjidProto()
 	update.Name = "Masjid 2"
@@ -44,10 +44,10 @@ func (suite *IntegrationTestSuite) TestUpdateMasjid_Success() {
 		Masjid: update,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *update, *out,
 		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateMasjid_NotFound() {
@@ -67,19 +67,19 @@ func (suite *IntegrationTestSuite) TestGetMasjid_Success() {
 		Masjid: GetMasjidProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetMasjidProto(), *out,
 		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	out, err = suite.MasjidServiceClient.GetMasjid(ctx, &pb.GetMasjidRequest{
 		MasjidId: DefaultId,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetMasjidProto(), *out,
 		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestGetMasjid_NotFound() {
@@ -98,10 +98,10 @@ func (suite *IntegrationTestSuite) TestDeleteMasjid_Success() {
 		Masjid: GetMasjidProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetMasjidProto(), *out,
 		pb.Masjid{}, protocmp.IgnoreFields(&pb.Masjid{}, "create_time", "update_time"))
 	AssertMasjidTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	_, err = suite.MasjidServiceClient.DeleteMasjid(ctx, &pb.DeleteMasjidRequest{
 		MasjidId: DefaultId,

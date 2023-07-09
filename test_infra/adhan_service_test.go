@@ -32,10 +32,10 @@ func (suite *IntegrationTestSuite) TestUpdateAdhanFile_Success() {
 		AdhanFile: GetAdhanFileProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
 		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	update := GetAdhanFileProto()
 	update.File = []byte("xyz")
@@ -44,10 +44,10 @@ func (suite *IntegrationTestSuite) TestUpdateAdhanFile_Success() {
 		AdhanFile: update,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *update, *out,
 		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateAdhanFile_NotFound() {
@@ -67,19 +67,19 @@ func (suite *IntegrationTestSuite) TestGetAdhanFile_Success() {
 		AdhanFile: GetAdhanFileProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
 		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	out, err = suite.AdhanServiceClient.GetAdhanFile(ctx, &pb.GetAdhanFileRequest{
 		MasjidId: DefaultId,
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
 		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 }
 
 func (suite *IntegrationTestSuite) TestGetAdhanFile_NotFound() {
@@ -98,10 +98,10 @@ func (suite *IntegrationTestSuite) TestDeleteAdhanFile_Success() {
 		AdhanFile: GetAdhanFileProto(),
 	})
 
+	suite.Nil(err)
 	AssertProtoEqual(suite.T(), *GetAdhanFileProto(), *out,
 		pb.AdhanFile{}, protocmp.IgnoreFields(&pb.AdhanFile{}, "create_time", "update_time"))
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
-	suite.Nil(err)
 
 	_, err = suite.AdhanServiceClient.DeleteAdhanFile(ctx, &pb.DeleteAdhanFileRequest{
 		Id: DefaultId,
