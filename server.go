@@ -16,6 +16,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/mnadev/limestone/adhan_service"
+	"github.com/mnadev/limestone/auth"
 	"github.com/mnadev/limestone/event_service"
 	"github.com/mnadev/limestone/masjid_service"
 	pb "github.com/mnadev/limestone/proto"
@@ -34,7 +35,9 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	server := grpc.NewServer()
+	server := grpc.NewServer(
+		grpc.UnaryInterceptor(auth.AuthInterceptor),
+	)
 
 	host := os.Getenv("db-host")
 	port := os.Getenv("db-port")
