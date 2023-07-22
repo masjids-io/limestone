@@ -20,7 +20,7 @@ func gormToGrpcError(err error) error {
 		return status.Error(codes.NotFound, "requested entity was not found.")
 	}
 	if errors.Is(err, gorm.ErrDuplicatedKey) {
-		return nil, status.Error(codes.AlreadyExists, "entity already exists")
+		return status.Error(codes.AlreadyExists, "entity already exists")
 	}
 	return status.Error(codes.Internal, "an internal error occurred")
 }
