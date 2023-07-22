@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/testing/protocmp"
 
 	pb "github.com/mnadev/limestone/proto"
@@ -21,7 +23,7 @@ func (suite *IntegrationTestSuite) TestCreateUser_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -35,7 +37,7 @@ func (suite *IntegrationTestSuite) TestCreateUser_PasswordTooShort() {
 	})
 
 	suite.Nil(out)
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.InvalidArgument)
 }
 
 func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
@@ -45,7 +47,7 @@ func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -55,7 +57,7 @@ func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, "new_name"), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -68,7 +70,7 @@ func (suite *IntegrationTestSuite) TestUpdateUser_BadPassword() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -78,7 +80,7 @@ func (suite *IntegrationTestSuite) TestUpdateUser_BadPassword() {
 		Password: BadPassword,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
 	suite.Nil(out)
 }
 
@@ -92,7 +94,7 @@ func (suite *IntegrationTestSuite) TestUpdateUser_NotFound() {
 		Password: Password,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(out)
 }
 
@@ -103,7 +105,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -115,7 +117,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *resp.GetUser(),
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
@@ -128,7 +130,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -140,7 +142,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
 		Password: BadPassword,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
 	suite.Nil(resp)
 }
 
@@ -153,7 +155,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_NotFound() {
 		Password: Password,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(resp)
 }
 
@@ -164,7 +166,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -176,7 +178,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *resp.GetUser(),
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
@@ -189,7 +191,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -201,7 +203,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
 		Password: BadPassword,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
 	suite.Nil(resp)
 }
 
@@ -214,7 +216,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithUsername_NotFound() {
 		Password: Password,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(resp)
 }
 
@@ -225,7 +227,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -237,7 +239,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
 func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_BadPassword() {
@@ -247,7 +249,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_BadPassword() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -259,7 +261,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_BadPassword() {
 		Password: BadPassword,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
 }
 
 func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_NotFound() {
@@ -271,7 +273,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_NotFound() {
 		Password: Password,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }
 
 func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_Success() {
@@ -281,7 +283,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -293,7 +295,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_Success() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
 func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_BadPassword() {
@@ -303,7 +305,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_BadPassword() {
 		Password: Password,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
 		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
 	AssertUserTimestampsCurrent(suite.T(), out)
@@ -315,7 +317,7 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_BadPassword() {
 		Password: BadPassword,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
 }
 
 func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_NotFound() {
@@ -327,5 +329,5 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_NotFound() {
 		Password: Password,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }
