@@ -3,6 +3,9 @@ package adhan_service
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 )
@@ -17,7 +20,7 @@ func (srvr *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *pb.Crea
 	if err != nil {
 		return nil, err
 	}
-	return adhan_file.ToProto(), nil
+	return adhan_file.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *pb.GetAdhanFileRequest) (*pb.AdhanFile, error) {
@@ -25,7 +28,7 @@ func (srvr *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *pb.GetAdha
 	if err != nil {
 		return nil, err
 	}
-	return adhan_file.ToProto(), nil
+	return adhan_file.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *pb.UpdateAdhanFileRequest) (*pb.AdhanFile, error) {
@@ -33,7 +36,7 @@ func (srvr *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *pb.Upda
 	if err != nil {
 		return nil, err
 	}
-	return adhan_file.ToProto(), nil
+	return adhan_file.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *AdhanServiceServer) DeleteAdhanFile(ctx context.Context, in *pb.DeleteAdhanFileRequest) (*pb.DeleteAdhanFileResponse, error) {
@@ -41,5 +44,5 @@ func (srvr *AdhanServiceServer) DeleteAdhanFile(ctx context.Context, in *pb.Dele
 	if err != nil {
 		return nil, err
 	}
-	return &pb.DeleteAdhanFileResponse{}, nil
+	return &pb.DeleteAdhanFileResponse{}, status.Error(codes.OK, codes.OK.String())
 }

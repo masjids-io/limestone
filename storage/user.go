@@ -54,7 +54,8 @@ func NewUser(up *pb.User, pwd string) (*User, error) {
 
 	hpwd, err := auth.HashPassword(pwd)
 	if err != nil {
-		return nil, status.Error(codes.Internal, "failed to hash password")
+		// TODO: log error that occurred
+		return nil, status.Error(codes.Internal, "an internal error occurred")
 	}
 
 	return &User{
@@ -66,7 +67,7 @@ func NewUser(up *pb.User, pwd string) (*User, error) {
 		LastName:       up.GetLastName(),
 		PhoneNumber:    up.GetPhoneNumber(),
 		Gender:         gender(up.GetGender().String()),
-	}, nil
+	}, status.Error(codes.OK, codes.OK.String())
 }
 
 func (u *User) ToProto() *pb.User {

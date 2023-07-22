@@ -3,6 +3,9 @@ package masjid_service
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 )
@@ -17,7 +20,7 @@ func (srvr *MasjidServiceServer) CreateMasjid(ctx context.Context, in *pb.Create
 	if err != nil {
 		return nil, err
 	}
-	return masjid.ToProto(), nil
+	return masjid.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *MasjidServiceServer) GetMasjid(ctx context.Context, in *pb.GetMasjidRequest) (*pb.Masjid, error) {
@@ -25,7 +28,7 @@ func (srvr *MasjidServiceServer) GetMasjid(ctx context.Context, in *pb.GetMasjid
 	if err != nil {
 		return nil, err
 	}
-	return masjid.ToProto(), nil
+	return masjid.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *MasjidServiceServer) UpdateMasjid(ctx context.Context, in *pb.UpdateMasjidRequest) (*pb.Masjid, error) {
@@ -33,7 +36,7 @@ func (srvr *MasjidServiceServer) UpdateMasjid(ctx context.Context, in *pb.Update
 	if err != nil {
 		return nil, err
 	}
-	return masjid.ToProto(), nil
+	return masjid.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *MasjidServiceServer) DeleteMasjid(ctx context.Context, in *pb.DeleteMasjidRequest) (*pb.DeleteMasjidResponse, error) {
@@ -41,5 +44,5 @@ func (srvr *MasjidServiceServer) DeleteMasjid(ctx context.Context, in *pb.Delete
 	if err != nil {
 		return nil, err
 	}
-	return &pb.DeleteMasjidResponse{}, nil
+	return &pb.DeleteMasjidResponse{}, status.Error(codes.OK, codes.OK.String())
 }

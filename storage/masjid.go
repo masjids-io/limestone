@@ -36,7 +36,7 @@ type Masjid struct {
 }
 
 // NewMasjid creates a new Masjid struct given the Masjid proto.
-func NewMasjid(m *pb.Masjid) (*Masjid, error) {
+func NewMasjid(m *pb.Masjid) *Masjid {
 	return &Masjid{
 		Name:       m.GetName(),
 		IsVerified: m.GetIsVerified(),
@@ -68,7 +68,7 @@ func NewMasjid(m *pb.Masjid) (*Masjid, error) {
 				IshaAdjustment:    m.GetPrayerConfig().GetAdjustments().GetIshaAdjustment(),
 			},
 		},
-	}, nil
+	}
 }
 
 func (m *Masjid) ToProto() *pb.Masjid {

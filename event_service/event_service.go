@@ -3,6 +3,9 @@ package event_service
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 )
@@ -17,7 +20,7 @@ func (srvr *EventServiceServer) CreateEvent(ctx context.Context, in *pb.CreateEv
 	if err != nil {
 		return nil, err
 	}
-	return event.ToProto(), nil
+	return event.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventRequest) (*pb.Event, error) {
@@ -25,7 +28,7 @@ func (srvr *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventReq
 	if err != nil {
 		return nil, err
 	}
-	return event.ToProto(), nil
+	return event.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEventRequest) (*pb.Event, error) {
@@ -33,7 +36,7 @@ func (srvr *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEv
 	if err != nil {
 		return nil, err
 	}
-	return event.ToProto(), nil
+	return event.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *EventServiceServer) DeleteEvent(ctx context.Context, in *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
@@ -41,5 +44,5 @@ func (srvr *EventServiceServer) DeleteEvent(ctx context.Context, in *pb.DeleteEv
 	if err != nil {
 		return nil, err
 	}
-	return &pb.DeleteEventResponse{}, nil
+	return &pb.DeleteEventResponse{}, status.Error(codes.OK, codes.OK.String())
 }
