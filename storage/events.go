@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "github.com/mnadev/limestone/proto"
@@ -54,8 +56,10 @@ func NewEvent(ep *pb.Event) (*Event, error) {
 	}
 	if ep.GetUserId() != "" {
 		e.UserId = ep.GetUserId()
-	} else {
+	} else if ep.GetMasjidId() != "" {
 		e.MasjidId = ep.GetMasjidId()
+	} else {
+		return nil, status.Error(codes.InvalidArgument, "User ID or Masjid must be specified")
 	}
 
 	types := []string{}
@@ -66,7 +70,7 @@ func NewEvent(ep *pb.Event) (*Event, error) {
 
 	e.EventTypes = strings.Join(types, ",")
 
-	return &e, nil
+	return &e, status.Error(codes.OK, codes.OK.String())
 }
 
 func (e *Event) ToProto() *pb.Event {
@@ -86,8 +90,10 @@ func (e *Event) ToProto() *pb.Event {
 	}
 	if e.UserId != "" {
 		ep.Owner = &pb.Event_UserId{UserId: e.UserId}
-	} else {
+	} else if e.MasjidId != "" {
 		ep.Owner = &pb.Event_MasjidId{MasjidId: e.MasjidId}
+	} else {
+		// TODO: add logs
 	}
 
 	types := e.EventTypes

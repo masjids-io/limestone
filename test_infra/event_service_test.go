@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/testing/protocmp"
 
 	pb "github.com/mnadev/limestone/proto"
@@ -20,7 +22,7 @@ func (suite *IntegrationTestSuite) TestCreateEvent_Success() {
 		Event: GetEventProto(),
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
@@ -32,7 +34,7 @@ func (suite *IntegrationTestSuite) TestUpdateEvent_Success() {
 		Event: GetEventProto(),
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
@@ -44,7 +46,7 @@ func (suite *IntegrationTestSuite) TestUpdateEvent_Success() {
 		Event: update,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *update, *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
@@ -57,7 +59,7 @@ func (suite *IntegrationTestSuite) TestUpdateEvent_NotFound() {
 		Event: GetEventProto(),
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(out)
 }
 
@@ -67,7 +69,7 @@ func (suite *IntegrationTestSuite) TestGetEvent_Success() {
 		Event: GetEventProto(),
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
@@ -76,7 +78,7 @@ func (suite *IntegrationTestSuite) TestGetEvent_Success() {
 		EventId: DefaultId,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
@@ -88,7 +90,7 @@ func (suite *IntegrationTestSuite) TestGetEvent_NotFound() {
 		EventId: DefaultId,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(out)
 }
 
@@ -98,7 +100,7 @@ func (suite *IntegrationTestSuite) TestDeleteEvent_Success() {
 		Event: GetEventProto(),
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetEventProto(), *out,
 		pb.Event{}, protocmp.IgnoreFields(&pb.Event{}, "create_time", "update_time"))
 	AssertEventTimestampsCurrent(suite.T(), out)
@@ -107,7 +109,7 @@ func (suite *IntegrationTestSuite) TestDeleteEvent_Success() {
 		EventId: DefaultId,
 	})
 
-	suite.Nil(err)
+	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
 func (suite *IntegrationTestSuite) TestDeleteEvent_NotFound() {
@@ -116,5 +118,5 @@ func (suite *IntegrationTestSuite) TestDeleteEvent_NotFound() {
 		EventId: DefaultId,
 	})
 
-	suite.Error(err)
+	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }

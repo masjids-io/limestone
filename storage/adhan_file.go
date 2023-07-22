@@ -18,11 +18,11 @@ type AdhanFile struct {
 }
 
 // NewAdhanFile creates a new AdhanFile struct given the AdhanFile proto.
-func NewAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
+func NewAdhanFile(a *pb.AdhanFile) *AdhanFile {
 	return &AdhanFile{
 		MasjidId: a.GetMasjidId(),
 		File:     a.GetFile(),
-	}, nil
+	}
 }
 
 func (a *AdhanFile) ToProto() *pb.AdhanFile {

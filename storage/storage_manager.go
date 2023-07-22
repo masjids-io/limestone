@@ -17,9 +17,12 @@ type StorageManager struct {
 
 func gormToGrpcError(err error) error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return status.Error(codes.NotFound, "Requested entity was not found.")
+		return status.Error(codes.NotFound, "requested entity was not found.")
 	}
-	return status.Error(codes.Internal, "Internal error occurred.")
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
+		return status.Error(codes.AlreadyExists, "entity already exists")
+	}
+	return status.Error(codes.Internal, "an internal error occurred")
 }
 
 // CreateUser creates a User in the database for the given User and password
@@ -30,11 +33,7 @@ func (s *StorageManager) CreateUser(up *pb.User, pwd string) (*User, error) {
 	}
 
 	result := s.DB.Create(user)
-
 	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
-			return nil, status.Error(codes.AlreadyExists, "user already exists")
-		}
 		return nil, gormToGrpcError(result.Error)
 	}
 	return user, nil
@@ -53,6 +52,7 @@ func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 		return nil, status.Error(codes.PermissionDenied, "password did not match")
 	}
 
+	// TODO: add a field mask to update the information
 	result = s.DB.Model(old_user).Where("id = ?", old_user.ID).
 		Updates(
 			map[string]interface{}{
@@ -66,12 +66,11 @@ func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 			})
 
 	if result.Error != nil {
-		return nil, status.Error(codes.Internal, "failed to update user object")
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	var updated_user User
 	result = s.DB.Where("id = ?", up.GetUserId()).First(&updated_user)
-
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
 	}
@@ -82,7 +81,6 @@ func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 func (s *StorageManager) GetUserWithEmail(email string, pwd string) (*User, error) {
 	var user User
 	result := s.DB.Where("email = ?", email).First(&user)
-
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
 	}
@@ -98,7 +96,6 @@ func (s *StorageManager) GetUserWithEmail(email string, pwd string) (*User, erro
 func (s *StorageManager) GetUserWithUsername(username string, pwd string) (*User, error) {
 	var user User
 	result := s.DB.Where("username = ?", username).First(&user)
-
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
 	}
@@ -140,11 +137,7 @@ func (s *StorageManager) DeleteUserWithUsername(username string, pwd string) err
 
 // CreateMasjid creates a Masjid in the database for the given Masjid proto.
 func (s *StorageManager) CreateMasjid(mp *pb.Masjid) (*Masjid, error) {
-	masjid, err := NewMasjid(mp)
-	if err != nil {
-		return nil, err
-	}
-
+	masjid := NewMasjid(mp)
 	result := s.DB.Create(masjid)
 
 	if result.Error != nil {
@@ -157,19 +150,14 @@ func (s *StorageManager) CreateMasjid(mp *pb.Masjid) (*Masjid, error) {
 func (s *StorageManager) UpdateMasjid(mp *pb.Masjid) (*Masjid, error) {
 	var old_masjid Masjid
 	result := s.DB.Where("id = ?", mp.GetId()).First(&old_masjid)
-
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
 	}
 
-	new_masjid, err := NewMasjid(mp)
-	if err != nil {
-		return nil, err
-	}
-
+	new_masjid := NewMasjid(mp)
 	result = s.DB.Save(new_masjid)
 	if result.Error != nil {
-		return nil, status.Error(codes.Internal, "failed to update masjid object")
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	return new_masjid, nil
@@ -232,7 +220,7 @@ func (s *StorageManager) UpdateEvent(e *pb.Event) (*Event, error) {
 
 	result = s.DB.Save(new_event)
 	if result.Error != nil {
-		return nil, status.Error(codes.Internal, "failed to update event object")
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	return new_event, nil
@@ -266,11 +254,7 @@ func (s *StorageManager) DeleteEvent(id string) error {
 
 // CreateAdhanFile creates a AdhanFile in the database for the given AdhanFile proto.
 func (s *StorageManager) CreateAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
-	file, err := NewAdhanFile(a)
-	if err != nil {
-		return nil, err
-	}
-
+	file := NewAdhanFile(a)
 	result := s.DB.Create(file)
 
 	if result.Error != nil {
@@ -287,14 +271,10 @@ func (s *StorageManager) UpdateAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
 		return nil, gormToGrpcError(result.Error)
 	}
 
-	new_file, err := NewAdhanFile(a)
-	if err != nil {
-		return nil, err
-	}
-
+	new_file := NewAdhanFile(a)
 	result = s.DB.Save(new_file)
 	if result.Error != nil {
-		return nil, status.Error(codes.Internal, "failed to update file object")
+		return nil, gormToGrpcError(result.Error)
 	}
 
 	return new_file, nil

@@ -3,6 +3,9 @@ package user_service
 import (
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 )
@@ -17,7 +20,7 @@ func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUser
 	if err != nil {
 		return nil, err
 	}
-	return user.ToProto(), nil
+	return user.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
@@ -28,7 +31,7 @@ func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserReques
 		}
 		return &pb.GetUserResponse{
 			User: user.ToProto(),
-		}, nil
+		}, status.Error(codes.OK, codes.OK.String())
 	}
 	user, err := srvr.SM.GetUserWithUsername(in.GetUsername(), in.GetPassword())
 	if err != nil {
@@ -36,7 +39,7 @@ func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserReques
 	}
 	return &pb.GetUserResponse{
 		User: user.ToProto(),
-	}, nil
+	}, status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.User, error) {
@@ -44,7 +47,7 @@ func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUser
 	if err != nil {
 		return nil, err
 	}
-	return user.ToProto(), nil
+	return user.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
 func (srvr *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
@@ -59,5 +62,5 @@ func (srvr *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUser
 			return nil, err
 		}
 	}
-	return &pb.DeleteUserResponse{}, nil
+	return &pb.DeleteUserResponse{}, status.Error(codes.OK, codes.OK.String())
 }
