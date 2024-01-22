@@ -28,3 +28,25 @@ To run the server, make sure the relevant environment variables are set; then, r
 `go run server.go`
 
 from the root directory. This exposes both an HTTP server and a gRPC server. You can make calls to the gRPC server via [grpcurl](https://github.com/fullstorydev/grpcurl). But, for end-to-end testing, it's just easier to call the HTTP server, with any HTTP client (Postman or curl).
+
+## Tasks
+
+### Implemented
+
+- User service
+- Event service
+- Masjid Service
+- Adhan service
+- gRPC Integration tests
+
+### TODOs
+
+- Nikkah Service API
+- Reverts Service API
+- JWT authentication
+- HTTP integration tests
+- Docker-ify server
+- Setup github workflows to test and check for formatting, and push to prod
+- Host container on Cloud
+- Authorization service
+- OAuth 2 SSO for providers like Google, Facebook, Microsoft, Apple.
