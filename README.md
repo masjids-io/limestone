@@ -50,3 +50,5 @@ from the root directory. This exposes both an HTTP server and a gRPC server. You
 - Host container on Cloud
 - Authorization service
 - OAuth 2 SSO for providers like Google, Facebook, Microsoft, Apple.
+- Custom website builder service and rendering server
+- Adhan livestreaming API
