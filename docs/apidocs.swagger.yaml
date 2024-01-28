@@ -1,0 +1,922 @@
+swagger: "2.0"
+info:
+  title: adhan_service.proto
+  version: version not set
+tags:
+  - name: AdhanService
+  - name: EventService
+  - name: MasjidService
+  - name: UserService
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /adhan/file/create:
+    post:
+      summary: Creates an adhan audio file in the database for a masjid.
+      operationId: AdhanService_CreateAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneCreateAdhanFileRequest'
+      tags:
+        - AdhanService
+  /adhan/file/update:
+    post:
+      summary: Updates an adhan audio file in the database for a masjid.
+      operationId: AdhanService_UpdateAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUpdateAdhanFileRequest'
+      tags:
+        - AdhanService
+  /adhan/file/{id}:
+    delete:
+      summary: Deletes an adhan audio from the database for a masjid.
+      operationId: AdhanService_DeleteAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteAdhanFileResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          description: The adhan file id of the file to delete.
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanService
+  /adhan/file/{masjidId}:
+    get:
+      summary: Get an adhan audio file from the database for a masjid.
+      operationId: AdhanService_GetAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjidId
+          description: The masjid id to get the adhan file for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanService
+  /events/create:
+    post:
+      summary: Creates a event in the database.
+      operationId: EventService_CreateEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneEvent'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneCreateEventRequest'
+      tags:
+        - EventService
+  /events/list:
+    get:
+      summary: Returns a paginated list of events from the database.
+      operationId: EventService_ListEvents
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListEventsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pageSize
+          description: |-
+            The maximum number of events to return. Fewer events might be returned.
+            Default value is 25.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          description: "A page token from a previous `ListEvents` call. If this is provided, then the \nnext page will be returned."
+          in: query
+          required: false
+          type: string
+      tags:
+        - EventService
+  /events/update:
+    post:
+      summary: |-
+        Updates a event in the database with the corresponding id to the given
+        event (i.e. all fields are overwritten).
+      operationId: EventService_UpdateEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneEvent'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUpdateEventRequest'
+      tags:
+        - EventService
+  /events/{eventId}:
+    get:
+      summary: Gets a event from the database with the given id.
+      operationId: EventService_GetEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneEvent'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: eventId
+          description: The unique id of the event that should be returned.
+          in: path
+          required: true
+          type: string
+      tags:
+        - EventService
+    delete:
+      summary: Deletes a event from the database with the given id.
+      operationId: EventService_DeleteEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: eventId
+          description: The unique id of the event that should be deleted.
+          in: path
+          required: true
+          type: string
+      tags:
+        - EventService
+  /masjids/create:
+    post:
+      summary: Creates a masjid in the database.
+      operationId: MasjidService_CreateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneCreateMasjidRequest'
+      tags:
+        - MasjidService
+  /masjids/list:
+    get:
+      summary: Returns a paginated list of masjids from the database.
+      operationId: MasjidService_ListMasjids
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListMasjidsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pageSize
+          description: |-
+            The maximum number of masjids to return. Fewer masjids might be returned.
+            Default value is 25.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          description: "A page token from a previous `ListMasjids` call. If this is provided, then the \nnext page will be returned."
+          in: query
+          required: false
+          type: string
+      tags:
+        - MasjidService
+  /masjids/update:
+    post:
+      summary: |-
+        Updates a masjid in the database with the corresponding id to the given
+        masjid (i.e. all fields are overwritten).
+      operationId: MasjidService_UpdateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUpdateMasjidRequest'
+      tags:
+        - MasjidService
+  /masjids/{masjidId}:
+    get:
+      summary: Gets a masjid from the database with the given id.
+      operationId: MasjidService_GetMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjidId
+          description: The unique id of the masjid that should be returned.
+          in: path
+          required: true
+          type: string
+      tags:
+        - MasjidService
+    delete:
+      summary: Deletes a masjid from the database with the given id.
+      operationId: MasjidService_DeleteMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjidId
+          description: The unique id of the masjid that should be deleted.
+          in: path
+          required: true
+          type: string
+      tags:
+        - MasjidService
+  /token/refresh:
+    get:
+      summary: Refreshes an access token.
+      operationId: UserService_RefreshToken
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneTokenResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: refreshToken
+          description: The refresh JWT for the user.
+          in: query
+          required: false
+          type: string
+      tags:
+        - UserService
+  /users:
+    get:
+      summary: Gets a User from the database and tokens provided the password is valid.
+      operationId: UserService_GetUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneGetUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: email
+          description: The unique email associated with the user.
+          in: query
+          required: false
+          type: string
+        - name: username
+          description: The unique username associated with the user.
+          in: query
+          required: false
+          type: string
+        - name: password
+          description: The password for the user account.
+          in: query
+          required: false
+          type: string
+      tags:
+        - UserService
+    delete:
+      summary: Deletes a User from the database provided the password is valid.
+      operationId: UserService_DeleteUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: email
+          description: The unique email associated with the user.
+          in: query
+          required: false
+          type: string
+        - name: username
+          description: The unique username associated with the user.
+          in: query
+          required: false
+          type: string
+        - name: password
+          description: The password for the user account.
+          in: query
+          required: false
+          type: string
+      tags:
+        - UserService
+  /users/create:
+    post:
+      summary: Creates the given User with the given password.
+      operationId: UserService_CreateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneUser'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneCreateUserRequest'
+      tags:
+        - UserService
+  /users/update:
+    post:
+      summary: Updates a User to the given User in the request provided the password is valid.
+      operationId: UserService_UpdateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneUser'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUpdateUserRequest'
+      tags:
+        - UserService
+definitions:
+  EventEventType:
+    type: string
+    enum:
+      - WORSHIP
+      - EDUCATIONAL
+      - COMMUNITY
+      - ATHLETIC
+      - FUNDRAISING
+      - YOUTH
+      - CHILDREN_SPECIFIC
+      - MATRIMONIAL
+      - FUNERAL
+    default: WORSHIP
+    description: |-
+      Specifies the different event types an event can be specified as.
+
+       - WORSHIP: The event is a worship event such as Eid salah.
+       - EDUCATIONAL: The event is an educational event such as a class or lecture.
+       - COMMUNITY: The event is a social community event.
+       - ATHLETIC: The event is an athletic event such as fitness class or a sports game.
+       - FUNDRAISING: The event is related to fundraising.
+       - YOUTH: The event is relevant to the youth.
+       - CHILDREN_SPECIFIC: The event is specific to children.
+       - MATRIMONIAL: The event is related to marriage.
+       - FUNERAL: The event is a funeral.
+  EventGenderRestriction:
+    type: string
+    enum:
+      - NO_RESTRICTION
+      - MALE_ONLY
+      - FEMALE_ONLY
+    default: NO_RESTRICTION
+    description: |-
+      Specifies the gender restriction associated with the event.
+
+       - NO_RESTRICTION: No restriction on gender for event, aka co-ed.
+       - MALE_ONLY: Male only event.
+       - FEMALE_ONLY: Female only event.
+  MasjidAddress:
+    type: object
+    properties:
+      addressLine1:
+        type: string
+        description: The street address of the masjid.
+      addressLine2:
+        type: string
+        description: Additional address information for the masjid, such as suite number, floor, etc.
+      zoneCode:
+        type: string
+        description: |-
+          The code of the administrative divisions in a country.
+          See https://en.wikipedia.org/wiki/List_of_administrative_divisions_by_country.Address
+          This field is what should be used for things like states or provinces.
+      postalCode:
+        type: string
+        description: The postal code of the masjid.
+      city:
+        type: string
+        description: The city where the masjid is located.
+      countryCode:
+        type: string
+        description: |-
+          A valid ISO 3166-1 country code. The full list can be found here: https://www.iban.com/country-codes.
+          Consider only the Alpha-2 code column.
+    title: |-
+      Defines a postal address for the masjid. This message can be used across countries.
+      The fields were inspired by this blog post: https://shopify.engineering/handling-addresses-from-all-around-the-world
+  MasjidPhoneNumber:
+    type: object
+    properties:
+      countryCode:
+        type: string
+        description: |-
+          The country code corresponding to the phone number.
+          Country codes are defined by ITU-T standards E.123 and E.164.
+          See https://en.wikipedia.org/wiki/List_of_country_calling_codes.
+      number:
+        type: string
+        description: The phone number of the masjid.
+      extension:
+        type: string
+        description: A extension for the number, if required.
+    description: Defines the main phone number for the masjid.
+  PrayerTimesConfigurationAsrJuristicMethod:
+    type: string
+    enum:
+      - SHAFI_HANBALI_MALIKI
+      - HANAFI
+    default: SHAFI_HANBALI_MALIKI
+    description: |-
+      The Juristic method to use for calculating Asr prayer times.
+
+       - SHAFI_HANBALI_MALIKI: Use the Shafi/Hanbali/Maliki method to calculate Asr timings.
+       - HANAFI: Use the Hanafi method to calculate Asr timings.
+  PrayerTimesConfigurationCalculationMethod:
+    type: string
+    enum:
+      - OTHER
+      - MUSLIM_WORLD_LEAGUE
+      - EGYPTIAN
+      - KARACHI
+      - UMM_AL_QURA
+      - DUBAI
+      - MOON_SIGHTING_COMMITTEE
+      - NORTH_AMERICA
+      - KUWAIT
+      - QATAR
+      - SINGAPORE
+      - UOIF
+    default: OTHER
+    description: "Defines the calculation method to use. If this field is set (excluding OTHER), then the Fajr \nand Isha angle fields are automatically set.\n\n - OTHER: A custom calculation method.\n - MUSLIM_WORLD_LEAGUE: Muslim World League\nUses Fajr angle of 18 and an Isha angle of 17\n - EGYPTIAN: Egyptian General Authority of Survey\nUses Fajr angle of 19.5 and an Isha angle of 17.5\n - KARACHI: University of Islamic Sciences, Karachi\nUses Fajr angle of 18 and an Isha angle of 18\n - UMM_AL_QURA: Umm al-Qura University, Makkah\nUses a Fajr angle of 18.5 and an Isha angle of 90. Note: You should add a +30 minute custom\nadjustment of Isha during Ramadan.\n - DUBAI: The Gulf Region\nUses Fajr and Isha angles of 18.2 degrees.\n - MOON_SIGHTING_COMMITTEE: Moonsighting Committee\nUses a Fajr angle of 18 and an Isha angle of 18. Also uses seasonal adjustment values.\n - NORTH_AMERICA: Referred to as the ISNA method\nThis method is included for completeness, but is not recommended.\nUses a Fajr angle of 15 and an Isha angle of 15.\n - KUWAIT: Kuwait\nUses a Fajr angle of 18 and an Isha angle of 17.5\n - QATAR: Qatar\nModified version of Umm al-Qura that uses a Fajr angle of 18.\n - SINGAPORE: Singapore\nUses a Fajr angle of 20 and an Isha angle of 18\n - UOIF: UOIF\nUses a Fajr angle of 12 and an Isha angle of 12"
+  PrayerTimesConfigurationHighLatitudeRule:
+    type: string
+    enum:
+      - NO_HIGH_LATITUDE_RULE
+      - MIDDLE_OF_THE_NIGHT
+      - SEVENTH_OF_THE_NIGHT
+      - TWILIGHT_ANGLE
+    default: NO_HIGH_LATITUDE_RULE
+    description: |-
+      The high latitude rule for calculating Fajr and Isha prayers.
+
+       - MIDDLE_OF_THE_NIGHT: Fajr will never be earlier than the middle of the night, and Isha will never be later than
+      the middle of the night.
+       - SEVENTH_OF_THE_NIGHT: Fajr will never be earlier than the beginning of the last seventh of the night, and Isha will
+      never be later than the end of the first seventh of the night.
+       - TWILIGHT_ANGLE: Similar to SEVENTH_OF_THE_NIGHT, but instead of 1/7th, the fraction of the night used
+      is fajr_angle / 60 and isha_angle / 60.
+  PrayerTimesConfigurationPrayerAdjustments:
+    type: object
+    properties:
+      fajrAdjustment:
+        type: integer
+        format: int32
+        description: Adjustment offset for Fajr in minutes. Value can be negative.
+      dhuhrAdjustment:
+        type: integer
+        format: int32
+        description: Adjustment offset for Dhuhr in minutes. Value can be negative.
+      asrAdjustment:
+        type: integer
+        format: int32
+        description: Adjustment offset for Asr in minutes. Value can be negative.
+      maghribAdjustment:
+        type: integer
+        format: int32
+        description: Adjustment offset for Maghrib in minutes. Value can be negative.
+      ishaAdjustment:
+        type: integer
+        format: int32
+        description: Adjustment offset for Isha in minutes. Value can be negative.
+    description: "The manual adjustments to apply to the prayer timings. The value that each field is set to is \nthe offset which will be added to the calculated time to obtain the final prayer time."
+  UserGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+    description: |-
+      Defines an enum representing the gender of the user.
+
+       - GENDER_UNSPECIFIED: Default value.
+  limestoneAdhanFile:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique id associated with this file.
+      masjidId:
+        type: string
+        description: The masjid id associated with this file.
+      file:
+        type: string
+        format: byte
+        description: "The bytes of the audio file. This should be in LINEAR16 format at \na sample rate of 16 kHz."
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the file. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the file. This field is output only.
+  limestoneCreateAdhanFileRequest:
+    type: object
+    properties:
+      adhanFile:
+        $ref: '#/definitions/limestoneAdhanFile'
+        description: The adhan file to create.
+  limestoneCreateEventRequest:
+    type: object
+    properties:
+      event:
+        $ref: '#/definitions/limestoneEvent'
+        description: The event to create in the database.
+  limestoneCreateMasjidRequest:
+    type: object
+    properties:
+      masjid:
+        $ref: '#/definitions/limestoneMasjid'
+        description: The masjid to create in the database.
+  limestoneCreateUserRequest:
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/limestoneUser'
+        description: The user to create.
+      password:
+        type: string
+        description: "The password for the user. This password is hashed before being\nstored in the database. \nThe password must be at least 8 characters."
+  limestoneDeleteAdhanFileResponse:
+    type: object
+  limestoneDeleteEventResponse:
+    type: object
+  limestoneDeleteMasjidResponse:
+    type: object
+  limestoneDeleteUserResponse:
+    type: object
+    description: Empty response returned for DeleteUser RPC.
+  limestoneEvent:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique id associated with the event.
+      userId:
+        type: string
+        description: The id of the user who owns the event.
+      masjidId:
+        type: string
+        description: The id of the masjid which owns the event.
+      name:
+        type: string
+        description: The name of the event.
+      description:
+        type: string
+        description: The description of the event.
+      startTime:
+        type: string
+        format: date-time
+        description: The start time of the event.
+      endTime:
+        type: string
+        format: date-time
+        description: The end time of the event.
+      genderRestriction:
+        $ref: '#/definitions/EventGenderRestriction'
+        description: The gender restriction associated with the event.
+      types:
+        type: array
+        items:
+          $ref: '#/definitions/EventEventType'
+        description: The different event types associated with this event.
+      isPaid:
+        type: boolean
+        description: Whether or not the event is a paid event.
+      requiresRsvp:
+        type: boolean
+        description: Whether or not the event requires RSVP.
+      maxParticipants:
+        type: integer
+        format: int32
+        description: |-
+          The maximum number of participants for this event. If set to -1, then there
+          is no limit on the number of participants.
+      livestreamLink:
+        type: string
+        description: |-
+          The livestream link for this event. If empty, then there is no livestream
+          associated with the event.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+  limestoneGetUserResponse:
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/limestoneUser'
+        description: The authenticated user.
+      tokenResponse:
+        $ref: '#/definitions/limestoneTokenResponse'
+        description: The token response for the user.
+  limestoneListEventsResponse:
+    type: object
+    properties:
+      events:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneEvent'
+        description: The list of returned events.
+  limestoneListMasjidsResponse:
+    type: object
+    properties:
+      masjids:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneMasjid'
+        description: The list of returned masjids.
+  limestoneMasjid:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique id of the masjid. This field is output only.
+      name:
+        type: string
+        description: The name of the masjid.
+      isVerified:
+        type: boolean
+        description: Whether or not the masjid has been verified.
+      address:
+        $ref: '#/definitions/MasjidAddress'
+        description: The main address of the masjid.
+      phoneNumber:
+        $ref: '#/definitions/MasjidPhoneNumber'
+        description: The main phone number to contact for the masjid.
+      prayerConfig:
+        $ref: '#/definitions/limestonePrayerTimesConfiguration'
+        description: The configuration to calculate prayer times for the masjid.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the Masjid. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the Masjid. This field is output only.
+    description: |-
+      Defines a proto representing the main data corresponding to a masjid.
+      This data includes the masjid name, address, phone number and prayer times configuration.
+  limestonePrayerTimesConfiguration:
+    type: object
+    properties:
+      method:
+        $ref: '#/definitions/PrayerTimesConfigurationCalculationMethod'
+        description: The calculation method to use.
+      fajrAngle:
+        type: number
+        format: double
+        description: |-
+          The Fajr angle to use. This does not need to be set if the calculation method is set.
+          If both fields are set, then the calculation method field takes precedence.
+      ishaAngle:
+        type: number
+        format: double
+        description: |-
+          The Isha angle to use. This does not need to be set if the calculation method is set.
+          If both fields are set, then the calculation method field takes precedence.
+      ishaInterval:
+        type: integer
+        format: int32
+        description: Minutes after Maghrib (if set, the time for Isha will be Maghrib plus the Isha interval).
+      asrMethod:
+        $ref: '#/definitions/PrayerTimesConfigurationAsrJuristicMethod'
+        description: The juristic method to use for calculating Asr timings.
+      highLatitudeRule:
+        $ref: '#/definitions/PrayerTimesConfigurationHighLatitudeRule'
+        description: The high latitude rule to use to calculate Fajr and Isha prayers.
+      adjustments:
+        $ref: '#/definitions/PrayerTimesConfigurationPrayerAdjustments'
+        description: The prayer adjusments (aka offsets) to apply to the calculated prayer times.
+    description: |-
+      A message that holds prayer times configuration. This message contains all the fields
+      necessary to calculate prayer times.
+  limestoneTokenResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The id of the token.
+      accessToken:
+        type: string
+        description: The access JWT for the user.
+      refreshToken:
+        type: string
+        description: The refresh JWT for the user.
+      expiresAt:
+        type: string
+        format: date-time
+        description: The timestamp at which the token expires.
+  limestoneUpdateAdhanFileRequest:
+    type: object
+    properties:
+      adhanFile:
+        $ref: '#/definitions/limestoneAdhanFile'
+        description: |-
+          The adhan file to update to. The file associated with the id
+          will be updated to this given adhan file.
+  limestoneUpdateEventRequest:
+    type: object
+    properties:
+      event:
+        $ref: '#/definitions/limestoneEvent'
+        description: The event to update in the database.
+  limestoneUpdateMasjidRequest:
+    type: object
+    properties:
+      masjid:
+        $ref: '#/definitions/limestoneMasjid'
+        description: The masjid to update in the database.
+  limestoneUpdateUserRequest:
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/limestoneUser'
+        description: The updated user proto.
+      password:
+        type: string
+        description: The password for the user account.
+  limestoneUser:
+    type: object
+    properties:
+      userId:
+        type: string
+        description: The ID of the user. This field is output only.
+      email:
+        type: string
+        description: The email of the user. This field is required and must be unique.
+      username:
+        type: string
+        description: The username of the user. This field is required and must be unique.
+      isEmailVerified:
+        type: boolean
+        description: Whether or not the email of the user was verified.
+      firstName:
+        type: string
+        description: The first name of the user.
+      lastName:
+        type: string
+        description: The last name of the user.
+      phoneNumber:
+        type: string
+        description: The phone number associated with the user.
+      gender:
+        $ref: '#/definitions/UserGender'
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the user. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the user. This field is output only.
+    description: Defines a User.
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'

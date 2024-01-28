@@ -16,3 +16,6 @@ plugins:
   - plugin: buf.build/grpc/go
     out: .
     opt: paths=source_relative
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.19.0
+    out: ../docs/
+    opt: output_format=yaml,allow_merge=true

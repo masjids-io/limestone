@@ -22,6 +22,19 @@ In order to run the server, you will need to install and be familiar with the fo
 
 To regenerate protos, run `cd proto`, then run `buf generate .`. This MUST be done after each proto change.
 
+## Regenerate swagger docs
+
+To regenerate the Swagger YAML, run `cd proto`, then run `buf generate .`. This MUST be done after each proto change.
+
+To create the `index.html`` file from the YAML file, first install redoc-cli via:
+
+`npm install -g redoc-cli`
+
+Then, run:
+
+`redoc-cli bundle -o docs/index.html docs/apidocs.swagger.yaml`
+
+
 ## Running the server
 To run the server, make sure the relevant environment variables are set; then, run the command:
 
