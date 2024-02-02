@@ -41,7 +41,7 @@ type User struct {
 	FirstName      string    `gorm:"type:varchar(255)"`
 	LastName       string    `gorm:"type:varchar(255)"`
 	PhoneNumber    string    `gorm:"type:varchar(255)"`
-	Gender         gender    `gorm:"type:gender"`
+	Gender         gender    `gorm:"type:varchar(6);check:gender IN ('MALE', 'FEMALE')"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }

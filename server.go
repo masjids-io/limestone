@@ -25,8 +25,8 @@ import (
 )
 
 var (
-	grpcEndpoint = flag.String("grpc_endpoint", "localhost:8081", "gRPC server endpoint")
-	httpEndpoint = flag.String("http_endpoint", "localhost:8080", "HTTP server endpoint")
+	grpcEndpoint = flag.String("grpc_endpoint", ":8081", "gRPC server endpoint")
+	httpEndpoint = flag.String("http_endpoint", ":8080", "HTTP server endpoint")
 )
 
 func main() {
@@ -50,6 +50,11 @@ func main() {
 		dbUser,
 		dbName,
 		password,
+		// "localhost",
+		// "5432",
+		// "admin",
+		// "postgres",
+		// "password",
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	DB.AutoMigrate(storage.AdhanFile{})
