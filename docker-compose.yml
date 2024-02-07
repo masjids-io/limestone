@@ -13,6 +13,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - postgres
   
   postgres:
     image: postgres:latest
