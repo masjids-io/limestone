@@ -57,8 +57,13 @@ func NewUser(up *pb.User, pwd string) (*User, error) {
 		// TODO: log error that occurred
 		return nil, status.Error(codes.Internal, "an internal error occurred")
 	}
-
+	// uuid generation
+	uuid, err := uuid.NewUUID()
+	if err != nil {
+		return nil, err
+	}
 	return &User{
+		ID:             uuid,
 		Email:          up.GetEmail(),
 		Username:       up.GetUsername(),
 		HashedPassword: hpwd,

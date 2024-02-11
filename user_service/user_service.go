@@ -23,6 +23,21 @@ func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUser
 	return user.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
+func (srvr *UserServiceServer) LoginUser(ctx context.Context, in *pb.LoginRequest) (*pb.Tokens, error) {
+	tokens, err := srvr.SM.LoginUser(in.GetEmail(), in.GetPassword())
+	if err != nil {
+		return nil, err
+	}
+	return tokens, nil
+}
+
+func (srvr *UserServiceServer) VerifyUser(ctx context.Context, in *pb.VerifyRequest) (*pb.VerifyResponse, error) {
+	res, err := srvr.SM.VerifyUser(in.GetEmail(), in.GetCode())
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
 func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	if in.GetEmail() != "" {
 		user, err := srvr.SM.GetUserWithEmail(in.GetEmail(), in.GetPassword())

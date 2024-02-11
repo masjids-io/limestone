@@ -13,6 +13,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
+	"github.com/go-redis/redis"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/mnadev/limestone/adhan_service"
@@ -62,27 +63,39 @@ func main() {
 	DB.AutoMigrate(storage.Masjid{})
 	DB.AutoMigrate(storage.User{})
 
+	// redis connection has been created
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("redis-url"),
+		Password: os.Getenv("redis-pass"), // password set
+		DB:       0,                       // use default DB
+	})
+	res := rdb.Ping()
+	fmt.Println("Redis response: " + res.String()) // response being pinged
 	adhan_service_server := adhan_service.AdhanServiceServer{
 		SM: &storage.StorageManager{
-			DB: DB,
+			DB:    DB,
+			Cache: rdb,
 		},
 	}
 	pb.RegisterAdhanServiceServer(server, &adhan_service_server)
 	event_server := event_service.EventServiceServer{
 		SM: &storage.StorageManager{
-			DB: DB,
+			DB:    DB,
+			Cache: rdb,
 		},
 	}
 	pb.RegisterEventServiceServer(server, &event_server)
 	masjid_server := masjid_service.MasjidServiceServer{
 		SM: &storage.StorageManager{
-			DB: DB,
+			DB:    DB,
+			Cache: rdb,
 		},
 	}
 	pb.RegisterMasjidServiceServer(server, &masjid_server)
 	user_server := user_service.UserServiceServer{
 		SM: &storage.StorageManager{
-			DB: DB,
+			DB:    DB,
+			Cache: rdb,
 		},
 	}
 	pb.RegisterUserServiceServer(server, &user_server)
