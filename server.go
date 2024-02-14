@@ -14,7 +14,11 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/go-redis/redis"
+	"github.com/gorilla/sessions"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/gothic"
+	"github.com/markbates/goth/providers/google"
 
 	"github.com/mnadev/limestone/adhan_service"
 	"github.com/mnadev/limestone/auth"
@@ -36,8 +40,9 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
+	// Include AuthMiddleware as a UnaryInterceptor
 	server := grpc.NewServer(
-		grpc.UnaryInterceptor(auth.AuthInterceptor),
+		grpc.UnaryInterceptor(auth.AuthMiddleware),
 	)
 
 	host := os.Getenv("db-host")
@@ -77,6 +82,12 @@ func main() {
 			Cache: rdb,
 		},
 	}
+	gothic.Store = sessions.NewCookieStore([]byte(os.Getenv("JWT_KEY")))
+	goth.UseProviders(
+		google.New(os.Getenv("google-client"), os.Getenv("google-secret"), os.Getenv("google-scope")),
+		//TODO: ADD MICROSOFT SUPPORT
+		//microsoftonline.New(os.Getenv("microsoft-client"), os.Getenv("microsoft-secret"), os.Getenv("microsoft-scope")),
+	)
 	pb.RegisterAdhanServiceServer(server, &adhan_service_server)
 	event_server := event_service.EventServiceServer{
 		SM: &storage.StorageManager{
@@ -111,6 +122,9 @@ func main() {
 	defer cancel()
 
 	mux := runtime.NewServeMux()
+	// Create a new http.ServeMux for your custom SSO routes
+	customMux := http.NewServeMux()
+	httpMux := http.NewServeMux()
 	err = pb.RegisterAdhanServiceHandlerServer(ctx, mux, &adhan_service_server)
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
@@ -127,8 +141,17 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to serve: %s", err)
 	}
-
-	if err = http.ListenAndServe(*httpEndpoint, mux); err != nil {
+	app := App{
+		DB: DB,
+	}
+	// Register your OAuth routes
+	customMux.HandleFunc("/auth/google", app.HandleGoogleOauthRoute)
+	customMux.HandleFunc("/auth/google/callback", app.HandleGoogleOauthCallbackRoute)
+	// Use the main mux to delegate requests
+	httpMux.Handle("/", auth.HttpAuthMiddleware(mux))  // Handle gRPC-Gateway routes
+	httpMux.Handle("/auth/google", customMux)          // Handle custom http routes for google
+	httpMux.Handle("/auth/google/callback", customMux) //Handle custom http google callback route
+	if err = http.ListenAndServe(*httpEndpoint, httpMux); err != nil {
 		log.Fatalf("failed to serve HTTP traffic: %s", err)
 	}
 }

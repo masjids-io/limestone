@@ -60,23 +60,29 @@ func (s *StorageManager) CreateUser(up *pb.User, pwd string) (*User, error) {
 	if !pattern.MatchString(up.GetEmail()) {
 		return nil, status.Error(codes.InvalidArgument, "Incorrect email format")
 	}
-	//db user instance created
-	user, err := NewUser(up, pwd)
-	if err != nil {
-		return nil, err
+	//check for user existence
+	var user User
+	err := s.DB.Where("email = ?", up.GetEmail()).First(&user).Error
+	if err != nil && err == gorm.ErrRecordNotFound {
+		//db user instance created
+		u, err := NewUser(up, pwd)
+		if err != nil {
+			return nil, err
+		}
+		//db entry
+		result := s.DB.Create(u)
+		if result.Error != nil {
+			return nil, gormToGrpcError(result.Error)
+		}
+		//concurrent email verification dispatched
+		code, err := s.SetCode(up.GetEmail())
+		if err != nil {
+			return nil, err
+		}
+		go auth.EmailVerification(up.GetEmail(), code)
+		return u, nil
 	}
-	//db entry
-	result := s.DB.Create(user)
-	if result.Error != nil {
-		return nil, gormToGrpcError(result.Error)
-	}
-	//concurrent email verification dispatched
-	code, err := s.SetCode(up.GetEmail())
-	if err != nil {
-		return nil, err
-	}
-	go auth.EmailVerification(up.GetEmail(), code)
-	return user, nil
+	return nil, status.Error(codes.AlreadyExists, "user already exists")
 }
 
 // UpdateUser updates a User in the database for the given User and password if it exists
