@@ -33,7 +33,6 @@ func (s *App) HandleGoogleOauthCallbackRoute(w http.ResponseWriter, r *http.Requ
 	var dbUser storage.User
 	err = s.DB.Where("email = ?", user.Email).First(&dbUser).Error
 	if err != nil && err == gorm.ErrRecordNotFound {
-		// uuid generation
 		uuid, err := uuid.NewUUID()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -49,7 +48,7 @@ func (s *App) HandleGoogleOauthCallbackRoute(w http.ResponseWriter, r *http.Requ
 			HashedPassword: "social_auth",
 			IsVerified:     true,
 			PhoneNumber:    "",
-			Gender:         storage.MALE, //defaulting to male
+			Gender:         storage.MALE,
 		}
 		//create a db entry
 		err = s.DB.Create(newUser).Error

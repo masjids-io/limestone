@@ -56,11 +56,6 @@ func main() {
 		dbUser,
 		dbName,
 		password,
-		// "localhost",
-		// "5432",
-		// "admin",
-		// "postgres",
-		// "password",
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	DB.AutoMigrate(storage.AdhanFile{})
