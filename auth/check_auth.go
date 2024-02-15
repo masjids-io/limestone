@@ -3,61 +3,72 @@ package auth
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
-	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	"github.com/golang-jwt/jwt/v4"
+	auth_grpc "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
-type Session struct {
-	Data struct {
-		Name      string `json:"name"`      // unique name of the org
-		ID        int    `json:"id"`        // org id
-		FirstName string `json:"firstName"` // user first name
-		LastName  string `json:"lastName"`  // user last name
-		UserID    int    `json:"userId"`    // user id
-	} `json:"data"`
+var jwtKey = []byte(os.Getenv("jwt-key")) // Use a secure way to store and retrieve this key
+
+// AuthMiddleware checks for JWT in the authorization header and validates it (ONLY WHEN MAKING CALLS VIA GRPC PORT)
+func AuthMiddleware(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	fmt.Println("Got inside of interceptor")
+	fmt.Println(info.FullMethod)
+	tokenStr, err := auth_grpc.AuthFromMD(ctx, "bearer")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(tokenStr)
+	// Verify the token
+	parsedToken, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil || !parsedToken.Valid {
+		return nil, status.Errorf(codes.Unauthenticated, "invalid auth token: %v", err)
+	}
+
+	return handler(ctx, req)
 }
 
-//update .env file with REDWOOD_URL=http://dev.mosque.icu:8910
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
 
-func AuthInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	id, err := grpc_auth.AuthFromMD(ctx, "id")
-	if err != nil {
-		return nil, err
-	}
-	cookie, err := grpc_auth.AuthFromMD(ctx, "Cookie")
-	if err != nil {
-		return nil, err
-	}
+func writeJSONError(w http.ResponseWriter, statusCode int, errMsg string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(ErrorResponse{Error: errMsg})
+}
 
-	url := os.Getenv("REDWOOD_URL") + "/api/upload?id=" + id
-	httpReq, err := http.NewRequest("POST", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	httpReq.Header.Set("Cookie", cookie)
-	httpReq.Header.Set("auth-provider", "dbAuth")
-	httpReq.Header.Set("Authorization", "Bearer "+id)
+// HTTPAuthMiddleware checks for JWT in the authorization header and validates it
+// (ONLY WHEN MAKING CALLS VIA HTTP PORT, grpc interceptor doesnt function during http calls)
+func HttpAuthMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		uri := r.RequestURI
+		if uri != "/users/create" && uri != "/users/login" && uri != "/users/verify" {
+			authHeader := r.Header.Get("Authorization")
+			if authHeader == "" {
+				writeJSONError(w, http.StatusUnauthorized, "Authorization header is required")
+				return
+			}
 
-	client := &http.Client{}
-	response, err := client.Do(httpReq)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
+			tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+			token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+				return jwtKey, nil
+			})
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	var session Session
-	err = json.Unmarshal(bodyBytes, &session)
-	if err != nil {
-		return nil, err
-	}
-	return handler(ctx, req)
+			if err != nil || !token.Valid {
+				writeJSONError(w, http.StatusUnauthorized, "Invalid token")
+				return
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
 }
