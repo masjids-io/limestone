@@ -75,7 +75,7 @@ func (suite *IntegrationTestSuite) TestGetAdhanFile_Success() {
 	AssertAdhanFileTimestampsCurrent(suite.T(), out)
 
 	out, err = suite.AdhanServiceClient.GetAdhanFile(ctx, &pb.GetAdhanFileRequest{
-		MasjidId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -87,7 +87,7 @@ func (suite *IntegrationTestSuite) TestGetAdhanFile_Success() {
 func (suite *IntegrationTestSuite) TestGetAdhanFile_NotFound() {
 	ctx := context.Background()
 	out, err := suite.AdhanServiceClient.GetAdhanFile(ctx, &pb.GetAdhanFileRequest{
-		MasjidId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)

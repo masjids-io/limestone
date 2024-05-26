@@ -12,90 +12,6 @@ consumes:
 produces:
   - application/json
 paths:
-  /adhan/file/create:
-    post:
-      summary: Creates an adhan audio file in the database for a masjid.
-      operationId: AdhanService_CreateAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneAdhanFile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneCreateAdhanFileRequest'
-      tags:
-        - AdhanService
-  /adhan/file/update:
-    post:
-      summary: Updates an adhan audio file in the database for a masjid.
-      operationId: AdhanService_UpdateAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneAdhanFile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneUpdateAdhanFileRequest'
-      tags:
-        - AdhanService
-  /adhan/file/{id}:
-    delete:
-      summary: Deletes an adhan audio from the database for a masjid.
-      operationId: AdhanService_DeleteAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteAdhanFileResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: id
-          description: The adhan file id of the file to delete.
-          in: path
-          required: true
-          type: string
-      tags:
-        - AdhanService
-  /adhan/file/{masjidId}:
-    get:
-      summary: Get an adhan audio file from the database for a masjid.
-      operationId: AdhanService_GetAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneAdhanFile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: masjidId
-          description: The masjid id to get the adhan file for.
-          in: path
-          required: true
-          type: string
-      tags:
-        - AdhanService
   /events/create:
     post:
       summary: Creates a event in the database.
@@ -448,6 +364,128 @@ paths:
             $ref: '#/definitions/limestoneUpdateUserRequest'
       tags:
         - UserService
+  /v1/adhan_files:
+    post:
+      summary: Creates an adhan audio file in the database for a masjid.
+      operationId: AdhanService_CreateAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: adhanFile
+          description: The adhan file to create.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+            required:
+              - adhanFile
+      tags:
+        - AdhanService
+  /v1/{adhanFile.id}:
+    patch:
+      summary: Updates an adhan audio file in the database for a masjid.
+      operationId: AdhanService_UpdateAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: adhanFile.id
+          description: The unique id associated with this file.
+          in: path
+          required: true
+          type: string
+          pattern: adhanFiles/[^/]+
+        - name: adhanFile
+          description: |-
+            The adhan file to update to. The file associated with the id
+            will be updated to this given adhan file.
+
+            The adhan file's `id` field is used to identify the book to update.
+            Format: books/{book}
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              masjidId:
+                type: string
+                description: The masjid id associated with this file.
+              file:
+                type: string
+                format: byte
+                description: "The bytes of the audio file. This should be in LINEAR16 format at \na sample rate of 16 kHz."
+              createTime:
+                type: string
+                format: date-time
+                description: The create time of the file. This field is output only.
+              updateTime:
+                type: string
+                format: date-time
+                description: The update time of the file. This field is output only.
+            description: |-
+              The adhan file's `id` field is used to identify the book to update.
+              Format: books/{book}
+            title: |-
+              The adhan file to update to. The file associated with the id
+              will be updated to this given adhan file.
+      tags:
+        - AdhanService
+  /v1/{id}:
+    get:
+      summary: Get an adhan audio file from the database for a masjid.
+      operationId: AdhanService_GetAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          description: The adhan file id to get.
+          in: path
+          required: true
+          type: string
+          pattern: adhanFiles/[^/]+
+      tags:
+        - AdhanService
+    delete:
+      summary: Deletes an adhan audio from the database for a masjid.
+      operationId: AdhanService_DeleteAdhanFile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteAdhanFileResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          description: The adhan file id to delete.
+          in: path
+          required: true
+          type: string
+          pattern: adhanFiles/[^/]+
+      tags:
+        - AdhanService
 definitions:
   EventEventType:
     type: string
@@ -633,12 +671,6 @@ definitions:
         type: string
         format: date-time
         description: The update time of the file. This field is output only.
-  limestoneCreateAdhanFileRequest:
-    type: object
-    properties:
-      adhanFile:
-        $ref: '#/definitions/limestoneAdhanFile'
-        description: The adhan file to create.
   limestoneCreateEventRequest:
     type: object
     properties:
@@ -837,14 +869,6 @@ definitions:
         type: string
         format: date-time
         description: The timestamp at which the token expires.
-  limestoneUpdateAdhanFileRequest:
-    type: object
-    properties:
-      adhanFile:
-        $ref: '#/definitions/limestoneAdhanFile'
-        description: |-
-          The adhan file to update to. The file associated with the id
-          will be updated to this given adhan file.
   limestoneUpdateEventRequest:
     type: object
     properties:

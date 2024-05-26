@@ -24,7 +24,7 @@ func (s *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *pb.CreateA
 }
 
 func (s *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *pb.GetAdhanFileRequest) (*pb.AdhanFile, error) {
-	adhan_file, err := s.Smgr.GetAdhanFile(in.GetMasjidId())
+	adhan_file, err := s.Smgr.GetAdhanFile(in.GetId())
 	if err != nil {
 		return nil, err
 	}

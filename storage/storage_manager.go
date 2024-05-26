@@ -281,9 +281,9 @@ func (s *StorageManager) UpdateAdhanFile(a *pb.AdhanFile) (*AdhanFile, error) {
 }
 
 // GetAdhanFile returns a AdhanFile with the given id.
-func (s *StorageManager) GetAdhanFile(masjid_id string) (*AdhanFile, error) {
+func (s *StorageManager) GetAdhanFile(id string) (*AdhanFile, error) {
 	var file AdhanFile
-	result := s.DB.First(&file, "masjid_id = ?", masjid_id)
+	result := s.DB.First(&file, "id = ?", id)
 
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
