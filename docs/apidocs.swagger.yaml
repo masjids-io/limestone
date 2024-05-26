@@ -12,120 +12,6 @@ consumes:
 produces:
   - application/json
 paths:
-  /masjids/create:
-    post:
-      summary: Creates a masjid in the database.
-      operationId: MasjidService_CreateMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneMasjid'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneCreateMasjidRequest'
-      tags:
-        - MasjidService
-  /masjids/list:
-    get:
-      summary: Returns a paginated list of masjids from the database.
-      operationId: MasjidService_ListMasjids
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneListMasjidsResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: pageSize
-          description: |-
-            The maximum number of masjids to return. Fewer masjids might be returned.
-            Default value is 25.
-          in: query
-          required: false
-          type: integer
-          format: int32
-        - name: pageToken
-          description: "A page token from a previous `ListMasjids` call. If this is provided, then the \nnext page will be returned."
-          in: query
-          required: false
-          type: string
-      tags:
-        - MasjidService
-  /masjids/update:
-    post:
-      summary: |-
-        Updates a masjid in the database with the corresponding id to the given
-        masjid (i.e. all fields are overwritten).
-      operationId: MasjidService_UpdateMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneMasjid'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneUpdateMasjidRequest'
-      tags:
-        - MasjidService
-  /masjids/{masjidId}:
-    get:
-      summary: Gets a masjid from the database with the given id.
-      operationId: MasjidService_GetMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneMasjid'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: masjidId
-          description: The unique id of the masjid that should be returned.
-          in: path
-          required: true
-          type: string
-      tags:
-        - MasjidService
-    delete:
-      summary: Deletes a masjid from the database with the given id.
-      operationId: MasjidService_DeleteMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteMasjidResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: masjidId
-          description: The unique id of the masjid that should be deleted.
-          in: path
-          required: true
-          type: string
-      tags:
-        - MasjidService
   /token/refresh:
     get:
       summary: Refreshes an access token.
@@ -326,6 +212,58 @@ paths:
               - event
       tags:
         - EventService
+  /v1/masjids:
+    get:
+      summary: Returns a paginated list of masjids from the database.
+      operationId: MasjidService_ListMasjids
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListMasjidsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pageSize
+          description: |-
+            The maximum number of masjids to return. Fewer masjids might be returned.
+            Default value is 25.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          description: "A page token from a previous `ListMasjids` call. If this is provided, then the \nnext page will be returned."
+          in: query
+          required: false
+          type: string
+      tags:
+        - MasjidService
+    post:
+      summary: Creates a masjid in the database.
+      operationId: MasjidService_CreateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjid
+          description: The masjid to create in the database.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+            required:
+              - masjid
+      tags:
+        - MasjidService
   /v1/{adhanFile.id}:
     patch:
       summary: Updates an adhan audio file in the database for a masjid.
@@ -513,6 +451,49 @@ paths:
           pattern: events/[^/]+
       tags:
         - EventService
+  /v1/{id_2}:
+    get:
+      summary: Gets a masjid from the database with the given id.
+      operationId: MasjidService_GetMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_2
+          description: The id of the masjid that should be returned.
+          in: path
+          required: true
+          type: string
+          pattern: masjids/[^/]+
+      tags:
+        - MasjidService
+    delete:
+      summary: Deletes a masjid from the database with the given id.
+      operationId: MasjidService_DeleteMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_2
+          description: The id of the masjid that should be deleted.
+          in: path
+          required: true
+          type: string
+          pattern: masjids/[^/]+
+      tags:
+        - MasjidService
   /v1/{id}:
     get:
       summary: Get an adhan audio file from the database for a masjid.
@@ -556,6 +537,68 @@ paths:
           pattern: adhanFiles/[^/]+
       tags:
         - AdhanService
+  /v1/{masjid.id}:
+    patch:
+      summary: |-
+        Updates a masjid in the database with the corresponding id to the given
+        masjid (i.e. all fields are overwritten).
+      operationId: MasjidService_UpdateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjid.id
+          description: The unique id of the masjid. This field is output only.
+          in: path
+          required: true
+          type: string
+          pattern: masjids/[^/]+
+        - name: masjid
+          description: |-
+            The masjid to update in the database.
+
+            The masjid's `id` field is used to identify the book to update.
+            Format: masjids/{masjid}
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The name of the masjid.
+              isVerified:
+                type: boolean
+                description: Whether or not the masjid has been verified.
+              address:
+                $ref: '#/definitions/MasjidAddress'
+                description: The main address of the masjid.
+              phoneNumber:
+                $ref: '#/definitions/MasjidPhoneNumber'
+                description: The main phone number to contact for the masjid.
+              prayerConfig:
+                $ref: '#/definitions/limestonePrayerTimesConfiguration'
+                description: The configuration to calculate prayer times for the masjid.
+              createTime:
+                type: string
+                format: date-time
+                description: The create time of the Masjid. This field is output only.
+              updateTime:
+                type: string
+                format: date-time
+                description: The update time of the Masjid. This field is output only.
+            description: |-
+              The masjid's `id` field is used to identify the book to update.
+              Format: masjids/{masjid}
+            title: The masjid to update in the database.
+      tags:
+        - MasjidService
 definitions:
   EventEventType:
     type: string
@@ -741,12 +784,6 @@ definitions:
         type: string
         format: date-time
         description: The update time of the file. This field is output only.
-  limestoneCreateMasjidRequest:
-    type: object
-    properties:
-      masjid:
-        $ref: '#/definitions/limestoneMasjid'
-        description: The masjid to create in the database.
   limestoneCreateUserRequest:
     type: object
     properties:
@@ -930,12 +967,6 @@ definitions:
         type: string
         format: date-time
         description: The timestamp at which the token expires.
-  limestoneUpdateMasjidRequest:
-    type: object
-    properties:
-      masjid:
-        $ref: '#/definitions/limestoneMasjid'
-        description: The masjid to update in the database.
   limestoneUpdateUserRequest:
     type: object
     properties:
