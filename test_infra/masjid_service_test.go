@@ -75,7 +75,7 @@ func (suite *IntegrationTestSuite) TestGetMasjid_Success() {
 	AssertMasjidTimestampsCurrent(suite.T(), out)
 
 	out, err = suite.MasjidServiceClient.GetMasjid(ctx, &pb.GetMasjidRequest{
-		MasjidId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -87,7 +87,7 @@ func (suite *IntegrationTestSuite) TestGetMasjid_Success() {
 func (suite *IntegrationTestSuite) TestGetMasjid_NotFound() {
 	ctx := context.Background()
 	out, err := suite.MasjidServiceClient.GetMasjid(ctx, &pb.GetMasjidRequest{
-		MasjidId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
@@ -106,7 +106,7 @@ func (suite *IntegrationTestSuite) TestDeleteMasjid_Success() {
 	AssertMasjidTimestampsCurrent(suite.T(), out)
 
 	_, err = suite.MasjidServiceClient.DeleteMasjid(ctx, &pb.DeleteMasjidRequest{
-		MasjidId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -115,7 +115,7 @@ func (suite *IntegrationTestSuite) TestDeleteMasjid_Success() {
 func (suite *IntegrationTestSuite) TestDeleteMasjid_NotFound() {
 	ctx := context.Background()
 	_, err := suite.MasjidServiceClient.DeleteMasjid(ctx, &pb.DeleteMasjidRequest{
-		MasjidId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)

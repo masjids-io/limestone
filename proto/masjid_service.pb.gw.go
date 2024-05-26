@@ -39,7 +39,7 @@ func request_MasjidService_CreateMasjid_0(ctx context.Context, marshaler runtime
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Masjid); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -56,7 +56,7 @@ func local_request_MasjidService_CreateMasjid_0(ctx context.Context, marshaler r
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Masjid); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -73,8 +73,25 @@ func request_MasjidService_UpdateMasjid_0(ctx context.Context, marshaler runtime
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Masjid); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["masjid.id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "masjid.id")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "masjid.id", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "masjid.id", err)
 	}
 
 	msg, err := client.UpdateMasjid(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -90,8 +107,25 @@ func local_request_MasjidService_UpdateMasjid_0(ctx context.Context, marshaler r
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Masjid); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["masjid.id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "masjid.id")
+	}
+
+	err = runtime.PopulateFieldFromPath(&protoReq, "masjid.id", val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "masjid.id", err)
 	}
 
 	msg, err := server.UpdateMasjid(ctx, &protoReq)
@@ -110,14 +144,14 @@ func request_MasjidService_DeleteMasjid_0(ctx context.Context, marshaler runtime
 		_   = err
 	)
 
-	val, ok = pathParams["masjid_id"]
+	val, ok = pathParams["id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "masjid_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
 
-	protoReq.MasjidId, err = runtime.String(val)
+	protoReq.Id, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "masjid_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
 	msg, err := client.DeleteMasjid(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -136,14 +170,14 @@ func local_request_MasjidService_DeleteMasjid_0(ctx context.Context, marshaler r
 		_   = err
 	)
 
-	val, ok = pathParams["masjid_id"]
+	val, ok = pathParams["id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "masjid_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
 
-	protoReq.MasjidId, err = runtime.String(val)
+	protoReq.Id, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "masjid_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
 	msg, err := server.DeleteMasjid(ctx, &protoReq)
@@ -162,14 +196,14 @@ func request_MasjidService_GetMasjid_0(ctx context.Context, marshaler runtime.Ma
 		_   = err
 	)
 
-	val, ok = pathParams["masjid_id"]
+	val, ok = pathParams["id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "masjid_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
 
-	protoReq.MasjidId, err = runtime.String(val)
+	protoReq.Id, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "masjid_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
 	msg, err := client.GetMasjid(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -188,14 +222,14 @@ func local_request_MasjidService_GetMasjid_0(ctx context.Context, marshaler runt
 		_   = err
 	)
 
-	val, ok = pathParams["masjid_id"]
+	val, ok = pathParams["id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "masjid_id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
 	}
 
-	protoReq.MasjidId, err = runtime.String(val)
+	protoReq.Id, err = runtime.String(val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "masjid_id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
 	msg, err := server.GetMasjid(ctx, &protoReq)
@@ -253,7 +287,7 @@ func RegisterMasjidServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/CreateMasjid", runtime.WithHTTPPathPattern("/masjids/create"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/CreateMasjid", runtime.WithHTTPPathPattern("/v1/masjids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -270,7 +304,7 @@ func RegisterMasjidServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 
 	})
 
-	mux.Handle("POST", pattern_MasjidService_UpdateMasjid_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_MasjidService_UpdateMasjid_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -278,7 +312,7 @@ func RegisterMasjidServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/UpdateMasjid", runtime.WithHTTPPathPattern("/masjids/update"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/UpdateMasjid", runtime.WithHTTPPathPattern("/v1/{masjid.id=masjids/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -303,7 +337,7 @@ func RegisterMasjidServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/DeleteMasjid", runtime.WithHTTPPathPattern("/masjids/{masjid_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/DeleteMasjid", runtime.WithHTTPPathPattern("/v1/{id=masjids/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -328,7 +362,7 @@ func RegisterMasjidServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/GetMasjid", runtime.WithHTTPPathPattern("/masjids/{masjid_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/GetMasjid", runtime.WithHTTPPathPattern("/v1/{id=masjids/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -353,7 +387,7 @@ func RegisterMasjidServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/ListMasjids", runtime.WithHTTPPathPattern("/masjids/list"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.MasjidService/ListMasjids", runtime.WithHTTPPathPattern("/v1/masjids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -417,7 +451,7 @@ func RegisterMasjidServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/CreateMasjid", runtime.WithHTTPPathPattern("/masjids/create"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/CreateMasjid", runtime.WithHTTPPathPattern("/v1/masjids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -433,13 +467,13 @@ func RegisterMasjidServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 
 	})
 
-	mux.Handle("POST", pattern_MasjidService_UpdateMasjid_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_MasjidService_UpdateMasjid_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/UpdateMasjid", runtime.WithHTTPPathPattern("/masjids/update"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/UpdateMasjid", runtime.WithHTTPPathPattern("/v1/{masjid.id=masjids/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -461,7 +495,7 @@ func RegisterMasjidServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/DeleteMasjid", runtime.WithHTTPPathPattern("/masjids/{masjid_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/DeleteMasjid", runtime.WithHTTPPathPattern("/v1/{id=masjids/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -483,7 +517,7 @@ func RegisterMasjidServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/GetMasjid", runtime.WithHTTPPathPattern("/masjids/{masjid_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/GetMasjid", runtime.WithHTTPPathPattern("/v1/{id=masjids/*}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -505,7 +539,7 @@ func RegisterMasjidServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/ListMasjids", runtime.WithHTTPPathPattern("/masjids/list"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.MasjidService/ListMasjids", runtime.WithHTTPPathPattern("/v1/masjids"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -525,15 +559,15 @@ func RegisterMasjidServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
-	pattern_MasjidService_CreateMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"masjids", "create"}, ""))
+	pattern_MasjidService_CreateMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "masjids"}, ""))
 
-	pattern_MasjidService_UpdateMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"masjids", "update"}, ""))
+	pattern_MasjidService_UpdateMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "masjids", "masjid.id"}, ""))
 
-	pattern_MasjidService_DeleteMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"masjids", "masjid_id"}, ""))
+	pattern_MasjidService_DeleteMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "masjids", "id"}, ""))
 
-	pattern_MasjidService_GetMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 1}, []string{"masjids", "masjid_id"}, ""))
+	pattern_MasjidService_GetMasjid_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 2, 5, 2}, []string{"v1", "masjids", "id"}, ""))
 
-	pattern_MasjidService_ListMasjids_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"masjids", "list"}, ""))
+	pattern_MasjidService_ListMasjids_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "masjids"}, ""))
 )
 
 var (
