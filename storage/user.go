@@ -41,7 +41,7 @@ type User struct {
 	FirstName      string    `gorm:"type:varchar(255)"`
 	LastName       string    `gorm:"type:varchar(255)"`
 	PhoneNumber    string    `gorm:"type:varchar(255)"`
-	Gender         gender    `gorm:"type:gender"`
+	Gender         gender    `gorm:"type:varchar(6);check:gender IN ('MALE', 'FEMALE')"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
@@ -57,8 +57,13 @@ func NewUser(up *pb.User, pwd string) (*User, error) {
 		// TODO: log error that occurred
 		return nil, status.Error(codes.Internal, "an internal error occurred")
 	}
-
+	// uuid generation
+	uuid, err := uuid.NewUUID()
+	if err != nil {
+		return nil, err
+	}
 	return &User{
+		ID:             uuid,
 		Email:          up.GetEmail(),
 		Username:       up.GetUsername(),
 		HashedPassword: hpwd,

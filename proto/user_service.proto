@@ -8,10 +8,23 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/proto";
 
 service UserService {
+    // Logs in a user and gives jwt tokens
+    rpc LoginUser(LoginRequest) returns (Tokens) {
+        option (google.api.http) = {
+          post: "/users/login"
+          body: "*"
+        };
+    }
     // Creates the given User with the given password.
     rpc CreateUser(CreateUserRequest) returns (User) {
         option (google.api.http) = {
           post: "/users/create"
+          body: "*"
+        };
+    }
+    rpc VerifyUser(VerifyRequest) returns (VerifyResponse) {
+        option (google.api.http) = {
+          post: "/users/verify"
           body: "*"
         };
     }
@@ -42,6 +55,24 @@ service UserService {
     }
 }
 
+message VerifyRequest {
+    string email = 1;
+    int64 code = 2;
+}
+message VerifyResponse {
+    string response = 1;
+}
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message Tokens {
+    // The access JWT for the user.
+    string access_token = 1;
+    // The refresh JWT for the user.
+    string refresh_token = 2;
+}
 // Defines a specific role a user might have for a specific masjid.
 message MasjidRole {
     // Defines the different possible roles a user might have in a masjid.
