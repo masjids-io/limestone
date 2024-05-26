@@ -427,27 +427,6 @@ paths:
             $ref: '#/definitions/limestoneCreateUserRequest'
       tags:
         - UserService
-  /users/login:
-    post:
-      summary: Logs in a user and gives jwt tokens
-      operationId: UserService_LoginUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneTokens'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneLoginRequest'
-      tags:
-        - UserService
   /users/update:
     post:
       summary: Updates a User to the given User in the request provided the password is valid.
@@ -467,26 +446,6 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/limestoneUpdateUserRequest'
-      tags:
-        - UserService
-  /users/verify:
-    post:
-      operationId: UserService_VerifyUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneVerifyResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneVerifyRequest'
       tags:
         - UserService
 definitions:
@@ -796,13 +755,6 @@ definitions:
           type: object
           $ref: '#/definitions/limestoneMasjid'
         description: The list of returned masjids.
-  limestoneLoginRequest:
-    type: object
-    properties:
-      email:
-        type: string
-      password:
-        type: string
   limestoneMasjid:
     type: object
     properties:
@@ -885,15 +837,6 @@ definitions:
         type: string
         format: date-time
         description: The timestamp at which the token expires.
-  limestoneTokens:
-    type: object
-    properties:
-      accessToken:
-        type: string
-        description: The access JWT for the user.
-      refreshToken:
-        type: string
-        description: The refresh JWT for the user.
   limestoneUpdateAdhanFileRequest:
     type: object
     properties:
@@ -958,19 +901,6 @@ definitions:
         format: date-time
         description: The update time of the user. This field is output only.
     description: Defines a User.
-  limestoneVerifyRequest:
-    type: object
-    properties:
-      email:
-        type: string
-      code:
-        type: string
-        format: int64
-  limestoneVerifyResponse:
-    type: object
-    properties:
-      response:
-        type: string
   protobufAny:
     type: object
     properties:
