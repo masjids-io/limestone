@@ -11,21 +11,21 @@ import (
 )
 
 type UserServiceServer struct {
-	SM *storage.StorageManager
+	smgr *storage.StorageManager
 	pb.UnimplementedUserServiceServer
 }
 
-func (srvr *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.User, error) {
-	user, err := srvr.SM.CreateUser(in.GetUser(), in.GetPassword())
+func (s *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.User, error) {
+	user, err := s.smgr.CreateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
 	return user.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
-func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
+func (s *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	if in.GetEmail() != "" {
-		user, err := srvr.SM.GetUserWithEmail(in.GetEmail(), in.GetPassword())
+		user, err := s.smgr.GetUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
@@ -33,7 +33,7 @@ func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserReques
 			User: user.ToProto(),
 		}, status.Error(codes.OK, codes.OK.String())
 	}
-	user, err := srvr.SM.GetUserWithUsername(in.GetUsername(), in.GetPassword())
+	user, err := s.smgr.GetUserWithUsername(in.GetUsername(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -42,22 +42,22 @@ func (srvr *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserReques
 	}, status.Error(codes.OK, codes.OK.String())
 }
 
-func (srvr *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.User, error) {
-	user, err := srvr.SM.UpdateUser(in.GetUser(), in.GetPassword())
+func (s *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.User, error) {
+	user, err := s.smgr.UpdateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
 	return user.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
-func (srvr *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+func (s *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	if in.GetEmail() != "" {
-		err := srvr.SM.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
+		err := s.smgr.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		err := srvr.SM.DeleteUserWithUsername(in.GetUsername(), in.GetPassword())
+		err := s.smgr.DeleteUserWithUsername(in.GetUsername(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
