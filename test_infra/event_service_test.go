@@ -75,7 +75,7 @@ func (suite *IntegrationTestSuite) TestGetEvent_Success() {
 	AssertEventTimestampsCurrent(suite.T(), out)
 
 	out, err = suite.EventServiceClient.GetEvent(ctx, &pb.GetEventRequest{
-		EventId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -87,7 +87,7 @@ func (suite *IntegrationTestSuite) TestGetEvent_Success() {
 func (suite *IntegrationTestSuite) TestGetEvent_NotFound() {
 	ctx := context.Background()
 	out, err := suite.EventServiceClient.GetEvent(ctx, &pb.GetEventRequest{
-		EventId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
@@ -106,7 +106,7 @@ func (suite *IntegrationTestSuite) TestDeleteEvent_Success() {
 	AssertEventTimestampsCurrent(suite.T(), out)
 
 	_, err = suite.EventServiceClient.DeleteEvent(ctx, &pb.DeleteEventRequest{
-		EventId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -115,7 +115,7 @@ func (suite *IntegrationTestSuite) TestDeleteEvent_Success() {
 func (suite *IntegrationTestSuite) TestDeleteEvent_NotFound() {
 	ctx := context.Background()
 	_, err := suite.EventServiceClient.DeleteEvent(ctx, &pb.DeleteEventRequest{
-		EventId: DefaultId,
+		Id: DefaultId,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)

@@ -164,7 +164,7 @@ type UpdateAdhanFileRequest struct {
 	// will be updated to this given adhan file.
 	//
 	// The adhan file's `id` field is used to identify the book to update.
-	// Format: books/{book}
+	// Format: adhan_files/{adhan_file}
 	AdhanFile *AdhanFile `protobuf:"bytes,1,opt,name=adhan_file,json=adhanFile,proto3" json:"adhan_file,omitempty"`
 }
 

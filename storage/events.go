@@ -22,8 +22,7 @@ const (
 
 type Event struct {
 	ID                uuid.UUID `gorm:"primaryKey;type:char(36)"`
-	UserId            string
-	MasjidId          string
+	OrganizationId    string
 	Name              string
 	Description       string
 	StartTime         time.Time
@@ -45,6 +44,7 @@ type Event struct {
 func NewEvent(ep *pb.Event) (*Event, error) {
 	e := Event{
 		Name:              ep.GetName(),
+		OrganizationId:    ep.GetOrganizationId(),
 		Description:       ep.GetDescription(),
 		StartTime:         ep.GetStartTime().AsTime(),
 		EndTime:           ep.GetEndTime().AsTime(),
@@ -53,13 +53,6 @@ func NewEvent(ep *pb.Event) (*Event, error) {
 		RequiresRsvp:      ep.GetRequiresRsvp(),
 		MaxParticipants:   ep.GetMaxParticipants(),
 		LivestreamLink:    ep.GetLivestreamLink(),
-	}
-	if ep.GetUserId() != "" {
-		e.UserId = ep.GetUserId()
-	} else if ep.GetMasjidId() != "" {
-		e.MasjidId = ep.GetMasjidId()
-	} else {
-		return nil, status.Error(codes.InvalidArgument, "User ID or Masjid must be specified")
 	}
 
 	types := []string{}
@@ -76,6 +69,7 @@ func NewEvent(ep *pb.Event) (*Event, error) {
 func (e *Event) ToProto() *pb.Event {
 	ep := pb.Event{
 		Id:                e.ID.String(),
+		OrganizationId:    e.OrganizationId,
 		Name:              e.Name,
 		Description:       e.Description,
 		StartTime:         timestamppb.New(e.StartTime),
@@ -87,13 +81,6 @@ func (e *Event) ToProto() *pb.Event {
 		LivestreamLink:    e.LivestreamLink,
 		CreateTime:        timestamppb.New(e.CreatedAt),
 		UpdateTime:        timestamppb.New(e.UpdatedAt),
-	}
-	if e.UserId != "" {
-		ep.Owner = &pb.Event_UserId{UserId: e.UserId}
-	} else if e.MasjidId != "" {
-		ep.Owner = &pb.Event_MasjidId{MasjidId: e.MasjidId}
-	} else {
-		// TODO: add logs
 	}
 
 	types := e.EventTypes
