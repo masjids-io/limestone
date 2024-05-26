@@ -11,36 +11,36 @@ import (
 )
 
 type EventServiceServer struct {
-	SM *storage.StorageManager
+	smgr *storage.StorageManager
 	pb.UnimplementedEventServiceServer
 }
 
-func (srvr *EventServiceServer) CreateEvent(ctx context.Context, in *pb.CreateEventRequest) (*pb.Event, error) {
-	event, err := srvr.SM.CreateEvent(in.GetEvent())
+func (s *EventServiceServer) CreateEvent(ctx context.Context, in *pb.CreateEventRequest) (*pb.Event, error) {
+	event, err := s.smgr.CreateEvent(in.GetEvent())
 	if err != nil {
 		return nil, err
 	}
 	return event.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
-func (srvr *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventRequest) (*pb.Event, error) {
-	event, err := srvr.SM.GetEvent(in.GetEventId())
+func (s *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventRequest) (*pb.Event, error) {
+	event, err := s.smgr.GetEvent(in.GetEventId())
 	if err != nil {
 		return nil, err
 	}
 	return event.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
-func (srvr *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEventRequest) (*pb.Event, error) {
-	event, err := srvr.SM.UpdateEvent(in.GetEvent())
+func (s *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEventRequest) (*pb.Event, error) {
+	event, err := s.smgr.UpdateEvent(in.GetEvent())
 	if err != nil {
 		return nil, err
 	}
 	return event.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
-func (srvr *EventServiceServer) DeleteEvent(ctx context.Context, in *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
-	err := srvr.SM.DeleteEvent(in.GetEventId())
+func (s *EventServiceServer) DeleteEvent(ctx context.Context, in *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
+	err := s.smgr.DeleteEvent(in.GetEventId())
 	if err != nil {
 		return nil, err
 	}
