@@ -42,18 +42,6 @@ To run the server, make sure the relevant environment variables are set; then, r
 
 from the root directory. This exposes both an HTTP server and a gRPC server. You can make calls to the gRPC server via [grpcurl](https://github.com/fullstorydev/grpcurl). But, for end-to-end testing, it's just easier to call the HTTP server, with any HTTP client (Postman or curl).
 
-## Running dockerized environment
-To run the server with the databases, make sure the relevant environment variables are set; and you have Make installed along with Docker run the command:
-
-To rebuild binaries and start containers:
-`make up_build`
-
-To only start pre-built binaries:
-`make up`
-
-To bring down the docker environment:
-`make down`
-
 ## Tasks
 
 ### Implemented

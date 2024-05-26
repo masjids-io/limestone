@@ -1,26 +1,18 @@
 package storage
 
 import (
-	"crypto/rand"
 	"errors"
-	"fmt"
-	"math/big"
-	"regexp"
-	"strconv"
-	"time"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
-	"github.com/go-redis/redis"
 	"github.com/mnadev/limestone/auth"
 	pb "github.com/mnadev/limestone/proto"
 )
 
 type StorageManager struct {
-	DB    *gorm.DB
-	Cache *redis.Client
+	DB *gorm.DB
 }
 
 func gormToGrpcError(err error) error {
@@ -32,57 +24,19 @@ func gormToGrpcError(err error) error {
 	}
 	return status.Error(codes.Internal, "an internal error occurred")
 }
-func (s *StorageManager) SetCode(email string) (string, error) {
-	randomNumber := GenerateRandomNumber()
-	if err := Set(s.Cache, email, randomNumber, 10*time.Minute); err != nil {
-		// handle error
-		fmt.Println(err)
-		return "", err
-	}
-	return randomNumber, nil
-}
-
-func GenerateRandomNumber() string {
-	// Generate a random number between 100000 and 999999 (6 digits)
-	num, err := rand.Int(rand.Reader, big.NewInt(900000))
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	return strconv.Itoa(int((num.Int64()) + 100000))
-}
 
 // CreateUser creates a User in the database for the given User and password
 func (s *StorageManager) CreateUser(up *pb.User, pwd string) (*User, error) {
-	//check validity of email
-	pattern := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	user, err := NewUser(up, pwd)
+	if err != nil {
+		return nil, err
+	}
 
-	if !pattern.MatchString(up.GetEmail()) {
-		return nil, status.Error(codes.InvalidArgument, "Incorrect email format")
+	result := s.DB.Create(user)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
 	}
-	//check for user existence
-	var user User
-	err := s.DB.Where("email = ?", up.GetEmail()).First(&user).Error
-	if err != nil && err == gorm.ErrRecordNotFound {
-		//db user instance created
-		u, err := NewUser(up, pwd)
-		if err != nil {
-			return nil, err
-		}
-		//db entry
-		result := s.DB.Create(u)
-		if result.Error != nil {
-			return nil, gormToGrpcError(result.Error)
-		}
-		//concurrent email verification dispatched
-		code, err := s.SetCode(up.GetEmail())
-		if err != nil {
-			return nil, err
-		}
-		go auth.EmailVerification(up.GetEmail(), code)
-		return u, nil
-	}
-	return nil, status.Error(codes.AlreadyExists, "user already exists")
+	return user, nil
 }
 
 // UpdateUser updates a User in the database for the given User and password if it exists
@@ -122,60 +76,6 @@ func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 	}
 	return &updated_user, nil
 }
-func (s *StorageManager) VerifyUser(email string, code int64) (*pb.VerifyResponse, error) {
-	//fetch code from redis
-	var storedCode string
-	if err := Get(s.Cache, email, &storedCode); err != nil {
-		return nil, status.Error(codes.Internal, "Code expired. Re-login.")
-	}
-	//check if code matches
-	strCode := strconv.Itoa(int(code))
-	if storedCode != strCode {
-		return nil, status.Error(codes.PermissionDenied, "Incorrect code")
-	}
-	//update in db
-	result := s.DB.Model(&User{}).Where("email = ?", email).Updates(map[string]interface{}{
-		"is_verified": true,
-	})
-	if result.Error != nil {
-		return nil, gormToGrpcError(result.Error)
-	}
-	// delete code from cache
-	Delete(s.Cache, email)
-	return &pb.VerifyResponse{
-		Response: "Verified",
-	}, nil
-}
-
-// GetUserWithEmail returns a User with the given email and password if it exists
-func (s *StorageManager) LoginUser(email string, pwd string) (*pb.Tokens, error) {
-	var user User
-	result := s.DB.Where("email = ?", email).First(&user)
-	if result.Error != nil {
-		return nil, gormToGrpcError(result.Error)
-	}
-	// password check
-	if auth.CheckPassword(pwd, user.HashedPassword) != nil {
-		return nil, status.Error(codes.PermissionDenied, "password did not match")
-	}
-	// check verification
-	if !user.IsVerified {
-		//concurrent email verification dispatched
-		code, err := s.SetCode(user.Email)
-		if err != nil {
-			return nil, err
-		}
-		go auth.EmailVerification(user.Email, code)
-		return nil, status.Error(codes.PermissionDenied, "Account unverified")
-	}
-	// if verified, return tokens
-	access, _ := auth.CreateJWT(user.ID.String(), user.Email, auth.TokenType(0))  //access token
-	refresh, _ := auth.CreateJWT(user.ID.String(), user.Email, auth.TokenType(1)) //refresh token
-	return &pb.Tokens{
-		AccessToken:  access,
-		RefreshToken: refresh,
-	}, nil
-}
 
 // GetUserWithEmail returns a User with the given email and password if it exists
 func (s *StorageManager) GetUserWithEmail(email string, pwd string) (*User, error) {
@@ -184,7 +84,7 @@ func (s *StorageManager) GetUserWithEmail(email string, pwd string) (*User, erro
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
 	}
-	// password check
+
 	if auth.CheckPassword(pwd, user.HashedPassword) != nil {
 		return nil, status.Error(codes.PermissionDenied, "password did not match")
 	}
