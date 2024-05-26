@@ -57,22 +57,22 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 	suite.DB.AutoMigrate(&storage.User{})
 
 	pb.RegisterAdhanServiceServer(suite.Server, &adhan_service.AdhanServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})
 	pb.RegisterEventServiceServer(suite.Server, &event_service.EventServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})
 	pb.RegisterMasjidServiceServer(suite.Server, &masjid_service.MasjidServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})
 	pb.RegisterUserServiceServer(suite.Server, &user_service.UserServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: suite.DB,
 		},
 	})

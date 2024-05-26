@@ -126,7 +126,7 @@ type PrayerTimesConfiguration struct {
 													  'SEVENTH_OF_THE_NIGHT', 
 													  'TWILIGHT_ANGLE')" 
 													   gorm:"column:high_latitude_rule"`
-	// The prayer adjusments (aka offsets) to apply to the calculated prayer times.
+	// The prayer adjustments (aka offsets) to apply to the calculated prayer times.
 	Adjustments PrayerAdjustments `gorm:"embedded"`
 }
 

@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -8,67 +10,74 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/proto";
 
 service AdhanService {
-    // Creates an adhan audio file in the database for a masjid.
-    rpc CreateAdhanFile(CreateAdhanFileRequest) returns (AdhanFile) {
-        option (google.api.http) = {
-          post: "/adhan/file/create"
-          body: "*"
-        };
-    }
-    // Updates an adhan audio file in the database for a masjid.
-    rpc UpdateAdhanFile(UpdateAdhanFileRequest) returns (AdhanFile) {
-        option (google.api.http) = {
-          post: "/adhan/file/update"
-          body: "*"
-        };
-    }
-    // Get an adhan audio file from the database for a masjid.
-    rpc GetAdhanFile(GetAdhanFileRequest) returns (AdhanFile) {
-        option (google.api.http) = {
-          get: "/adhan/file/{masjid_id}"
-        };
-    }
-    // Deletes an adhan audio from the database for a masjid.
-    rpc DeleteAdhanFile(DeleteAdhanFileRequest) returns (DeleteAdhanFileResponse) {
-        option (google.api.http) = {
-          delete: "/adhan/file/{id}"
-        };
-    }
+  // Creates an adhan audio file in the database for a masjid.
+  rpc CreateAdhanFile(CreateAdhanFileRequest) returns (AdhanFile) {
+    option (google.api.http) = {
+      post: "/v1/adhan_files"
+      body: "adhan_file"
+    };
+    option (google.api.method_signature) = "adhan_file";
+  }
+  // Updates an adhan audio file in the database for a masjid.
+  rpc UpdateAdhanFile(UpdateAdhanFileRequest) returns (AdhanFile) {
+    option (google.api.http) = {
+      patch: "/v1/{adhan_file.id=adhan_files/*}"
+      body: "adhan_file"
+    };
+    option (google.api.method_signature) = "adhan_file";
+  }
+  // Get an adhan audio file from the database for a masjid.
+  rpc GetAdhanFile(GetAdhanFileRequest) returns (AdhanFile) {
+    option (google.api.http) = {
+      get: "/v1/{id=adhan_files/*}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+  // Deletes an adhan audio from the database for a masjid.
+  rpc DeleteAdhanFile(DeleteAdhanFileRequest) returns (DeleteAdhanFileResponse) {
+    option (google.api.http) = {
+      delete: "/v1/{id=adhan_files/*}"
+    };
+    option (google.api.method_signature) = "id";
+  }
 }
 
 message AdhanFile {
-    // The unique id associated with this file.
-    string id = 1;
-    // The masjid id associated with this file.
-    string masjid_id = 2;
-    // The bytes of the audio file. This should be in LINEAR16 format at 
-    // a sample rate of 16 kHz.
-    bytes file = 3;
-    // The create time of the file. This field is output only.
-    google.protobuf.Timestamp create_time = 4; 
-    // The update time of the file. This field is output only.
-    google.protobuf.Timestamp update_time = 5; 
+  // The unique id associated with this file.
+  string id = 1;
+  // The masjid id associated with this file.
+  string masjid_id = 2;
+  // The bytes of the audio file. This should be in LINEAR16 format at 
+  // a sample rate of 16 kHz.
+  bytes file = 3;
+  // The create time of the file. This field is output only.
+  google.protobuf.Timestamp create_time = 4; 
+  // The update time of the file. This field is output only.
+  google.protobuf.Timestamp update_time = 5; 
 }
 
 message CreateAdhanFileRequest {
-    // The adhan file to create.
-    AdhanFile adhan_file = 1;
+  // The adhan file to create.
+  AdhanFile adhan_file = 1 [(google.api.field_behavior) = REQUIRED];;
 }
 
 message UpdateAdhanFileRequest {
-    // The adhan file to update to. The file associated with the id
-    // will be updated to this given adhan file.
-    AdhanFile adhan_file = 1;
+  // The adhan file to update to. The file associated with the id
+  // will be updated to this given adhan file.
+  //
+  // The adhan file's `id` field is used to identify the book to update.
+  // Format: books/{book}
+  AdhanFile adhan_file = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message GetAdhanFileRequest {
-    // The masjid id to get the adhan file for.
-    string masjid_id = 1;   
+  // The adhan file id to get.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message DeleteAdhanFileRequest {
-    // The adhan file id of the file to delete.
-    string id = 1;
+  // The adhan file id to delete.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message DeleteAdhanFileResponse {}
