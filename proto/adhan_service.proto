@@ -58,7 +58,7 @@ message AdhanFile {
 
 message CreateAdhanFileRequest {
   // The adhan file to create.
-  AdhanFile adhan_file = 1 [(google.api.field_behavior) = REQUIRED];;
+  AdhanFile adhan_file = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message UpdateAdhanFileRequest {
@@ -66,7 +66,7 @@ message UpdateAdhanFileRequest {
   // will be updated to this given adhan file.
   //
   // The adhan file's `id` field is used to identify the book to update.
-  // Format: books/{book}
+  // Format: adhan_files/{adhan_file}
   AdhanFile adhan_file = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
