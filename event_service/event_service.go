@@ -24,7 +24,7 @@ func (s *EventServiceServer) CreateEvent(ctx context.Context, in *pb.CreateEvent
 }
 
 func (s *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventRequest) (*pb.Event, error) {
-	event, err := s.Smgr.GetEvent(in.GetEventId())
+	event, err := s.Smgr.GetEvent(in.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEvent
 }
 
 func (s *EventServiceServer) DeleteEvent(ctx context.Context, in *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
-	err := s.Smgr.DeleteEvent(in.GetEventId())
+	err := s.Smgr.DeleteEvent(in.GetId())
 	if err != nil {
 		return nil, err
 	}
