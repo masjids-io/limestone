@@ -11,12 +11,12 @@ import (
 )
 
 type EventServiceServer struct {
-	smgr *storage.StorageManager
+	Smgr *storage.StorageManager
 	pb.UnimplementedEventServiceServer
 }
 
 func (s *EventServiceServer) CreateEvent(ctx context.Context, in *pb.CreateEventRequest) (*pb.Event, error) {
-	event, err := s.smgr.CreateEvent(in.GetEvent())
+	event, err := s.Smgr.CreateEvent(in.GetEvent())
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func (s *EventServiceServer) CreateEvent(ctx context.Context, in *pb.CreateEvent
 }
 
 func (s *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventRequest) (*pb.Event, error) {
-	event, err := s.smgr.GetEvent(in.GetEventId())
+	event, err := s.Smgr.GetEvent(in.GetEventId())
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (s *EventServiceServer) GetEvent(ctx context.Context, in *pb.GetEventReques
 }
 
 func (s *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEventRequest) (*pb.Event, error) {
-	event, err := s.smgr.UpdateEvent(in.GetEvent())
+	event, err := s.Smgr.UpdateEvent(in.GetEvent())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *EventServiceServer) UpdateEvent(ctx context.Context, in *pb.UpdateEvent
 }
 
 func (s *EventServiceServer) DeleteEvent(ctx context.Context, in *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
-	err := s.smgr.DeleteEvent(in.GetEventId())
+	err := s.Smgr.DeleteEvent(in.GetEventId())
 	if err != nil {
 		return nil, err
 	}

@@ -11,12 +11,12 @@ import (
 )
 
 type AdhanServiceServer struct {
-	smgr *storage.StorageManager
+	Smgr *storage.StorageManager
 	pb.UnimplementedAdhanServiceServer
 }
 
 func (s *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *pb.CreateAdhanFileRequest) (*pb.AdhanFile, error) {
-	adhan_file, err := s.smgr.CreateAdhanFile(in.GetAdhanFile())
+	adhan_file, err := s.Smgr.CreateAdhanFile(in.GetAdhanFile())
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func (s *AdhanServiceServer) CreateAdhanFile(ctx context.Context, in *pb.CreateA
 }
 
 func (s *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *pb.GetAdhanFileRequest) (*pb.AdhanFile, error) {
-	adhan_file, err := s.smgr.GetAdhanFile(in.GetMasjidId())
+	adhan_file, err := s.Smgr.GetAdhanFile(in.GetMasjidId())
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (s *AdhanServiceServer) GetAdhanFile(ctx context.Context, in *pb.GetAdhanFi
 }
 
 func (s *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *pb.UpdateAdhanFileRequest) (*pb.AdhanFile, error) {
-	adhan_file, err := s.smgr.UpdateAdhanFile(in.GetAdhanFile())
+	adhan_file, err := s.Smgr.UpdateAdhanFile(in.GetAdhanFile())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *AdhanServiceServer) UpdateAdhanFile(ctx context.Context, in *pb.UpdateA
 }
 
 func (s *AdhanServiceServer) DeleteAdhanFile(ctx context.Context, in *pb.DeleteAdhanFileRequest) (*pb.DeleteAdhanFileResponse, error) {
-	err := s.smgr.DeleteAdhanFile(in.GetId())
+	err := s.Smgr.DeleteAdhanFile(in.GetId())
 	if err != nil {
 		return nil, err
 	}

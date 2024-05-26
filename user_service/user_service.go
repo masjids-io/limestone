@@ -11,12 +11,12 @@ import (
 )
 
 type UserServiceServer struct {
-	smgr *storage.StorageManager
+	Smgr *storage.StorageManager
 	pb.UnimplementedUserServiceServer
 }
 
 func (s *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUserRequest) (*pb.User, error) {
-	user, err := s.smgr.CreateUser(in.GetUser(), in.GetPassword())
+	user, err := s.Smgr.CreateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func (s *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUserReq
 
 func (s *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	if in.GetEmail() != "" {
-		user, err := s.smgr.GetUserWithEmail(in.GetEmail(), in.GetPassword())
+		user, err := s.Smgr.GetUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
@@ -33,7 +33,7 @@ func (s *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) 
 			User: user.ToProto(),
 		}, status.Error(codes.OK, codes.OK.String())
 	}
-	user, err := s.smgr.GetUserWithUsername(in.GetUsername(), in.GetPassword())
+	user, err := s.Smgr.GetUserWithUsername(in.GetUsername(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +43,7 @@ func (s *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) 
 }
 
 func (s *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.User, error) {
-	user, err := s.smgr.UpdateUser(in.GetUser(), in.GetPassword())
+	user, err := s.Smgr.UpdateUser(in.GetUser(), in.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -52,12 +52,12 @@ func (s *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserReq
 
 func (s *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	if in.GetEmail() != "" {
-		err := s.smgr.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
+		err := s.Smgr.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		err := s.smgr.DeleteUserWithUsername(in.GetUsername(), in.GetPassword())
+		err := s.Smgr.DeleteUserWithUsername(in.GetUsername(), in.GetPassword())
 		if err != nil {
 			return nil, err
 		}

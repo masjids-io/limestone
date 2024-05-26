@@ -58,25 +58,25 @@ func main() {
 	DB.AutoMigrate(storage.User{})
 
 	adhan_service_server := adhan_service.AdhanServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: DB,
 		},
 	}
 	pb.RegisterAdhanServiceServer(server, &adhan_service_server)
 	event_server := event_service.EventServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: DB,
 		},
 	}
 	pb.RegisterEventServiceServer(server, &event_server)
 	masjid_server := masjid_service.MasjidServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: DB,
 		},
 	}
 	pb.RegisterMasjidServiceServer(server, &masjid_server)
 	user_server := user_service.UserServiceServer{
-		SM: &storage.StorageManager{
+		Smgr: &storage.StorageManager{
 			DB: DB,
 		},
 	}

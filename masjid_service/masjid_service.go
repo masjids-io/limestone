@@ -11,12 +11,12 @@ import (
 )
 
 type MasjidServiceServer struct {
-	smgr *storage.StorageManager
+	Smgr *storage.StorageManager
 	pb.UnimplementedMasjidServiceServer
 }
 
 func (s *MasjidServiceServer) CreateMasjid(ctx context.Context, in *pb.CreateMasjidRequest) (*pb.Masjid, error) {
-	masjid, err := s.smgr.CreateMasjid(in.GetMasjid())
+	masjid, err := s.Smgr.CreateMasjid(in.GetMasjid())
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func (s *MasjidServiceServer) CreateMasjid(ctx context.Context, in *pb.CreateMas
 }
 
 func (s *MasjidServiceServer) GetMasjid(ctx context.Context, in *pb.GetMasjidRequest) (*pb.Masjid, error) {
-	masjid, err := s.smgr.GetMasjid(in.GetMasjidId())
+	masjid, err := s.Smgr.GetMasjid(in.GetMasjidId())
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (s *MasjidServiceServer) GetMasjid(ctx context.Context, in *pb.GetMasjidReq
 }
 
 func (s *MasjidServiceServer) UpdateMasjid(ctx context.Context, in *pb.UpdateMasjidRequest) (*pb.Masjid, error) {
-	masjid, err := s.smgr.UpdateMasjid(in.GetMasjid())
+	masjid, err := s.Smgr.UpdateMasjid(in.GetMasjid())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *MasjidServiceServer) UpdateMasjid(ctx context.Context, in *pb.UpdateMas
 }
 
 func (s *MasjidServiceServer) DeleteMasjid(ctx context.Context, in *pb.DeleteMasjidRequest) (*pb.DeleteMasjidResponse, error) {
-	err := s.smgr.DeleteMasjid(in.GetMasjidId())
+	err := s.Smgr.DeleteMasjid(in.GetMasjidId())
 	if err != nil {
 		return nil, err
 	}
