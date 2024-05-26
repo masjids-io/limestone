@@ -23,21 +23,6 @@ func (s *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUserReq
 	return user.ToProto(), status.Error(codes.OK, codes.OK.String())
 }
 
-func (s *UserServiceServer) LoginUser(ctx context.Context, in *pb.LoginRequest) (*pb.Tokens, error) {
-	tokens, err := s.Smgr.LoginUser(in.GetEmail(), in.GetPassword())
-	if err != nil {
-		return nil, err
-	}
-	return tokens, nil
-}
-
-func (s *UserServiceServer) VerifyUser(ctx context.Context, in *pb.VerifyRequest) (*pb.VerifyResponse, error) {
-	res, err := s.Smgr.VerifyUser(in.GetEmail(), in.GetCode())
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-}
 func (s *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
 	if in.GetEmail() != "" {
 		user, err := s.Smgr.GetUserWithEmail(in.GetEmail(), in.GetPassword())
