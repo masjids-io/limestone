@@ -24,7 +24,7 @@ func (s *MasjidServiceServer) CreateMasjid(ctx context.Context, in *pb.CreateMas
 }
 
 func (s *MasjidServiceServer) GetMasjid(ctx context.Context, in *pb.GetMasjidRequest) (*pb.Masjid, error) {
-	masjid, err := s.Smgr.GetMasjid(in.GetMasjidId())
+	masjid, err := s.Smgr.GetMasjid(in.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (s *MasjidServiceServer) UpdateMasjid(ctx context.Context, in *pb.UpdateMas
 }
 
 func (s *MasjidServiceServer) DeleteMasjid(ctx context.Context, in *pb.DeleteMasjidRequest) (*pb.DeleteMasjidResponse, error) {
-	err := s.Smgr.DeleteMasjid(in.GetMasjidId())
+	err := s.Smgr.DeleteMasjid(in.GetId())
 	if err != nil {
 		return nil, err
 	}
