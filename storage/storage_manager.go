@@ -7,7 +7,6 @@ import (
 	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
-	"github.com/mnadev/limestone/auth"
 	pb "github.com/mnadev/limestone/proto"
 )
 
@@ -25,7 +24,7 @@ func gormToGrpcError(err error) error {
 	return status.Error(codes.Internal, "an internal error occurred")
 }
 
-// CreateUser creates a User in the database for the given User and password
+// CreateUser creates a User in the database for the given User and password.
 func (s *StorageManager) CreateUser(up *pb.User, pwd string) (*User, error) {
 	user, err := NewUser(up, pwd)
 	if err != nil {
@@ -39,20 +38,17 @@ func (s *StorageManager) CreateUser(up *pb.User, pwd string) (*User, error) {
 	return user, nil
 }
 
-// UpdateUser updates a User in the database for the given User and password if it exists
-func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
+// UpdateUser updates a User in the database for the given User if it exists.
+// We expect the user to be authenticated via a token before this step.
+func (s *StorageManager) UpdateUser(up *pb.User) (*User, error) {
 	var old_user User
-	result := s.DB.Where("id = ?", up.GetUserId()).First(&old_user)
+	result := s.DB.Where("id = ?", up.GetId()).First(&old_user)
 
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
 	}
 
-	if auth.CheckPassword(pwd, old_user.HashedPassword) != nil {
-		return nil, status.Error(codes.PermissionDenied, "password did not match")
-	}
-
-	// TODO: add a field mask to update the information
+	// TODO: add a field mask to update the information.
 	result = s.DB.Model(old_user).Where("id = ?", old_user.ID).
 		Updates(
 			map[string]interface{}{
@@ -70,60 +66,29 @@ func (s *StorageManager) UpdateUser(up *pb.User, pwd string) (*User, error) {
 	}
 
 	var updated_user User
-	result = s.DB.Where("id = ?", up.GetUserId()).First(&updated_user)
+	result = s.DB.Where("id = ?", up.GetId()).First(&updated_user)
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
 	}
 	return &updated_user, nil
 }
 
-// GetUserWithEmail returns a User with the given email and password if it exists
-func (s *StorageManager) GetUserWithEmail(email string, pwd string) (*User, error) {
+// GetUser returns a User with the given id if it exists.
+// We expect the user to be authenticated via a token before this step.
+func (s *StorageManager) GetUser(id string) (*User, error) {
 	var user User
-	result := s.DB.Where("email = ?", email).First(&user)
+	result := s.DB.Where("id = ?", id).First(&user)
 	if result.Error != nil {
 		return nil, gormToGrpcError(result.Error)
-	}
-
-	if auth.CheckPassword(pwd, user.HashedPassword) != nil {
-		return nil, status.Error(codes.PermissionDenied, "password did not match")
 	}
 
 	return &user, nil
 }
 
-// GetUserWithUsername returns a User with the given username and password if it exists
-func (s *StorageManager) GetUserWithUsername(username string, pwd string) (*User, error) {
-	var user User
-	result := s.DB.Where("username = ?", username).First(&user)
-	if result.Error != nil {
-		return nil, gormToGrpcError(result.Error)
-	}
-
-	if auth.CheckPassword(pwd, user.HashedPassword) != nil {
-		return nil, status.Error(codes.PermissionDenied, "password did not match")
-	}
-
-	return &user, nil
-}
-
-// DeleteUserWithEmail deletes a User with the given email and password if it exists
-func (s *StorageManager) DeleteUserWithEmail(email string, pwd string) error {
-	user, err := s.GetUserWithEmail(email, pwd)
-	if err != nil {
-		return err
-	}
-
-	result := s.DB.Delete(user, user.ID)
-	if result.Error != nil {
-		return gormToGrpcError(result.Error)
-	}
-	return nil
-}
-
-// DeleteUserWithUsername deletes a User with the given username and password if it exists
-func (s *StorageManager) DeleteUserWithUsername(username string, pwd string) error {
-	user, err := s.GetUserWithUsername(username, pwd)
+// DeleteUser deletes a User with the given id if it exists.
+// We expect the user to be authenticated via a token before this step.
+func (s *StorageManager) DeleteUser(id string) error {
+	user, err := s.GetUser(id)
 	if err != nil {
 		return err
 	}

@@ -24,16 +24,7 @@ func (s *UserServiceServer) CreateUser(ctx context.Context, in *pb.CreateUserReq
 }
 
 func (s *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.GetUserResponse, error) {
-	if in.GetEmail() != "" {
-		user, err := s.Smgr.GetUserWithEmail(in.GetEmail(), in.GetPassword())
-		if err != nil {
-			return nil, err
-		}
-		return &pb.GetUserResponse{
-			User: user.ToProto(),
-		}, status.Error(codes.OK, codes.OK.String())
-	}
-	user, err := s.Smgr.GetUserWithUsername(in.GetUsername(), in.GetPassword())
+	user, err := s.Smgr.GetUser(in.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +34,7 @@ func (s *UserServiceServer) GetUser(ctx context.Context, in *pb.GetUserRequest) 
 }
 
 func (s *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*pb.User, error) {
-	user, err := s.Smgr.UpdateUser(in.GetUser(), in.GetPassword())
+	user, err := s.Smgr.UpdateUser(in.GetUser())
 	if err != nil {
 		return nil, err
 	}
@@ -51,16 +42,9 @@ func (s *UserServiceServer) UpdateUser(ctx context.Context, in *pb.UpdateUserReq
 }
 
 func (s *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
-	if in.GetEmail() != "" {
-		err := s.Smgr.DeleteUserWithEmail(in.GetEmail(), in.GetPassword())
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		err := s.Smgr.DeleteUserWithUsername(in.GetUsername(), in.GetPassword())
-		if err != nil {
-			return nil, err
-		}
+	err := s.Smgr.DeleteUser(in.GetId())
+	if err != nil {
+		return nil, err
 	}
 	return &pb.DeleteUserResponse{}, status.Error(codes.OK, codes.OK.String())
 }
