@@ -1,6 +1,8 @@
 syntax = "proto3";
 
 import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 
 package limestone;
@@ -8,164 +10,149 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/proto";
 
 service UserService {
-    // Creates the given User with the given password.
-    rpc CreateUser(CreateUserRequest) returns (User) {
-        option (google.api.http) = {
-          post: "/users/create"
-          body: "*"
-        };
-    }
-    // Gets a User from the database and tokens provided the password is valid.
-    rpc GetUser(GetUserRequest) returns (GetUserResponse) {
-        option (google.api.http) = {
-          get: "/users"
-        };
-    }
-    // Updates a User to the given User in the request provided the password is valid.
-    rpc UpdateUser(UpdateUserRequest) returns (User) {
-        option (google.api.http) = {
-          post: "/users/update"
-          body: "*"
-        };
-    }
-    // Deletes a User from the database provided the password is valid.
-    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
-        option (google.api.http) = {
-          delete: "/users"
-        };
-    }
-    // Refreshes an access token.
-    rpc RefreshToken(RefreshTokenRequest) returns (TokenResponse) {
-        option (google.api.http) = {
-          get: "/token/refresh"
-        };
-    }
+	// Creates the given User with the given password.
+	rpc CreateUser(CreateUserRequest) returns (User) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "user"
+    };
+    option (google.api.method_signature) = "user,password";
+	}
+	// Gets a User from the database and tokens provided the auth token is valid.
+	rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/v1/{id=users/*}"
+    };
+    option (google.api.method_signature) = "id";
+	}
+	// Updates a User to the given User in the request provided the auth token is valid.
+	rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (google.api.http) = {
+      patch: "/v1/{user.id=users/*}"
+      body: "user"
+    };
+    option (google.api.method_signature) = "user";
+	}
+	// Deletes a User from the database provided the auth token is valid.
+	rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/v1/{id=users/*}"
+    };
+    option (google.api.method_signature) = "id";
+	}
+	// Refreshes an access token.
+	rpc RefreshToken(RefreshTokenRequest) returns (TokenResponse) {
+		option (google.api.http) = {
+			get: "/token/refresh"
+		};
+	}
 }
 
 // Defines a specific role a user might have for a specific masjid.
 message MasjidRole {
-    // Defines the different possible roles a user might have in a masjid.
-    enum Role {
-        // Default value. 
-        ROLE_UNSPECIFIED = 0;
-        // This role specifies someone who is just a member of the masjid.
-        MASJID_MEMBER = 1;
-        // This role specifies someone who has some responsibility at the masjid
-        // but is not an administrator.
-        MASJID_VOLUNTEER = 2;
-        // This role specifies someone at the masjid who is involved in a
-        // high-level administrative capacity.
-        MASJID_ADMIN = 3;
-        // This role specifies someone at the masjid who is involved in a
-        // religious capacity.
-        MASJID_IMAM = 4;
-    }
+	// Defines the different possible roles a user might have in a masjid.
+	enum Role {
+		// Default value. 
+		ROLE_UNSPECIFIED = 0;
+		// This role specifies someone who is just a member of the masjid.
+		MASJID_MEMBER = 1;
+		// This role specifies someone who has some responsibility at the masjid
+		// but is not an administrator.
+		MASJID_VOLUNTEER = 2;
+		// This role specifies someone at the masjid who is involved in a
+		// high-level administrative capacity.
+		MASJID_ADMIN = 3;
+		// This role specifies someone at the masjid who is involved in a
+		// religious capacity.
+		MASJID_IMAM = 4;
+	}
 
-    // The associated role.
-    Role role = 1;
-    // The ID of the masjid associated with this role.
-    string masjid_id = 2;
-    // The ID of the associated user.
-    string user_id = 3;
+	// The associated role.
+	Role role = 1;
+	// The ID of the masjid associated with this role.
+	string masjid_id = 2;
+	// The ID of the associated user.
+	string user_id = 3;
 }
 
 // Defines a User.
 message User {
-    // The ID of the user. This field is output only.
-    string user_id = 1;
-    // The email of the user. This field is required and must be unique.
-    string email = 2;
-    // The username of the user. This field is required and must be unique.
-    string username = 3;
-    // Whether or not the email of the user was verified.
-    bool is_email_verified = 4;
+	// The ID of the user. This field is output only.
+	string id = 1;
+	// The email of the user. This field is required and must be unique.
+	string email = 2;
+	// The username of the user. This field is required and must be unique.
+	string username = 3;
+	// Whether or not the email of the user was verified.
+	bool is_email_verified = 4;
 
-    // The first name of the user. 
-    string first_name = 5;
-    // The last name of the user.
-    string last_name = 6;
-    // The phone number associated with the user.
-    string phone_number = 7;
-    
-    // Defines an enum representing the gender of the user.
-    enum Gender {
-        // Default value.
-        GENDER_UNSPECIFIED = 0;
-        MALE = 1;
-        FEMALE = 2;
-    }    
-    Gender gender = 8;
+	// The first name of the user. 
+	string first_name = 5;
+	// The last name of the user.
+	string last_name = 6;
+	// The phone number associated with the user.
+	string phone_number = 7;
+	
+	// Defines an enum representing the gender of the user.
+	enum Gender {
+			// Default value.
+			GENDER_UNSPECIFIED = 0;
+			MALE = 1;
+			FEMALE = 2;
+	}    
+	Gender gender = 8;
 
-    // The create time of the user. This field is output only.
-    google.protobuf.Timestamp create_time = 9; 
-    // The update time of the user. This field is output only.
-    google.protobuf.Timestamp update_time = 10; 
+	// The create time of the user. This field is output only.
+	google.protobuf.Timestamp create_time = 9; 
+	// The update time of the user. This field is output only.
+	google.protobuf.Timestamp update_time = 10; 
 }
 
 message CreateUserRequest {
-    // The user to create.
-    User user = 1;
+	// The user to create.
+	User user = 1 [(google.api.field_behavior) = REQUIRED];
 
-    // The password for the user. This password is hashed before being
-    // stored in the database. 
-    // The password must be at least 8 characters.
-    string password = 2;
+	// The password for the user. This password is hashed before being
+	// stored in the database. 
+	// The password must be at least 8 characters.
+	string password = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
 message GetUserRequest {
-    oneof id {
-        // The unique email associated with the user.
-        string email = 1;
-        // The unique username associated with the user.
-        string username = 2;
-    }
-
-    // The password for the user account.
-    string password = 3;
+  // The id of the user to get.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message TokenResponse {
-    // The id of the token.
-    string id = 1;
-    // The access JWT for the user.
-    string access_token = 2;
-    // The refresh JWT for the user.
-    string refresh_token = 3;
-    // The timestamp at which the token expires.
-    google.protobuf.Timestamp expires_at = 4;
+	// The id of the token.
+	string id = 1;
+	// The access JWT for the user.
+	string access_token = 2;
+	// The refresh JWT for the user.
+	string refresh_token = 3;
+	// The timestamp at which the token expires.
+	google.protobuf.Timestamp expires_at = 4;
 }
 
 message GetUserResponse {
-    // The authenticated user.
-    User user = 1;
-    // The token response for the user.
-    TokenResponse token_response = 2;
+	// The authenticated user.
+	User user = 1;
 }
 
 message UpdateUserRequest {
-    // The updated user proto.
-    User user = 1;
-
-    // The password for the user account.
-    string password = 2;
+	// The updated user proto.
+	User user = 1;
 }
 
 message DeleteUserRequest {
-    oneof id {
-        // The unique email associated with the user.
-        string email = 1;
-        // The unique username associated with the user.
-        string username = 2;
-    }
-
-    // The password for the user account.
-    string password = 3;
+  // The id of the user to delete.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Empty response returned for DeleteUser RPC.
 message DeleteUserResponse {}
 
 message RefreshTokenRequest {
-    // The refresh JWT for the user.
-    string refresh_token = 1;
+	// The refresh JWT for the user.
+	string refresh_token = 1;
 }   
