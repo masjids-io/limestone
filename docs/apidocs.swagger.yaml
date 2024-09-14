@@ -33,109 +33,6 @@ paths:
           type: string
       tags:
         - UserService
-  /users:
-    get:
-      summary: Gets a User from the database and tokens provided the password is valid.
-      operationId: UserService_GetUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneGetUserResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: email
-          description: The unique email associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: username
-          description: The unique username associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: password
-          description: The password for the user account.
-          in: query
-          required: false
-          type: string
-      tags:
-        - UserService
-    delete:
-      summary: Deletes a User from the database provided the password is valid.
-      operationId: UserService_DeleteUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteUserResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: email
-          description: The unique email associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: username
-          description: The unique username associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: password
-          description: The password for the user account.
-          in: query
-          required: false
-          type: string
-      tags:
-        - UserService
-  /users/create:
-    post:
-      summary: Creates the given User with the given password.
-      operationId: UserService_CreateUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneUser'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneCreateUserRequest'
-      tags:
-        - UserService
-  /users/update:
-    post:
-      summary: Updates a User to the given User in the request provided the password is valid.
-      operationId: UserService_UpdateUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneUser'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneUpdateUserRequest'
-      tags:
-        - UserService
   /v1/adhan_files:
     post:
       summary: Creates an adhan audio file in the database for a masjid.
@@ -264,6 +161,35 @@ paths:
               - masjid
       tags:
         - MasjidService
+  /v1/users:
+    post:
+      summary: Creates the given User with the given password.
+      operationId: UserService_CreateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneUser'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: user
+          description: The user to create.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUser'
+            required:
+              - user
+        - name: password
+          description: "The password for the user. This password is hashed before being\nstored in the database. \nThe password must be at least 8 characters."
+          in: query
+          required: true
+          type: string
+      tags:
+        - UserService
   /v1/{adhanFile.id}:
     patch:
       summary: Updates an adhan audio file in the database for a masjid.
@@ -494,6 +420,49 @@ paths:
           pattern: masjids/[^/]+
       tags:
         - MasjidService
+  /v1/{id_3}:
+    get:
+      summary: Gets a User from the database and tokens provided the auth token is valid.
+      operationId: UserService_GetUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneGetUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_3
+          description: The id of the user to get.
+          in: path
+          required: true
+          type: string
+          pattern: users/[^/]+
+      tags:
+        - UserService
+    delete:
+      summary: Deletes a User from the database provided the auth token is valid.
+      operationId: UserService_DeleteUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_3
+          description: The id of the user to delete.
+          in: path
+          required: true
+          type: string
+          pattern: users/[^/]+
+      tags:
+        - UserService
   /v1/{id}:
     get:
       summary: Get an adhan audio file from the database for a masjid.
@@ -599,6 +568,64 @@ paths:
             title: The masjid to update in the database.
       tags:
         - MasjidService
+  /v1/{user.id}:
+    patch:
+      summary: Updates a User to the given User in the request provided the auth token is valid.
+      operationId: UserService_UpdateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneUser'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: user.id
+          description: The ID of the user. This field is output only.
+          in: path
+          required: true
+          type: string
+          pattern: users/[^/]+
+        - name: user
+          description: The updated user proto.
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: The email of the user. This field is required and must be unique.
+              username:
+                type: string
+                description: The username of the user. This field is required and must be unique.
+              isEmailVerified:
+                type: boolean
+                description: Whether or not the email of the user was verified.
+              firstName:
+                type: string
+                description: The first name of the user.
+              lastName:
+                type: string
+                description: The last name of the user.
+              phoneNumber:
+                type: string
+                description: The phone number associated with the user.
+              gender:
+                $ref: '#/definitions/UserGender'
+              createTime:
+                type: string
+                format: date-time
+                description: The create time of the user. This field is output only.
+              updateTime:
+                type: string
+                format: date-time
+                description: The update time of the user. This field is output only.
+            title: The updated user proto.
+      tags:
+        - UserService
 definitions:
   EventEventType:
     type: string
@@ -784,15 +811,6 @@ definitions:
         type: string
         format: date-time
         description: The update time of the file. This field is output only.
-  limestoneCreateUserRequest:
-    type: object
-    properties:
-      user:
-        $ref: '#/definitions/limestoneUser'
-        description: The user to create.
-      password:
-        type: string
-        description: "The password for the user. This password is hashed before being\nstored in the database. \nThe password must be at least 8 characters."
   limestoneDeleteAdhanFileResponse:
     type: object
   limestoneDeleteEventResponse:
@@ -864,9 +882,6 @@ definitions:
       user:
         $ref: '#/definitions/limestoneUser'
         description: The authenticated user.
-      tokenResponse:
-        $ref: '#/definitions/limestoneTokenResponse'
-        description: The token response for the user.
   limestoneListEventsResponse:
     type: object
     properties:
@@ -967,19 +982,10 @@ definitions:
         type: string
         format: date-time
         description: The timestamp at which the token expires.
-  limestoneUpdateUserRequest:
-    type: object
-    properties:
-      user:
-        $ref: '#/definitions/limestoneUser'
-        description: The updated user proto.
-      password:
-        type: string
-        description: The password for the user account.
   limestoneUser:
     type: object
     properties:
-      userId:
+      id:
         type: string
         description: The ID of the user. This field is output only.
       email:
