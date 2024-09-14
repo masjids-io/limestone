@@ -16,7 +16,7 @@ func TestUserService(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
-func (suite *IntegrationTestSuite) TestCreateUser_Success() {
+func (suite *IntegrationTestSuite) TestCreateUserSuccess() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -29,7 +29,7 @@ func (suite *IntegrationTestSuite) TestCreateUser_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 }
 
-func (suite *IntegrationTestSuite) TestCreateUser_PasswordTooShort() {
+func (suite *IntegrationTestSuite) TestCreateUserPasswordTooShort() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -62,7 +62,7 @@ func (suite *IntegrationTestSuite) TestUpdateUserSuccess() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 }
 
-func (suite *IntegrationTestSuite) TestUpdateUser_NotFound() {
+func (suite *IntegrationTestSuite) TestUpdateUserNotFound() {
 	ctx := context.Background()
 
 	user := GetUserProto(UserEmail, Username)
