@@ -40,12 +40,20 @@ service UserService {
     };
     option (google.api.method_signature) = "id";
 	}
-	// Refreshes an access token.
-	rpc RefreshToken(RefreshTokenRequest) returns (TokenResponse) {
-		option (google.api.http) = {
-			get: "/token/refresh"
-		};
-	}
+  // Authenticates a user based on their username or email and password
+  rpc AuthenticateUser (AuthenticateUserRequest) returns (AuthenticateUserResponse) {
+    option (google.api.http) = {
+      post: "/users/authenticate"
+      body: "*"
+    };
+  }
+  // Refreshes an existing authentication token
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http) = {
+      post: "/users/refresh_token"
+      body: "*"
+    };
+  }
 }
 
 // Defines a specific role a user might have for a specific masjid.
@@ -123,17 +131,6 @@ message GetUserRequest {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-message TokenResponse {
-	// The id of the token.
-	string id = 1;
-	// The access JWT for the user.
-	string access_token = 2;
-	// The refresh JWT for the user.
-	string refresh_token = 3;
-	// The timestamp at which the token expires.
-	google.protobuf.Timestamp expires_at = 4;
-}
-
 message GetUserResponse {
 	// The authenticated user.
 	User user = 1;
@@ -152,7 +149,31 @@ message DeleteUserRequest {
 // Empty response returned for DeleteUser RPC.
 message DeleteUserResponse {}
 
+message AuthenticateUserRequest {
+	// Use either username or email for authentication.
+  oneof identifier {
+    string username = 1;
+    string email = 2;
+  }
+  // The password for authentication
+  string password = 3;
+}
+
+message AuthenticateUserResponse {
+	// The access token for subsequent authenticated requests.
+	string access_token = 1;
+	// The refresh token to obtain a new access token when it expires.
+	string refresh_token = 2;
+	// The ID of the authenticated user (if successful).
+  int32 user_id = 3;
+}
+
 message RefreshTokenRequest {
 	// The refresh JWT for the user.
 	string refresh_token = 1;
 }   
+
+message RefreshTokenResponse {
+	// The access token for subsequent authenticated requests.
+	string access_token = 1;
+}
