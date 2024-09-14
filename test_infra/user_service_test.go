@@ -16,7 +16,7 @@ func TestUserService(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
 
-func (suite *IntegrationTestSuite) TestCreateUser_Success() {
+func (suite *IntegrationTestSuite) TestCreateUserSuccess() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -29,7 +29,7 @@ func (suite *IntegrationTestSuite) TestCreateUser_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 }
 
-func (suite *IntegrationTestSuite) TestCreateUser_PasswordTooShort() {
+func (suite *IntegrationTestSuite) TestCreateUserPasswordTooShort() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -40,7 +40,7 @@ func (suite *IntegrationTestSuite) TestCreateUser_PasswordTooShort() {
 	suite.Assert().Equal(status.Code(err), codes.InvalidArgument)
 }
 
-func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
+func (suite *IntegrationTestSuite) TestUpdateUserSuccess() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -53,8 +53,7 @@ func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 
 	out, err = suite.UserServiceClient.UpdateUser(ctx, &pb.UpdateUserRequest{
-		User:     GetUserProto(UserEmail, "new_name"),
-		Password: Password,
+		User: GetUserProto(UserEmail, "new_name"),
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -63,42 +62,20 @@ func (suite *IntegrationTestSuite) TestUpdateUser_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 }
 
-func (suite *IntegrationTestSuite) TestUpdateUser_BadPassword() {
-	ctx := context.Background()
-	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
-
-	out, err = suite.UserServiceClient.UpdateUser(ctx, &pb.UpdateUserRequest{
-		User:     GetUserProto(UserEmail, "new_name"),
-		Password: BadPassword,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(out)
-}
-
-func (suite *IntegrationTestSuite) TestUpdateUser_NotFound() {
+func (suite *IntegrationTestSuite) TestUpdateUserNotFound() {
 	ctx := context.Background()
 
 	user := GetUserProto(UserEmail, Username)
 
 	out, err := suite.UserServiceClient.UpdateUser(ctx, &pb.UpdateUserRequest{
-		User:     user,
-		Password: Password,
+		User: user,
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(out)
 }
 
-func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
+func (suite *IntegrationTestSuite) TestGetUserSuccess() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -111,10 +88,7 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 
 	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
-		Id: &pb.GetUserRequest_Email{
-			Email: out.GetEmail(),
-		},
-		Password: Password,
+		Id: out.GetId(),
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -123,104 +97,17 @@ func (suite *IntegrationTestSuite) TestGetUserWithEmail_Success() {
 	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
 }
 
-func (suite *IntegrationTestSuite) TestGetUserWithEmail_BadPassword() {
-	ctx := context.Background()
-	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
-
-	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
-		Id: &pb.GetUserRequest_Email{
-			Email: out.GetEmail(),
-		},
-		Password: BadPassword,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(resp)
-}
-
-func (suite *IntegrationTestSuite) TestGetUserWithEmail_NotFound() {
+func (suite *IntegrationTestSuite) TestGetUserNotFound() {
 	ctx := context.Background()
 	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
-		Id: &pb.GetUserRequest_Email{
-			Email: "bad@example.com",
-		},
-		Password: Password,
+		Id: "wrongid",
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(resp)
 }
 
-func (suite *IntegrationTestSuite) TestGetUserWithUsername_Success() {
-	ctx := context.Background()
-	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
-
-	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
-		Id: &pb.GetUserRequest_Username{
-			Username: out.GetUsername(),
-		},
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *resp.GetUser(),
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), resp.GetUser())
-}
-
-func (suite *IntegrationTestSuite) TestGetUserWithUsername_BadPassword() {
-	ctx := context.Background()
-	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
-
-	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
-		Id: &pb.GetUserRequest_Username{
-			Username: out.GetUsername(),
-		},
-		Password: BadPassword,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(resp)
-}
-
-func (suite *IntegrationTestSuite) TestGetUserWithUsername_NotFound() {
-	ctx := context.Background()
-	resp, err := suite.UserServiceClient.GetUser(ctx, &pb.GetUserRequest{
-		Id: &pb.GetUserRequest_Username{
-			Username: "bad_user",
-		},
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.NotFound)
-	suite.Nil(resp)
-}
-
-func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {
+func (suite *IntegrationTestSuite) TestDeleteUserSuccess() {
 	ctx := context.Background()
 	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
 		User:     GetUserProto(UserEmail, Username),
@@ -233,100 +120,16 @@ func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_Success() {
 	AssertUserTimestampsCurrent(suite.T(), out)
 
 	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
-		Id: &pb.DeleteUserRequest_Email{
-			Email: out.GetEmail(),
-		},
-		Password: Password,
+		Id: out.GetId(),
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
-func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_BadPassword() {
-	ctx := context.Background()
-	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
-
-	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
-		Id: &pb.DeleteUserRequest_Email{
-			Email: out.GetEmail(),
-		},
-		Password: BadPassword,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-}
-
-func (suite *IntegrationTestSuite) TestDeleteUserWithEmail_NotFound() {
+func (suite *IntegrationTestSuite) TestDeleteUserNotFound() {
 	ctx := context.Background()
 	_, err := suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
-		Id: &pb.DeleteUserRequest_Email{
-			Email: "bad@example.com",
-		},
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.NotFound)
-}
-
-func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_Success() {
-	ctx := context.Background()
-	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
-
-	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
-		Id: &pb.DeleteUserRequest_Username{
-			Username: out.GetUsername(),
-		},
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-}
-
-func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_BadPassword() {
-	ctx := context.Background()
-	out, err := suite.UserServiceClient.CreateUser(ctx, &pb.CreateUserRequest{
-		User:     GetUserProto(UserEmail, Username),
-		Password: Password,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *out,
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), out)
-
-	_, err = suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
-		Id: &pb.DeleteUserRequest_Username{
-			Username: out.GetUsername(),
-		},
-		Password: BadPassword,
-	})
-
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-}
-
-func (suite *IntegrationTestSuite) TestDeleteUserWithUsername_NotFound() {
-	ctx := context.Background()
-	_, err := suite.UserServiceClient.DeleteUser(ctx, &pb.DeleteUserRequest{
-		Id: &pb.DeleteUserRequest_Username{
-			Username: "bad_user",
-		},
-		Password: Password,
+		Id: "wrongid",
 	})
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)

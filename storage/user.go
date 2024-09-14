@@ -72,7 +72,7 @@ func NewUser(up *pb.User, pwd string) (*User, error) {
 
 func (u *User) ToProto() *pb.User {
 	return &pb.User{
-		UserId:          u.ID.String(),
+		Id:              u.ID.String(),
 		Email:           u.Email,
 		Username:        u.Username,
 		Gender:          pb.User_Gender(pb.User_Gender_value[u.Gender.String()]),

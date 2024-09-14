@@ -12,15 +12,15 @@ consumes:
 produces:
   - application/json
 paths:
-  /masjids/create:
+  /users/authenticate:
     post:
-      summary: Creates a masjid in the database.
-      operationId: MasjidService_CreateMasjid
+      summary: Authenticates a user based on their username or email and password
+      operationId: UserService_AuthenticateUser
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneMasjid'
+            $ref: '#/definitions/limestoneAuthenticateUserResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -30,193 +30,18 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/limestoneCreateMasjidRequest'
+            $ref: '#/definitions/limestoneAuthenticateUserRequest'
       tags:
-        - MasjidService
-  /masjids/list:
-    get:
-      summary: Returns a paginated list of masjids from the database.
-      operationId: MasjidService_ListMasjids
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneListMasjidsResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: pageSize
-          description: |-
-            The maximum number of masjids to return. Fewer masjids might be returned.
-            Default value is 25.
-          in: query
-          required: false
-          type: integer
-          format: int32
-        - name: pageToken
-          description: "A page token from a previous `ListMasjids` call. If this is provided, then the \nnext page will be returned."
-          in: query
-          required: false
-          type: string
-      tags:
-        - MasjidService
-  /masjids/update:
+        - UserService
+  /users/refresh_token:
     post:
-      summary: |-
-        Updates a masjid in the database with the corresponding id to the given
-        masjid (i.e. all fields are overwritten).
-      operationId: MasjidService_UpdateMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneMasjid'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneUpdateMasjidRequest'
-      tags:
-        - MasjidService
-  /masjids/{masjidId}:
-    get:
-      summary: Gets a masjid from the database with the given id.
-      operationId: MasjidService_GetMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneMasjid'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: masjidId
-          description: The unique id of the masjid that should be returned.
-          in: path
-          required: true
-          type: string
-      tags:
-        - MasjidService
-    delete:
-      summary: Deletes a masjid from the database with the given id.
-      operationId: MasjidService_DeleteMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteMasjidResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: masjidId
-          description: The unique id of the masjid that should be deleted.
-          in: path
-          required: true
-          type: string
-      tags:
-        - MasjidService
-  /token/refresh:
-    get:
-      summary: Refreshes an access token.
+      summary: Refreshes an existing authentication token
       operationId: UserService_RefreshToken
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneTokenResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: refreshToken
-          description: The refresh JWT for the user.
-          in: query
-          required: false
-          type: string
-      tags:
-        - UserService
-  /users:
-    get:
-      summary: Gets a User from the database and tokens provided the password is valid.
-      operationId: UserService_GetUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneGetUserResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: email
-          description: The unique email associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: username
-          description: The unique username associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: password
-          description: The password for the user account.
-          in: query
-          required: false
-          type: string
-      tags:
-        - UserService
-    delete:
-      summary: Deletes a User from the database provided the password is valid.
-      operationId: UserService_DeleteUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteUserResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: email
-          description: The unique email associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: username
-          description: The unique username associated with the user.
-          in: query
-          required: false
-          type: string
-        - name: password
-          description: The password for the user account.
-          in: query
-          required: false
-          type: string
-      tags:
-        - UserService
-  /users/create:
-    post:
-      summary: Creates the given User with the given password.
-      operationId: UserService_CreateUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneUser'
+            $ref: '#/definitions/limestoneRefreshTokenResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -226,28 +51,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/limestoneCreateUserRequest'
-      tags:
-        - UserService
-  /users/update:
-    post:
-      summary: Updates a User to the given User in the request provided the password is valid.
-      operationId: UserService_UpdateUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneUser'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneUpdateUserRequest'
+            $ref: '#/definitions/limestoneRefreshTokenRequest'
       tags:
         - UserService
   /v1/adhan_files:
@@ -326,6 +130,87 @@ paths:
               - event
       tags:
         - EventService
+  /v1/masjids:
+    get:
+      summary: Returns a paginated list of masjids from the database.
+      operationId: MasjidService_ListMasjids
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListMasjidsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pageSize
+          description: |-
+            The maximum number of masjids to return. Fewer masjids might be returned.
+            Default value is 25.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          description: "A page token from a previous `ListMasjids` call. If this is provided, then the \nnext page will be returned."
+          in: query
+          required: false
+          type: string
+      tags:
+        - MasjidService
+    post:
+      summary: Creates a masjid in the database.
+      operationId: MasjidService_CreateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjid
+          description: The masjid to create in the database.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+            required:
+              - masjid
+      tags:
+        - MasjidService
+  /v1/users:
+    post:
+      summary: Creates the given User with the given password.
+      operationId: UserService_CreateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneUser'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: user
+          description: The user to create.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUser'
+            required:
+              - user
+        - name: password
+          description: "The password for the user. This password is hashed before being\nstored in the database. \nThe password must be at least 8 characters."
+          in: query
+          required: true
+          type: string
+      tags:
+        - UserService
   /v1/{adhanFile.id}:
     patch:
       summary: Updates an adhan audio file in the database for a masjid.
@@ -513,6 +398,92 @@ paths:
           pattern: events/[^/]+
       tags:
         - EventService
+  /v1/{id_2}:
+    get:
+      summary: Gets a masjid from the database with the given id.
+      operationId: MasjidService_GetMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_2
+          description: The id of the masjid that should be returned.
+          in: path
+          required: true
+          type: string
+          pattern: masjids/[^/]+
+      tags:
+        - MasjidService
+    delete:
+      summary: Deletes a masjid from the database with the given id.
+      operationId: MasjidService_DeleteMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_2
+          description: The id of the masjid that should be deleted.
+          in: path
+          required: true
+          type: string
+          pattern: masjids/[^/]+
+      tags:
+        - MasjidService
+  /v1/{id_3}:
+    get:
+      summary: Gets a User from the database and tokens provided the auth token is valid.
+      operationId: UserService_GetUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneGetUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_3
+          description: The id of the user to get.
+          in: path
+          required: true
+          type: string
+          pattern: users/[^/]+
+      tags:
+        - UserService
+    delete:
+      summary: Deletes a User from the database provided the auth token is valid.
+      operationId: UserService_DeleteUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneDeleteUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id_3
+          description: The id of the user to delete.
+          in: path
+          required: true
+          type: string
+          pattern: users/[^/]+
+      tags:
+        - UserService
   /v1/{id}:
     get:
       summary: Get an adhan audio file from the database for a masjid.
@@ -556,6 +527,126 @@ paths:
           pattern: adhanFiles/[^/]+
       tags:
         - AdhanService
+  /v1/{masjid.id}:
+    patch:
+      summary: |-
+        Updates a masjid in the database with the corresponding id to the given
+        masjid (i.e. all fields are overwritten).
+      operationId: MasjidService_UpdateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjid.id
+          description: The unique id of the masjid. This field is output only.
+          in: path
+          required: true
+          type: string
+          pattern: masjids/[^/]+
+        - name: masjid
+          description: |-
+            The masjid to update in the database.
+
+            The masjid's `id` field is used to identify the book to update.
+            Format: masjids/{masjid}
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The name of the masjid.
+              isVerified:
+                type: boolean
+                description: Whether or not the masjid has been verified.
+              address:
+                $ref: '#/definitions/MasjidAddress'
+                description: The main address of the masjid.
+              phoneNumber:
+                $ref: '#/definitions/MasjidPhoneNumber'
+                description: The main phone number to contact for the masjid.
+              prayerConfig:
+                $ref: '#/definitions/limestonePrayerTimesConfiguration'
+                description: The configuration to calculate prayer times for the masjid.
+              createTime:
+                type: string
+                format: date-time
+                description: The create time of the Masjid. This field is output only.
+              updateTime:
+                type: string
+                format: date-time
+                description: The update time of the Masjid. This field is output only.
+            description: |-
+              The masjid's `id` field is used to identify the book to update.
+              Format: masjids/{masjid}
+            title: The masjid to update in the database.
+      tags:
+        - MasjidService
+  /v1/{user.id}:
+    patch:
+      summary: Updates a User to the given User in the request provided the auth token is valid.
+      operationId: UserService_UpdateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneUser'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: user.id
+          description: The ID of the user. This field is output only.
+          in: path
+          required: true
+          type: string
+          pattern: users/[^/]+
+        - name: user
+          description: The updated user proto.
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: The email of the user. This field is required and must be unique.
+              username:
+                type: string
+                description: The username of the user. This field is required and must be unique.
+              isEmailVerified:
+                type: boolean
+                description: Whether or not the email of the user was verified.
+              firstName:
+                type: string
+                description: The first name of the user.
+              lastName:
+                type: string
+                description: The last name of the user.
+              phoneNumber:
+                type: string
+                description: The phone number associated with the user.
+              gender:
+                $ref: '#/definitions/UserGender'
+              createTime:
+                type: string
+                format: date-time
+                description: The create time of the user. This field is output only.
+              updateTime:
+                type: string
+                format: date-time
+                description: The update time of the user. This field is output only.
+            title: The updated user proto.
+      tags:
+        - UserService
 definitions:
   EventEventType:
     type: string
@@ -741,21 +832,29 @@ definitions:
         type: string
         format: date-time
         description: The update time of the file. This field is output only.
-  limestoneCreateMasjidRequest:
+  limestoneAuthenticateUserRequest:
     type: object
     properties:
-      masjid:
-        $ref: '#/definitions/limestoneMasjid'
-        description: The masjid to create in the database.
-  limestoneCreateUserRequest:
-    type: object
-    properties:
-      user:
-        $ref: '#/definitions/limestoneUser'
-        description: The user to create.
+      username:
+        type: string
+      email:
+        type: string
       password:
         type: string
-        description: "The password for the user. This password is hashed before being\nstored in the database. \nThe password must be at least 8 characters."
+        title: The password for authentication
+  limestoneAuthenticateUserResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+        description: The access token for subsequent authenticated requests.
+      refreshToken:
+        type: string
+        description: The refresh token to obtain a new access token when it expires.
+      userId:
+        type: integer
+        format: int32
+        description: The ID of the authenticated user (if successful).
   limestoneDeleteAdhanFileResponse:
     type: object
   limestoneDeleteEventResponse:
@@ -827,9 +926,6 @@ definitions:
       user:
         $ref: '#/definitions/limestoneUser'
         description: The authenticated user.
-      tokenResponse:
-        $ref: '#/definitions/limestoneTokenResponse'
-        description: The token response for the user.
   limestoneListEventsResponse:
     type: object
     properties:
@@ -914,41 +1010,22 @@ definitions:
     description: |-
       A message that holds prayer times configuration. This message contains all the fields
       necessary to calculate prayer times.
-  limestoneTokenResponse:
+  limestoneRefreshTokenRequest:
     type: object
     properties:
-      id:
-        type: string
-        description: The id of the token.
-      accessToken:
-        type: string
-        description: The access JWT for the user.
       refreshToken:
         type: string
         description: The refresh JWT for the user.
-      expiresAt:
-        type: string
-        format: date-time
-        description: The timestamp at which the token expires.
-  limestoneUpdateMasjidRequest:
+  limestoneRefreshTokenResponse:
     type: object
     properties:
-      masjid:
-        $ref: '#/definitions/limestoneMasjid'
-        description: The masjid to update in the database.
-  limestoneUpdateUserRequest:
-    type: object
-    properties:
-      user:
-        $ref: '#/definitions/limestoneUser'
-        description: The updated user proto.
-      password:
+      accessToken:
         type: string
-        description: The password for the user account.
+        description: The access token for subsequent authenticated requests.
   limestoneUser:
     type: object
     properties:
-      userId:
+      id:
         type: string
         description: The ID of the user. This field is output only.
       email:

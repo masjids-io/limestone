@@ -15,7 +15,7 @@ func TestStorageManager(t *testing.T) {
 	suite.Run(t, new(UnitTestSuite))
 }
 
-func (suite *UnitTestSuite) TestCreateUser_Success() {
+func (suite *UnitTestSuite) TestCreateUserSuccess() {
 	user, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -24,18 +24,18 @@ func (suite *UnitTestSuite) TestCreateUser_Success() {
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 }
 
-func (suite *UnitTestSuite) TestCreateUser_PasswordTooShort() {
+func (suite *UnitTestSuite) TestCreateUsePasswordTooShort() {
 	user, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), BadPassword)
 	suite.Nil(user)
 	suite.Assert().Equal(status.Code(err), codes.InvalidArgument)
 }
 
-func (suite *UnitTestSuite) TestUpdateUserWithEmail_Success() {
+func (suite *UnitTestSuite) TestUpdateUserWithEmailSuccess() {
 	user, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
 	user.Email = "a@example.com"
-	user, err = suite.StorageManager.UpdateUser(user.ToProto(), Password)
+	user, err = suite.StorageManager.UpdateUser(user.ToProto())
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto("a@example.com", Username), *user.ToProto(),
@@ -43,27 +43,18 @@ func (suite *UnitTestSuite) TestUpdateUserWithEmail_Success() {
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 }
 
-func (suite *UnitTestSuite) TestUpdateUserWithEmail_BadPassword() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	user, err := suite.StorageManager.UpdateUser(GetUserProto("a@example.com", Username), BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(user)
-}
-
-func (suite *UnitTestSuite) TestUpdateUserWithEmail_NotFound() {
-	user, err := suite.StorageManager.UpdateUser(GetUserProto(UserEmail, Username), Password)
+func (suite *UnitTestSuite) TestUpdateUserWithEmailNotFound() {
+	user, err := suite.StorageManager.UpdateUser(GetUserProto(UserEmail, Username))
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(user)
 }
 
-func (suite *UnitTestSuite) TestGetUserWithEmail_Success() {
+func (suite *UnitTestSuite) TestGetUserSuccess() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	user, err := suite.StorageManager.GetUserWithEmail(UserEmail, Password)
+	user, err := suite.StorageManager.GetUser(DefaultId)
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
@@ -71,103 +62,32 @@ func (suite *UnitTestSuite) TestGetUserWithEmail_Success() {
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 }
 
-func (suite *UnitTestSuite) TestGetUserWithEmail_BadPassword() {
+func (suite *UnitTestSuite) TestGetUserNotFound() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	user, err := suite.StorageManager.GetUserWithEmail(UserEmail, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(user)
-}
-
-func (suite *UnitTestSuite) TestGetUserWithEmail_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	user, err := suite.StorageManager.GetUserWithEmail("a@example.com", Password)
+	user, err := suite.StorageManager.GetUser("wrongid")
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(user)
 }
 
-func (suite *UnitTestSuite) TestGetUserWithUsername_Success() {
+func (suite *UnitTestSuite) TestDeleteUserSuccess() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	user, err := suite.StorageManager.GetUserWithUsername(Username, Password)
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
-}
-
-func (suite *UnitTestSuite) TestGetUserWithUsername_BadPassword() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	user, err := suite.StorageManager.GetUserWithUsername(Username, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(user)
-}
-
-func (suite *UnitTestSuite) TestGetUserWithUsername_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	user, err := suite.StorageManager.GetUserWithUsername("notcoolguy1234", Password)
-	suite.Assert().Equal(status.Code(err), codes.NotFound)
-	suite.Nil(user)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithEmail_Success() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithEmail(UserEmail, Password)
+	err = suite.StorageManager.DeleteUser(DefaultId)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
-func (suite *UnitTestSuite) TestDeleteUserWithEmail_BadPassword() {
+func (suite *UnitTestSuite) TestDeleteUserNotFound() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	err = suite.StorageManager.DeleteUserWithEmail(UserEmail, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithEmail_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithEmail("a@example.com", Password)
+	err = suite.StorageManager.DeleteUser("wrongid")
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }
 
-func (suite *UnitTestSuite) TestDeleteUserWithUsername_Success() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithUsername(Username, Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithUsername_BadPassword() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithUsername(Username, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithUsername_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithUsername("notcoolguy1234", Password)
-	suite.Assert().Equal(status.Code(err), codes.NotFound)
-}
-
-func (suite *UnitTestSuite) TestCreateMasjid_Success() {
+func (suite *UnitTestSuite) TestCreateMasjidSuccess() {
 	masjid, err := suite.StorageManager.CreateMasjid(GetMasjidProto())
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -176,7 +96,7 @@ func (suite *UnitTestSuite) TestCreateMasjid_Success() {
 	AssertMasjidTimestampsCurrent(suite.T(), masjid.ToProto())
 }
 
-func (suite *UnitTestSuite) TestUpdateMasjid_Success() {
+func (suite *UnitTestSuite) TestUpdateMasjidSuccess() {
 	masjid, err := suite.StorageManager.CreateMasjid(GetMasjidProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -192,14 +112,14 @@ func (suite *UnitTestSuite) TestUpdateMasjid_Success() {
 	AssertMasjidTimestampsCurrent(suite.T(), masjid.ToProto())
 }
 
-func (suite *UnitTestSuite) TestUpdateMasjid_NotFound() {
+func (suite *UnitTestSuite) TestUpdateMasjidNotFound() {
 	masjid, err := suite.StorageManager.UpdateMasjid(GetMasjidProto())
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(masjid)
 }
 
-func (suite *UnitTestSuite) TestGetMasjid_Success() {
+func (suite *UnitTestSuite) TestGetMasjidSuccess() {
 	_, err := suite.StorageManager.CreateMasjid(GetMasjidProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -211,14 +131,14 @@ func (suite *UnitTestSuite) TestGetMasjid_Success() {
 	AssertMasjidTimestampsCurrent(suite.T(), masjid.ToProto())
 }
 
-func (suite *UnitTestSuite) TestGetMasjid_NotFound() {
+func (suite *UnitTestSuite) TestGetMasjidNotFound() {
 	masjid, err := suite.StorageManager.GetMasjid(DefaultId)
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(masjid)
 }
 
-func (suite *UnitTestSuite) TestDeleteMasjid_Success() {
+func (suite *UnitTestSuite) TestDeleteMasjidSuccess() {
 	_, err := suite.StorageManager.CreateMasjid(GetMasjidProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -226,12 +146,12 @@ func (suite *UnitTestSuite) TestDeleteMasjid_Success() {
 	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
-func (suite *UnitTestSuite) TestDeleteMasjid_NotFound() {
+func (suite *UnitTestSuite) TestDeleteMasjidNotFound() {
 	err := suite.StorageManager.DeleteMasjid(DefaultId)
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }
 
-func (suite *UnitTestSuite) TestCreateEvent_Success() {
+func (suite *UnitTestSuite) TestCreateEventSuccess() {
 	event, err := suite.StorageManager.CreateEvent(GetEventProto())
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -240,7 +160,7 @@ func (suite *UnitTestSuite) TestCreateEvent_Success() {
 	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
 }
 
-func (suite *UnitTestSuite) TestUpdateEvent_Success() {
+func (suite *UnitTestSuite) TestUpdateEventSuccess() {
 	event, err := suite.StorageManager.CreateEvent(GetEventProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -256,14 +176,14 @@ func (suite *UnitTestSuite) TestUpdateEvent_Success() {
 	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
 }
 
-func (suite *UnitTestSuite) TestUpdateEvent_NotFound() {
+func (suite *UnitTestSuite) TestUpdateEventNotFound() {
 	event, err := suite.StorageManager.UpdateEvent(GetEventProto())
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(event)
 }
 
-func (suite *UnitTestSuite) TestGetEvent_Success() {
+func (suite *UnitTestSuite) TestGetEventSuccess() {
 	_, err := suite.StorageManager.CreateEvent(GetEventProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -275,14 +195,14 @@ func (suite *UnitTestSuite) TestGetEvent_Success() {
 	AssertEventTimestampsCurrent(suite.T(), event.ToProto())
 }
 
-func (suite *UnitTestSuite) TestGetEvent_NotFound() {
+func (suite *UnitTestSuite) TestGetEventNotFound() {
 	event, err := suite.StorageManager.GetEvent(DefaultId)
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(event)
 }
 
-func (suite *UnitTestSuite) TestDeleteEvent_Success() {
+func (suite *UnitTestSuite) TestDeleteEventSuccess() {
 	_, err := suite.StorageManager.CreateEvent(GetEventProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -290,12 +210,12 @@ func (suite *UnitTestSuite) TestDeleteEvent_Success() {
 	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
-func (suite *UnitTestSuite) TestDeleteEvent_NotFound() {
+func (suite *UnitTestSuite) TestDeleteEventNotFound() {
 	err := suite.StorageManager.DeleteEvent(DefaultId)
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }
 
-func (suite *UnitTestSuite) TestCreateAdhanFile_Success() {
+func (suite *UnitTestSuite) TestCreateAdhanFileSuccess() {
 	file, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
@@ -304,7 +224,7 @@ func (suite *UnitTestSuite) TestCreateAdhanFile_Success() {
 	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
 }
 
-func (suite *UnitTestSuite) TestUpdateAdhanFile_Success() {
+func (suite *UnitTestSuite) TestUpdateAdhanFileSuccess() {
 	file, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -320,14 +240,14 @@ func (suite *UnitTestSuite) TestUpdateAdhanFile_Success() {
 	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
 }
 
-func (suite *UnitTestSuite) TestUpdateAdhanFile_NotFound() {
+func (suite *UnitTestSuite) TestUpdateAdhanFileNotFound() {
 	file, err := suite.StorageManager.UpdateAdhanFile(GetAdhanFileProto())
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(file)
 }
 
-func (suite *UnitTestSuite) TestGetAdhanFile_Success() {
+func (suite *UnitTestSuite) TestGetAdhanFileSuccess() {
 	_, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -339,14 +259,14 @@ func (suite *UnitTestSuite) TestGetAdhanFile_Success() {
 	AssertAdhanFileTimestampsCurrent(suite.T(), file.ToProto())
 }
 
-func (suite *UnitTestSuite) TestGetAdhanFile_NotFound() {
+func (suite *UnitTestSuite) TestGetAdhanFileNotFound() {
 	file, err := suite.StorageManager.GetAdhanFile(DefaultId)
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(file)
 }
 
-func (suite *UnitTestSuite) TestDeleteAdhanFile_Success() {
+func (suite *UnitTestSuite) TestDeleteAdhanFileSuccess() {
 	_, err := suite.StorageManager.CreateAdhanFile(GetAdhanFileProto())
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
@@ -354,7 +274,7 @@ func (suite *UnitTestSuite) TestDeleteAdhanFile_Success() {
 	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
-func (suite *UnitTestSuite) TestDeleteAdhanFile_NotFound() {
+func (suite *UnitTestSuite) TestDeleteAdhanFileNotFound() {
 	err := suite.StorageManager.DeleteAdhanFile(DefaultId)
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }
