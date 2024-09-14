@@ -25,7 +25,7 @@ const (
 
 func GetUserProto(email string, username string) *pb.User {
 	return &pb.User{
-		UserId:      DefaultId,
+		Id:          DefaultId,
 		Email:       email,
 		Username:    username,
 		FirstName:   FirstName,

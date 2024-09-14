@@ -35,7 +35,7 @@ func (suite *UnitTestSuite) TestUpdateUserWithEmail_Success() {
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
 	user.Email = "a@example.com"
-	user, err = suite.StorageManager.UpdateUser(user.ToProto(), Password)
+	user, err = suite.StorageManager.UpdateUser(user.ToProto())
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto("a@example.com", Username), *user.ToProto(),
@@ -47,23 +47,23 @@ func (suite *UnitTestSuite) TestUpdateUserWithEmail_BadPassword() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	user, err := suite.StorageManager.UpdateUser(GetUserProto("a@example.com", Username), BadPassword)
+	user, err := suite.StorageManager.UpdateUser(GetUserProto("a@example.com", Username))
 	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
 	suite.Nil(user)
 }
 
 func (suite *UnitTestSuite) TestUpdateUserWithEmail_NotFound() {
-	user, err := suite.StorageManager.UpdateUser(GetUserProto(UserEmail, Username), Password)
+	user, err := suite.StorageManager.UpdateUser(GetUserProto(UserEmail, Username))
 
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(user)
 }
 
-func (suite *UnitTestSuite) TestGetUserWithEmail_Success() {
+func (suite *UnitTestSuite) TestGetUser_Success() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	user, err := suite.StorageManager.GetUserWithEmail(UserEmail, Password)
+	user, err := suite.StorageManager.GetUser(DefaultId)
 
 	suite.Assert().Equal(status.Code(err), codes.OK)
 	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
@@ -71,99 +71,28 @@ func (suite *UnitTestSuite) TestGetUserWithEmail_Success() {
 	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
 }
 
-func (suite *UnitTestSuite) TestGetUserWithEmail_BadPassword() {
+func (suite *UnitTestSuite) TestGetUserNotFound() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	user, err := suite.StorageManager.GetUserWithEmail(UserEmail, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(user)
-}
-
-func (suite *UnitTestSuite) TestGetUserWithEmail_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	user, err := suite.StorageManager.GetUserWithEmail("a@example.com", Password)
+	user, err := suite.StorageManager.GetUser("wrongid")
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 	suite.Nil(user)
 }
 
-func (suite *UnitTestSuite) TestGetUserWithUsername_Success() {
+func (suite *UnitTestSuite) TestDeleteUserSuccess() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	user, err := suite.StorageManager.GetUserWithUsername(Username, Password)
-
-	suite.Assert().Equal(status.Code(err), codes.OK)
-	AssertProtoEqual(suite.T(), *GetUserProto(UserEmail, Username), *user.ToProto(),
-		pb.User{}, protocmp.IgnoreFields(&pb.User{}, "create_time", "update_time"))
-	AssertUserTimestampsCurrent(suite.T(), user.ToProto())
-}
-
-func (suite *UnitTestSuite) TestGetUserWithUsername_BadPassword() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	user, err := suite.StorageManager.GetUserWithUsername(Username, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-	suite.Nil(user)
-}
-
-func (suite *UnitTestSuite) TestGetUserWithUsername_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	user, err := suite.StorageManager.GetUserWithUsername("notcoolguy1234", Password)
-	suite.Assert().Equal(status.Code(err), codes.NotFound)
-	suite.Nil(user)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithEmail_Success() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithEmail(UserEmail, Password)
+	err = suite.StorageManager.DeleteUser(DefaultId)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 }
 
-func (suite *UnitTestSuite) TestDeleteUserWithEmail_BadPassword() {
+func (suite *UnitTestSuite) TestDeleteUserNotFound() {
 	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
 	suite.Assert().Equal(status.Code(err), codes.OK)
 
-	err = suite.StorageManager.DeleteUserWithEmail(UserEmail, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithEmail_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithEmail("a@example.com", Password)
-	suite.Assert().Equal(status.Code(err), codes.NotFound)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithUsername_Success() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithUsername(Username, Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithUsername_BadPassword() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithUsername(Username, BadPassword)
-	suite.Assert().Equal(status.Code(err), codes.PermissionDenied)
-}
-
-func (suite *UnitTestSuite) TestDeleteUserWithUsername_NotFound() {
-	_, err := suite.StorageManager.CreateUser(GetUserProto(UserEmail, Username), Password)
-	suite.Assert().Equal(status.Code(err), codes.OK)
-
-	err = suite.StorageManager.DeleteUserWithUsername("notcoolguy1234", Password)
+	err = suite.StorageManager.DeleteUser("wrongid")
 	suite.Assert().Equal(status.Code(err), codes.NotFound)
 }
 
