@@ -13,7 +13,7 @@ service NikkahIoService {
   // Creates a marriage profile for the authenticated user.
   rpc CreateProfile (CreateProfileRequest) returns (Profile) {
     option (google.api.http) = {
-      post: "/v1/profiles"
+      post: "/v1/nikkah/profiles"
       body: "profile"
     };
     option (google.api.method_signature) = "profile";
@@ -21,26 +21,76 @@ service NikkahIoService {
   // Retrieves the profile of the authenticated user.
   rpc GetSelfProfile (GetSelfProfileRequest) returns (Profile) {
     option (google.api.http) = {
-      get: "/v1/profile"
+      get: "/v1/nikkah/profile"
     };
   }
   // Updates the profile of the authenticated user.
   rpc UpdateSelfProfile (UpdateSelfProfileRequest) returns (Profile) {
     option (google.api.http) = {
-      put: "/v1/profile"
+      put: "/v1/nikkah/profile"
       body: "*"
     };
   }
   // Lists profiles based on specified criteria.
   rpc ListProfiles (ListProfilesRequest) returns (ListProfilesResponse) {
     option (google.api.http) = {
-      get: "/v1/profiles"
+      get: "/v1/nikkah/profiles"
     };
   }
   // Gets the details of a specific profile.
   rpc GetProfile (GetProfileRequest) returns (Profile) {
     option (google.api.http) = {
-      get: "/v1/profiles/{profile_id}"
+      get: "/v1/nikkah/profiles/{profile_id}"
+    };
+  }
+  // Initiates a like process to another profile.
+  // This does not send a like request to another profile. It is used when a user
+  // is interested in the bio and details of a profile, and wants to see the 
+  // pictures associated with the profile, before making a decision to send 
+  // a match request.
+  rpc InitiateLike (InitiateLikeRequest) returns (Like) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/likes"
+      body: "like"
+    };
+    option (google.api.method_signature) = "like";
+  }
+  // Cancels a like process to another profile.
+  // This cancels a like process to another profile, if a user finds that
+  // the user is not to their liking after initiating a like.
+  rpc CancelLike (CancelLikeRequest) returns (Like) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/likes/{like_id}/cancel"
+    };
+  }
+  // Completes a like process to another profile.
+  // This completes a like process to another profile, if a user finds that
+  // the user is to their liking after initiating a like. This notifies
+  // the other user of this. Creates a match resource in the database.
+  rpc CompleteLike (CompleteLikeRequest) returns (CompleteLikeResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/likes/{like_id}/complete"
+    };
+  }
+  // Accepts a received match request from a user.
+  // This then notifies the other user that the match is accepted, and initiates a chat
+  // between both users.
+  rpc AcceptMatchInvite (AcceptMatchInviteRequest) returns (Match) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/match/{match_id}/accept"
+    };
+  }
+  // Rejects a received match request.
+  // This then silently notifies the other user of the rejection.
+  rpc RejectMatchInvite (RejectMatchInviteRequest) returns (Match) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/match/{match_id}/reject"
+    };
+  }
+  // Ends a currently accepted match.
+  rpc EndMatch (EndMatchRequest) returns (Match) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/match/{match_id}/end"
     };
   }
 }
@@ -93,6 +143,61 @@ message Profile {
   google.protobuf.Timestamp update_time = 7; 
 }
 
+// Like represents a like process initiated by a user towards another user's profile.
+message Like {
+  // The unique identifier for the like process. This field is output only.
+  int32 like_id = 1;
+  // The ID of the profile who initiated the like.
+  int32 liker_profile_id = 2;
+  // The ID of the profile which was liked.
+  int32 liked_profile_id = 3;
+  // Denotes an enum that specifies the current status of the like.
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    // The like is initiated, so the user can see 
+    INITIATED = 1;
+    // The like has been completed, indicating mutual interest.
+    CANCELLED = 2;
+    // The like has been cancelled.
+    COMPLETED = 3;
+  }
+  // The current status of the like process.
+  Status status = 4;
+  // The create time of the event. This field is output only.
+  google.protobuf.Timestamp create_time = 5; 
+  // The update time of the event. This field is output only.
+  google.protobuf.Timestamp update_time = 6 ; 
+}
+
+// Match represents a successful match between two users.
+message Match {
+  // The unique identifier for the match. This field is output only.
+  int32 match_id = 1;
+  // The ID of the profile who initiated the match.
+  int32 initiator_profile_id = 2;
+  // The ID of the profile which received the match.
+  int32 receiver_profile_id = 3;
+  // Denotes an enum that specifies the current status of the match.
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    // The match has been initiated, so one side has sent the invite to the other.
+    INITIATED = 1;
+    // The match has been accepted, indicating mutual interest.
+    ACCEPTED = 2;
+    // The match has been rejected.
+    REJECTED = 3;
+    // The match has been ended. 
+    // This should occur after the match was in ACCEPTED status.
+    ENDED = 3;
+  }
+  // The current status of the match.
+  Status status = 4;
+  // The create time of the event. This field is output only.
+  google.protobuf.Timestamp create_time = 5; 
+  // The update time of the event. This field is output only.
+  google.protobuf.Timestamp update_time = 6 ; 
+}
+
 message CreateProfileRequest {
   // The profile to create in the database.
   Profile profile = 1 [(google.api.field_behavior) = REQUIRED];
@@ -128,4 +233,41 @@ message ListProfilesResponse {
 message GetProfileRequest {
   // The ID of the profile to retrieve.
   string profile_id = 1;
+}
+
+message InitiateLikeRequest {
+  // The like to create in the database.
+  Like like = 1;
+}
+
+message CancelLikeRequest {
+  // The ID of the like process to cancel.
+  int32 like_id = 1;
+}
+
+message CompleteLikeRequest {
+  // The ID of the like to complete.
+  int32 like_id = 1;
+}
+
+message CompleteLikeResponse {
+  // The like that was completed.
+  Like like = 1;
+  // The match that was initiated.
+  Match match = 2;
+}
+
+message AcceptMatchInviteRequest {
+  // The ID of the match invite to accept. 
+  int32 match_id = 1;
+}
+
+message RejectMatchInviteRequest {
+  // The ID of the match invite to reject. 
+  int32 match_id = 1;
+}
+
+message EndMatchRequest {
+  // The ID of the match invite to end. 
+  int32 match_id = 1;
 }
