@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/proto";
+
+service NikkahIoService {
+  // Creates a marriage profile for the authenticated user.
+  rpc CreateProfile (CreateProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      post: "/v1/profiles"
+      body: "profile"
+    };
+    option (google.api.method_signature) = "profile";
+  }
+  // Retrieves the profile of the authenticated user.
+  rpc GetSelfProfile (GetSelfProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      get: "/v1/profile"
+    };
+  }
+  // Updates the profile of the authenticated user.
+  rpc UpdateSelfProfile (UpdateSelfProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      put: "/v1/profile"
+      body: "*"
+    };
+  }
+  // Lists profiles based on specified criteria.
+  rpc ListProfiles (ListProfilesRequest) returns (ListProfilesResponse) {
+    option (google.api.http) = {
+      get: "/v1/profiles"
+    };
+  }
+  // Gets the details of a specific profile.
+  rpc GetProfile (GetProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      get: "/v1/profiles/{profile_id}"
+    };
+  }
+}
+
+// Represents a user's profile in the nikkah.io.
+message Profile {
+  // The unique id associated with the profile. Field is output only.
+  string id = 1;
+  // The user id associated with the profile.
+  string user_id = 2; 
+  // The user id associated with the profile.
+  string name = 3; 
+	// Defines an enum representing the gender of the user.
+	enum Gender {
+    // Default value.
+    GENDER_UNSPECIFIED = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }    
+  // The gender of the user.
+  Gender gender = 4;
+  
+  // A message describing the birth date of a user.
+  message BirthDate {
+    int32 year = 1;
+  
+    enum Month {
+      MONTH_UNSPECIFIED = 0; 
+      JANUARY = 1;
+      FEBRUARY = 2;
+      MARCH = 3;
+      APRIL = 4;
+      MAY = 5;
+      JUNE = 6;
+      JULY = 7;
+      AUGUST = 8;
+      SEPTEMBER = 9;
+      OCTOBER = 10;
+      NOVEMBER = 11;
+      DECEMBER = 12;
+    }
+    Month month = 2;
+    int32 day = 3;
+  }
+  // The birthdate of the user.
+  BirthDate birth_date = 5; 
+  // The create time of the event. This field is output only.
+  google.protobuf.Timestamp create_time = 6; 
+  // The update time of the event. This field is output only.
+  google.protobuf.Timestamp update_time = 7; 
+}
+
+message CreateProfileRequest {
+  // The profile to create in the database.
+  Profile profile = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// GetSelfProfileRequest is an empty request, as the profile is fetched for the authenticated user.
+message GetSelfProfileRequest {}
+
+message UpdateSelfProfileRequest {
+  // The event to update in the database.
+  //
+  // The event's `id` field is used to identify the book to update.
+  // Format: events/{event}
+  Profile profile = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ListProfilesRequest {
+  // The maximum number of profiles to return. Fewer profiles might be returned.
+  // Default value is 25.
+  int32 page_size = 2;
+
+  // A page token from a previous `ListProfiles` call. If this is provided, then the 
+  // next page will be returned.
+  string page_token = 3;
+}
+
+message ListProfilesResponse {
+  // The list of returned profiles.
+  repeated Profile profiles = 1;
+}
+
+// GetProfileRequest represents the request to get a specific profile.
+message GetProfileRequest {
+  // The ID of the profile to retrieve.
+  string profile_id = 1;
+}
