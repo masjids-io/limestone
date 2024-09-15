@@ -6,6 +6,7 @@ tags:
   - name: AdhanService
   - name: EventService
   - name: MasjidService
+  - name: NikkahIoService
   - name: UserService
 consumes:
   - application/json
@@ -182,6 +183,114 @@ paths:
               - masjid
       tags:
         - MasjidService
+  /v1/profile:
+    get:
+      summary: Retrieves the profile of the authenticated user.
+      operationId: NikkahIoService_GetSelfProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - NikkahIoService
+    put:
+      summary: Updates the profile of the authenticated user.
+      operationId: NikkahIoService_UpdateSelfProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUpdateSelfProfileRequest'
+      tags:
+        - NikkahIoService
+  /v1/profiles:
+    get:
+      summary: Lists profiles based on specified criteria.
+      operationId: NikkahIoService_ListProfiles
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListProfilesResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pageSize
+          description: |-
+            The maximum number of profiles to return. Fewer profiles might be returned.
+            Default value is 25.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          description: "A page token from a previous `ListProfiles` call. If this is provided, then the \nnext page will be returned."
+          in: query
+          required: false
+          type: string
+      tags:
+        - NikkahIoService
+    post:
+      summary: Creates a marriage profile for the authenticated user.
+      operationId: NikkahIoService_CreateProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: profile
+          description: The profile to create in the database.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneProfile'
+            required:
+              - profile
+      tags:
+        - NikkahIoService
+  /v1/profiles/{profileId}:
+    get:
+      summary: Gets the details of a specific profile.
+      operationId: NikkahIoService_GetProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: profileId
+          description: The ID of the profile to retrieve.
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
   /v1/users:
     post:
       summary: Creates the given User with the given password.
@@ -635,7 +744,7 @@ paths:
                 type: string
                 description: The phone number associated with the user.
               gender:
-                $ref: '#/definitions/UserGender'
+                $ref: '#/definitions/limestoneUserGender'
               createTime:
                 type: string
                 format: date-time
@@ -648,6 +757,23 @@ paths:
       tags:
         - UserService
 definitions:
+  BirthDateMonth:
+    type: string
+    enum:
+      - MONTH_UNSPECIFIED
+      - JANUARY
+      - FEBRUARY
+      - MARCH
+      - APRIL
+      - MAY
+      - JUNE
+      - JULY
+      - AUGUST
+      - SEPTEMBER
+      - OCTOBER
+      - NOVEMBER
+      - DECEMBER
+    default: MONTH_UNSPECIFIED
   EventEventType:
     type: string
     enum:
@@ -800,17 +926,18 @@ definitions:
         format: int32
         description: Adjustment offset for Isha in minutes. Value can be negative.
     description: "The manual adjustments to apply to the prayer timings. The value that each field is set to is \nthe offset which will be added to the calculated time to obtain the final prayer time."
-  UserGender:
-    type: string
-    enum:
-      - GENDER_UNSPECIFIED
-      - MALE
-      - FEMALE
-    default: GENDER_UNSPECIFIED
-    description: |-
-      Defines an enum representing the gender of the user.
-
-       - GENDER_UNSPECIFIED: Default value.
+  ProfileBirthDate:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int32
+      month:
+        $ref: '#/definitions/BirthDateMonth'
+      day:
+        type: integer
+        format: int32
+    description: A message describing the birth date of a user.
   limestoneAdhanFile:
     type: object
     properties:
@@ -944,6 +1071,15 @@ definitions:
           type: object
           $ref: '#/definitions/limestoneMasjid'
         description: The list of returned masjids.
+  limestoneListProfilesResponse:
+    type: object
+    properties:
+      profiles:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneProfile'
+        description: The list of returned profiles.
   limestoneMasjid:
     type: object
     properties:
@@ -1010,6 +1146,44 @@ definitions:
     description: |-
       A message that holds prayer times configuration. This message contains all the fields
       necessary to calculate prayer times.
+  limestoneProfile:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique id associated with the profile. Field is output only.
+      userId:
+        type: string
+        description: The user id associated with the profile.
+      name:
+        type: string
+        description: The user id associated with the profile.
+      gender:
+        $ref: '#/definitions/limestoneProfileGender'
+        description: The gender of the user.
+      birthDate:
+        $ref: '#/definitions/ProfileBirthDate'
+        description: The birthdate of the user.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+    description: Represents a user's profile in the nikkah.io.
+  limestoneProfileGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+    description: |-
+      Defines an enum representing the gender of the user.
+
+       - GENDER_UNSPECIFIED: Default value.
   limestoneRefreshTokenRequest:
     type: object
     properties:
@@ -1022,6 +1196,18 @@ definitions:
       accessToken:
         type: string
         description: The access token for subsequent authenticated requests.
+  limestoneUpdateSelfProfileRequest:
+    type: object
+    properties:
+      profile:
+        $ref: '#/definitions/limestoneProfile'
+        description: |-
+          The event to update in the database.
+
+          The event's `id` field is used to identify the book to update.
+          Format: events/{event}
+    required:
+      - profile
   limestoneUser:
     type: object
     properties:
@@ -1047,7 +1233,7 @@ definitions:
         type: string
         description: The phone number associated with the user.
       gender:
-        $ref: '#/definitions/UserGender'
+        $ref: '#/definitions/limestoneUserGender'
       createTime:
         type: string
         format: date-time
@@ -1057,6 +1243,17 @@ definitions:
         format: date-time
         description: The update time of the user. This field is output only.
     description: Defines a User.
+  limestoneUserGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+    description: |-
+      Defines an enum representing the gender of the user.
+
+       - GENDER_UNSPECIFIED: Default value.
   protobufAny:
     type: object
     properties:
