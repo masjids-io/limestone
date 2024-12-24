@@ -16,20 +16,6 @@ import (
 	pb "github.com/mnadev/limestone/proto"
 )
 
-type gender string
-
-const (
-	MALE   gender = "MALE"
-	FEMALE gender = "FEMALE"
-)
-
-func (g gender) String() string {
-	if g == MALE {
-		return "MALE"
-	}
-	return "FEMALE"
-}
-
 // User represents a registered user with email/password authentication
 // TODO: make username and email unique. It currently causes postgres to throw a unique constraint violation.
 type User struct {
