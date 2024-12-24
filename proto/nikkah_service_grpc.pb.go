@@ -19,11 +19,17 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NikkahIoService_CreateProfile_FullMethodName     = "/limestone.NikkahIoService/CreateProfile"
-	NikkahIoService_GetSelfProfile_FullMethodName    = "/limestone.NikkahIoService/GetSelfProfile"
-	NikkahIoService_UpdateSelfProfile_FullMethodName = "/limestone.NikkahIoService/UpdateSelfProfile"
-	NikkahIoService_ListProfiles_FullMethodName      = "/limestone.NikkahIoService/ListProfiles"
-	NikkahIoService_GetProfile_FullMethodName        = "/limestone.NikkahIoService/GetProfile"
+	NikkahIoService_CreateNikkahProfile_FullMethodName     = "/limestone.NikkahIoService/CreateNikkahProfile"
+	NikkahIoService_GetSelfNikkahProfile_FullMethodName    = "/limestone.NikkahIoService/GetSelfNikkahProfile"
+	NikkahIoService_UpdateSelfNikkahProfile_FullMethodName = "/limestone.NikkahIoService/UpdateSelfNikkahProfile"
+	NikkahIoService_ListNikkahProfiles_FullMethodName      = "/limestone.NikkahIoService/ListNikkahProfiles"
+	NikkahIoService_GetNikkahProfile_FullMethodName        = "/limestone.NikkahIoService/GetNikkahProfile"
+	NikkahIoService_InitiateLike_FullMethodName            = "/limestone.NikkahIoService/InitiateLike"
+	NikkahIoService_CancelLike_FullMethodName              = "/limestone.NikkahIoService/CancelLike"
+	NikkahIoService_CompleteLike_FullMethodName            = "/limestone.NikkahIoService/CompleteLike"
+	NikkahIoService_AcceptNikkahMatchInvite_FullMethodName = "/limestone.NikkahIoService/AcceptNikkahMatchInvite"
+	NikkahIoService_RejectNikkahMatchInvite_FullMethodName = "/limestone.NikkahIoService/RejectNikkahMatchInvite"
+	NikkahIoService_EndNikkahMatch_FullMethodName          = "/limestone.NikkahIoService/EndNikkahMatch"
 )
 
 // NikkahIoServiceClient is the client API for NikkahIoService service.
@@ -31,15 +37,39 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NikkahIoServiceClient interface {
 	// Creates a marriage profile for the authenticated user.
-	CreateProfile(ctx context.Context, in *CreateProfileRequest, opts ...grpc.CallOption) (*Profile, error)
+	CreateNikkahProfile(ctx context.Context, in *CreateNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error)
 	// Retrieves the profile of the authenticated user.
-	GetSelfProfile(ctx context.Context, in *GetSelfProfileRequest, opts ...grpc.CallOption) (*Profile, error)
+	GetSelfNikkahProfile(ctx context.Context, in *GetSelfNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error)
 	// Updates the profile of the authenticated user.
-	UpdateSelfProfile(ctx context.Context, in *UpdateSelfProfileRequest, opts ...grpc.CallOption) (*Profile, error)
+	UpdateSelfNikkahProfile(ctx context.Context, in *UpdateSelfNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error)
 	// Lists profiles based on specified criteria.
-	ListProfiles(ctx context.Context, in *ListProfilesRequest, opts ...grpc.CallOption) (*ListProfilesResponse, error)
+	ListNikkahProfiles(ctx context.Context, in *ListNikkahProfilesRequest, opts ...grpc.CallOption) (*ListNikkahProfilesResponse, error)
 	// Gets the details of a specific profile.
-	GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*Profile, error)
+	GetNikkahProfile(ctx context.Context, in *GetNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error)
+	// Initiates a like process to another profile.
+	// This does not send a like request to another profile. It is used when a user
+	// is interested in the bio and details of a profile, and wants to see the
+	// pictures associated with the profile, before making a decision to send
+	// a match request.
+	InitiateLike(ctx context.Context, in *InitiateLikeRequest, opts ...grpc.CallOption) (*Like, error)
+	// Cancels a like process to another profile.
+	// This cancels a like process to another profile, if a user finds that
+	// the user is not to their liking after initiating a like.
+	CancelLike(ctx context.Context, in *CancelLikeRequest, opts ...grpc.CallOption) (*Like, error)
+	// Completes a like process to another profile.
+	// This completes a like process to another profile, if a user finds that
+	// the user is to their liking after initiating a like. This notifies
+	// the other user of this. Creates a match resource in the database.
+	CompleteLike(ctx context.Context, in *CompleteLikeRequest, opts ...grpc.CallOption) (*CompleteLikeResponse, error)
+	// Accepts a received match request from a user.
+	// This then notifies the other user that the match is accepted, and initiates a chat
+	// between both users.
+	AcceptNikkahMatchInvite(ctx context.Context, in *AcceptNikkahMatchInviteRequest, opts ...grpc.CallOption) (*NikkahMatch, error)
+	// Rejects a received match request.
+	// This then silently notifies the other user of the rejection.
+	RejectNikkahMatchInvite(ctx context.Context, in *RejectNikkahMatchInviteRequest, opts ...grpc.CallOption) (*NikkahMatch, error)
+	// Ends a currently accepted match.
+	EndNikkahMatch(ctx context.Context, in *EndNikkahMatchRequest, opts ...grpc.CallOption) (*NikkahMatch, error)
 }
 
 type nikkahIoServiceClient struct {
@@ -50,50 +80,110 @@ func NewNikkahIoServiceClient(cc grpc.ClientConnInterface) NikkahIoServiceClient
 	return &nikkahIoServiceClient{cc}
 }
 
-func (c *nikkahIoServiceClient) CreateProfile(ctx context.Context, in *CreateProfileRequest, opts ...grpc.CallOption) (*Profile, error) {
+func (c *nikkahIoServiceClient) CreateNikkahProfile(ctx context.Context, in *CreateNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Profile)
-	err := c.cc.Invoke(ctx, NikkahIoService_CreateProfile_FullMethodName, in, out, cOpts...)
+	out := new(NikkahProfile)
+	err := c.cc.Invoke(ctx, NikkahIoService_CreateNikkahProfile_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nikkahIoServiceClient) GetSelfProfile(ctx context.Context, in *GetSelfProfileRequest, opts ...grpc.CallOption) (*Profile, error) {
+func (c *nikkahIoServiceClient) GetSelfNikkahProfile(ctx context.Context, in *GetSelfNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Profile)
-	err := c.cc.Invoke(ctx, NikkahIoService_GetSelfProfile_FullMethodName, in, out, cOpts...)
+	out := new(NikkahProfile)
+	err := c.cc.Invoke(ctx, NikkahIoService_GetSelfNikkahProfile_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nikkahIoServiceClient) UpdateSelfProfile(ctx context.Context, in *UpdateSelfProfileRequest, opts ...grpc.CallOption) (*Profile, error) {
+func (c *nikkahIoServiceClient) UpdateSelfNikkahProfile(ctx context.Context, in *UpdateSelfNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Profile)
-	err := c.cc.Invoke(ctx, NikkahIoService_UpdateSelfProfile_FullMethodName, in, out, cOpts...)
+	out := new(NikkahProfile)
+	err := c.cc.Invoke(ctx, NikkahIoService_UpdateSelfNikkahProfile_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nikkahIoServiceClient) ListProfiles(ctx context.Context, in *ListProfilesRequest, opts ...grpc.CallOption) (*ListProfilesResponse, error) {
+func (c *nikkahIoServiceClient) ListNikkahProfiles(ctx context.Context, in *ListNikkahProfilesRequest, opts ...grpc.CallOption) (*ListNikkahProfilesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListProfilesResponse)
-	err := c.cc.Invoke(ctx, NikkahIoService_ListProfiles_FullMethodName, in, out, cOpts...)
+	out := new(ListNikkahProfilesResponse)
+	err := c.cc.Invoke(ctx, NikkahIoService_ListNikkahProfiles_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nikkahIoServiceClient) GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*Profile, error) {
+func (c *nikkahIoServiceClient) GetNikkahProfile(ctx context.Context, in *GetNikkahProfileRequest, opts ...grpc.CallOption) (*NikkahProfile, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Profile)
-	err := c.cc.Invoke(ctx, NikkahIoService_GetProfile_FullMethodName, in, out, cOpts...)
+	out := new(NikkahProfile)
+	err := c.cc.Invoke(ctx, NikkahIoService_GetNikkahProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nikkahIoServiceClient) InitiateLike(ctx context.Context, in *InitiateLikeRequest, opts ...grpc.CallOption) (*Like, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Like)
+	err := c.cc.Invoke(ctx, NikkahIoService_InitiateLike_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nikkahIoServiceClient) CancelLike(ctx context.Context, in *CancelLikeRequest, opts ...grpc.CallOption) (*Like, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Like)
+	err := c.cc.Invoke(ctx, NikkahIoService_CancelLike_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nikkahIoServiceClient) CompleteLike(ctx context.Context, in *CompleteLikeRequest, opts ...grpc.CallOption) (*CompleteLikeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CompleteLikeResponse)
+	err := c.cc.Invoke(ctx, NikkahIoService_CompleteLike_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nikkahIoServiceClient) AcceptNikkahMatchInvite(ctx context.Context, in *AcceptNikkahMatchInviteRequest, opts ...grpc.CallOption) (*NikkahMatch, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NikkahMatch)
+	err := c.cc.Invoke(ctx, NikkahIoService_AcceptNikkahMatchInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nikkahIoServiceClient) RejectNikkahMatchInvite(ctx context.Context, in *RejectNikkahMatchInviteRequest, opts ...grpc.CallOption) (*NikkahMatch, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NikkahMatch)
+	err := c.cc.Invoke(ctx, NikkahIoService_RejectNikkahMatchInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nikkahIoServiceClient) EndNikkahMatch(ctx context.Context, in *EndNikkahMatchRequest, opts ...grpc.CallOption) (*NikkahMatch, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NikkahMatch)
+	err := c.cc.Invoke(ctx, NikkahIoService_EndNikkahMatch_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,15 +195,39 @@ func (c *nikkahIoServiceClient) GetProfile(ctx context.Context, in *GetProfileRe
 // for forward compatibility.
 type NikkahIoServiceServer interface {
 	// Creates a marriage profile for the authenticated user.
-	CreateProfile(context.Context, *CreateProfileRequest) (*Profile, error)
+	CreateNikkahProfile(context.Context, *CreateNikkahProfileRequest) (*NikkahProfile, error)
 	// Retrieves the profile of the authenticated user.
-	GetSelfProfile(context.Context, *GetSelfProfileRequest) (*Profile, error)
+	GetSelfNikkahProfile(context.Context, *GetSelfNikkahProfileRequest) (*NikkahProfile, error)
 	// Updates the profile of the authenticated user.
-	UpdateSelfProfile(context.Context, *UpdateSelfProfileRequest) (*Profile, error)
+	UpdateSelfNikkahProfile(context.Context, *UpdateSelfNikkahProfileRequest) (*NikkahProfile, error)
 	// Lists profiles based on specified criteria.
-	ListProfiles(context.Context, *ListProfilesRequest) (*ListProfilesResponse, error)
+	ListNikkahProfiles(context.Context, *ListNikkahProfilesRequest) (*ListNikkahProfilesResponse, error)
 	// Gets the details of a specific profile.
-	GetProfile(context.Context, *GetProfileRequest) (*Profile, error)
+	GetNikkahProfile(context.Context, *GetNikkahProfileRequest) (*NikkahProfile, error)
+	// Initiates a like process to another profile.
+	// This does not send a like request to another profile. It is used when a user
+	// is interested in the bio and details of a profile, and wants to see the
+	// pictures associated with the profile, before making a decision to send
+	// a match request.
+	InitiateLike(context.Context, *InitiateLikeRequest) (*Like, error)
+	// Cancels a like process to another profile.
+	// This cancels a like process to another profile, if a user finds that
+	// the user is not to their liking after initiating a like.
+	CancelLike(context.Context, *CancelLikeRequest) (*Like, error)
+	// Completes a like process to another profile.
+	// This completes a like process to another profile, if a user finds that
+	// the user is to their liking after initiating a like. This notifies
+	// the other user of this. Creates a match resource in the database.
+	CompleteLike(context.Context, *CompleteLikeRequest) (*CompleteLikeResponse, error)
+	// Accepts a received match request from a user.
+	// This then notifies the other user that the match is accepted, and initiates a chat
+	// between both users.
+	AcceptNikkahMatchInvite(context.Context, *AcceptNikkahMatchInviteRequest) (*NikkahMatch, error)
+	// Rejects a received match request.
+	// This then silently notifies the other user of the rejection.
+	RejectNikkahMatchInvite(context.Context, *RejectNikkahMatchInviteRequest) (*NikkahMatch, error)
+	// Ends a currently accepted match.
+	EndNikkahMatch(context.Context, *EndNikkahMatchRequest) (*NikkahMatch, error)
 	mustEmbedUnimplementedNikkahIoServiceServer()
 }
 
@@ -124,20 +238,38 @@ type NikkahIoServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedNikkahIoServiceServer struct{}
 
-func (UnimplementedNikkahIoServiceServer) CreateProfile(context.Context, *CreateProfileRequest) (*Profile, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateProfile not implemented")
+func (UnimplementedNikkahIoServiceServer) CreateNikkahProfile(context.Context, *CreateNikkahProfileRequest) (*NikkahProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNikkahProfile not implemented")
 }
-func (UnimplementedNikkahIoServiceServer) GetSelfProfile(context.Context, *GetSelfProfileRequest) (*Profile, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSelfProfile not implemented")
+func (UnimplementedNikkahIoServiceServer) GetSelfNikkahProfile(context.Context, *GetSelfNikkahProfileRequest) (*NikkahProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSelfNikkahProfile not implemented")
 }
-func (UnimplementedNikkahIoServiceServer) UpdateSelfProfile(context.Context, *UpdateSelfProfileRequest) (*Profile, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateSelfProfile not implemented")
+func (UnimplementedNikkahIoServiceServer) UpdateSelfNikkahProfile(context.Context, *UpdateSelfNikkahProfileRequest) (*NikkahProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSelfNikkahProfile not implemented")
 }
-func (UnimplementedNikkahIoServiceServer) ListProfiles(context.Context, *ListProfilesRequest) (*ListProfilesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListProfiles not implemented")
+func (UnimplementedNikkahIoServiceServer) ListNikkahProfiles(context.Context, *ListNikkahProfilesRequest) (*ListNikkahProfilesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListNikkahProfiles not implemented")
 }
-func (UnimplementedNikkahIoServiceServer) GetProfile(context.Context, *GetProfileRequest) (*Profile, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetProfile not implemented")
+func (UnimplementedNikkahIoServiceServer) GetNikkahProfile(context.Context, *GetNikkahProfileRequest) (*NikkahProfile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNikkahProfile not implemented")
+}
+func (UnimplementedNikkahIoServiceServer) InitiateLike(context.Context, *InitiateLikeRequest) (*Like, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InitiateLike not implemented")
+}
+func (UnimplementedNikkahIoServiceServer) CancelLike(context.Context, *CancelLikeRequest) (*Like, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelLike not implemented")
+}
+func (UnimplementedNikkahIoServiceServer) CompleteLike(context.Context, *CompleteLikeRequest) (*CompleteLikeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompleteLike not implemented")
+}
+func (UnimplementedNikkahIoServiceServer) AcceptNikkahMatchInvite(context.Context, *AcceptNikkahMatchInviteRequest) (*NikkahMatch, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AcceptNikkahMatchInvite not implemented")
+}
+func (UnimplementedNikkahIoServiceServer) RejectNikkahMatchInvite(context.Context, *RejectNikkahMatchInviteRequest) (*NikkahMatch, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RejectNikkahMatchInvite not implemented")
+}
+func (UnimplementedNikkahIoServiceServer) EndNikkahMatch(context.Context, *EndNikkahMatchRequest) (*NikkahMatch, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EndNikkahMatch not implemented")
 }
 func (UnimplementedNikkahIoServiceServer) mustEmbedUnimplementedNikkahIoServiceServer() {}
 func (UnimplementedNikkahIoServiceServer) testEmbeddedByValue()                         {}
@@ -160,92 +292,200 @@ func RegisterNikkahIoServiceServer(s grpc.ServiceRegistrar, srv NikkahIoServiceS
 	s.RegisterService(&NikkahIoService_ServiceDesc, srv)
 }
 
-func _NikkahIoService_CreateProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateProfileRequest)
+func _NikkahIoService_CreateNikkahProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNikkahProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NikkahIoServiceServer).CreateProfile(ctx, in)
+		return srv.(NikkahIoServiceServer).CreateNikkahProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: NikkahIoService_CreateProfile_FullMethodName,
+		FullMethod: NikkahIoService_CreateNikkahProfile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NikkahIoServiceServer).CreateProfile(ctx, req.(*CreateProfileRequest))
+		return srv.(NikkahIoServiceServer).CreateNikkahProfile(ctx, req.(*CreateNikkahProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NikkahIoService_GetSelfProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSelfProfileRequest)
+func _NikkahIoService_GetSelfNikkahProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSelfNikkahProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NikkahIoServiceServer).GetSelfProfile(ctx, in)
+		return srv.(NikkahIoServiceServer).GetSelfNikkahProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: NikkahIoService_GetSelfProfile_FullMethodName,
+		FullMethod: NikkahIoService_GetSelfNikkahProfile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NikkahIoServiceServer).GetSelfProfile(ctx, req.(*GetSelfProfileRequest))
+		return srv.(NikkahIoServiceServer).GetSelfNikkahProfile(ctx, req.(*GetSelfNikkahProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NikkahIoService_UpdateSelfProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateSelfProfileRequest)
+func _NikkahIoService_UpdateSelfNikkahProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSelfNikkahProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NikkahIoServiceServer).UpdateSelfProfile(ctx, in)
+		return srv.(NikkahIoServiceServer).UpdateSelfNikkahProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: NikkahIoService_UpdateSelfProfile_FullMethodName,
+		FullMethod: NikkahIoService_UpdateSelfNikkahProfile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NikkahIoServiceServer).UpdateSelfProfile(ctx, req.(*UpdateSelfProfileRequest))
+		return srv.(NikkahIoServiceServer).UpdateSelfNikkahProfile(ctx, req.(*UpdateSelfNikkahProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NikkahIoService_ListProfiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListProfilesRequest)
+func _NikkahIoService_ListNikkahProfiles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListNikkahProfilesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NikkahIoServiceServer).ListProfiles(ctx, in)
+		return srv.(NikkahIoServiceServer).ListNikkahProfiles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: NikkahIoService_ListProfiles_FullMethodName,
+		FullMethod: NikkahIoService_ListNikkahProfiles_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NikkahIoServiceServer).ListProfiles(ctx, req.(*ListProfilesRequest))
+		return srv.(NikkahIoServiceServer).ListNikkahProfiles(ctx, req.(*ListNikkahProfilesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _NikkahIoService_GetProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProfileRequest)
+func _NikkahIoService_GetNikkahProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNikkahProfileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NikkahIoServiceServer).GetProfile(ctx, in)
+		return srv.(NikkahIoServiceServer).GetNikkahProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: NikkahIoService_GetProfile_FullMethodName,
+		FullMethod: NikkahIoService_GetNikkahProfile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NikkahIoServiceServer).GetProfile(ctx, req.(*GetProfileRequest))
+		return srv.(NikkahIoServiceServer).GetNikkahProfile(ctx, req.(*GetNikkahProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NikkahIoService_InitiateLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InitiateLikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).InitiateLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_InitiateLike_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).InitiateLike(ctx, req.(*InitiateLikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NikkahIoService_CancelLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelLikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).CancelLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_CancelLike_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).CancelLike(ctx, req.(*CancelLikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NikkahIoService_CompleteLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompleteLikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).CompleteLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_CompleteLike_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).CompleteLike(ctx, req.(*CompleteLikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NikkahIoService_AcceptNikkahMatchInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AcceptNikkahMatchInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).AcceptNikkahMatchInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_AcceptNikkahMatchInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).AcceptNikkahMatchInvite(ctx, req.(*AcceptNikkahMatchInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NikkahIoService_RejectNikkahMatchInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RejectNikkahMatchInviteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).RejectNikkahMatchInvite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_RejectNikkahMatchInvite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).RejectNikkahMatchInvite(ctx, req.(*RejectNikkahMatchInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NikkahIoService_EndNikkahMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EndNikkahMatchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).EndNikkahMatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_EndNikkahMatch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).EndNikkahMatch(ctx, req.(*EndNikkahMatchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,24 +498,48 @@ var NikkahIoService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*NikkahIoServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateProfile",
-			Handler:    _NikkahIoService_CreateProfile_Handler,
+			MethodName: "CreateNikkahProfile",
+			Handler:    _NikkahIoService_CreateNikkahProfile_Handler,
 		},
 		{
-			MethodName: "GetSelfProfile",
-			Handler:    _NikkahIoService_GetSelfProfile_Handler,
+			MethodName: "GetSelfNikkahProfile",
+			Handler:    _NikkahIoService_GetSelfNikkahProfile_Handler,
 		},
 		{
-			MethodName: "UpdateSelfProfile",
-			Handler:    _NikkahIoService_UpdateSelfProfile_Handler,
+			MethodName: "UpdateSelfNikkahProfile",
+			Handler:    _NikkahIoService_UpdateSelfNikkahProfile_Handler,
 		},
 		{
-			MethodName: "ListProfiles",
-			Handler:    _NikkahIoService_ListProfiles_Handler,
+			MethodName: "ListNikkahProfiles",
+			Handler:    _NikkahIoService_ListNikkahProfiles_Handler,
 		},
 		{
-			MethodName: "GetProfile",
-			Handler:    _NikkahIoService_GetProfile_Handler,
+			MethodName: "GetNikkahProfile",
+			Handler:    _NikkahIoService_GetNikkahProfile_Handler,
+		},
+		{
+			MethodName: "InitiateLike",
+			Handler:    _NikkahIoService_InitiateLike_Handler,
+		},
+		{
+			MethodName: "CancelLike",
+			Handler:    _NikkahIoService_CancelLike_Handler,
+		},
+		{
+			MethodName: "CompleteLike",
+			Handler:    _NikkahIoService_CompleteLike_Handler,
+		},
+		{
+			MethodName: "AcceptNikkahMatchInvite",
+			Handler:    _NikkahIoService_AcceptNikkahMatchInvite_Handler,
+		},
+		{
+			MethodName: "RejectNikkahMatchInvite",
+			Handler:    _NikkahIoService_RejectNikkahMatchInvite_Handler,
+		},
+		{
+			MethodName: "EndNikkahMatch",
+			Handler:    _NikkahIoService_EndNikkahMatch_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

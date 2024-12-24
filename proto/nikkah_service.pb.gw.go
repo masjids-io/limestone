@@ -31,8 +31,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_NikkahIoService_CreateProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateProfileRequest
+func request_NikkahIoService_CreateNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateNikkahProfileRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -43,13 +43,13 @@ func request_NikkahIoService_CreateProfile_0(ctx context.Context, marshaler runt
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CreateNikkahProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_NikkahIoService_CreateProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateProfileRequest
+func local_request_NikkahIoService_CreateNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateNikkahProfileRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -60,48 +60,31 @@ func local_request_NikkahIoService_CreateProfile_0(ctx context.Context, marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateProfile(ctx, &protoReq)
+	msg, err := server.CreateNikkahProfile(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_NikkahIoService_GetSelfProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetSelfProfileRequest
+func request_NikkahIoService_GetSelfNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetSelfNikkahProfileRequest
 	var metadata runtime.ServerMetadata
 
-	msg, err := client.GetSelfProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetSelfNikkahProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_NikkahIoService_GetSelfProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetSelfProfileRequest
+func local_request_NikkahIoService_GetSelfNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetSelfNikkahProfileRequest
 	var metadata runtime.ServerMetadata
 
-	msg, err := server.GetSelfProfile(ctx, &protoReq)
+	msg, err := server.GetSelfNikkahProfile(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_NikkahIoService_UpdateSelfProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateSelfProfileRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.UpdateSelfProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_NikkahIoService_UpdateSelfProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq UpdateSelfProfileRequest
+func request_NikkahIoService_UpdateSelfNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq UpdateSelfNikkahProfileRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -112,49 +95,66 @@ func local_request_NikkahIoService_UpdateSelfProfile_0(ctx context.Context, mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.UpdateSelfProfile(ctx, &protoReq)
+	msg, err := client.UpdateSelfNikkahProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_NikkahIoService_UpdateSelfNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq UpdateSelfNikkahProfileRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.UpdateSelfNikkahProfile(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
 var (
-	filter_NikkahIoService_ListProfiles_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_NikkahIoService_ListNikkahProfiles_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_NikkahIoService_ListProfiles_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListProfilesRequest
+func request_NikkahIoService_ListNikkahProfiles_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ListNikkahProfilesRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NikkahIoService_ListProfiles_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NikkahIoService_ListNikkahProfiles_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.ListProfiles(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.ListNikkahProfiles(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_NikkahIoService_ListProfiles_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq ListProfilesRequest
+func local_request_NikkahIoService_ListNikkahProfiles_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq ListNikkahProfilesRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NikkahIoService_ListProfiles_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_NikkahIoService_ListNikkahProfiles_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.ListProfiles(ctx, &protoReq)
+	msg, err := server.ListNikkahProfiles(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_NikkahIoService_GetProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetProfileRequest
+func request_NikkahIoService_GetNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetNikkahProfileRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -174,13 +174,13 @@ func request_NikkahIoService_GetProfile_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "profile_id", err)
 	}
 
-	msg, err := client.GetProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetNikkahProfile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_NikkahIoService_GetProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetProfileRequest
+func local_request_NikkahIoService_GetNikkahProfile_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetNikkahProfileRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -200,7 +200,301 @@ func local_request_NikkahIoService_GetProfile_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "profile_id", err)
 	}
 
-	msg, err := server.GetProfile(ctx, &protoReq)
+	msg, err := server.GetNikkahProfile(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_NikkahIoService_InitiateLike_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq InitiateLikeRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Like); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.InitiateLike(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_NikkahIoService_InitiateLike_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq InitiateLikeRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Like); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.InitiateLike(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_NikkahIoService_CancelLike_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CancelLikeRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["like_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
+	}
+
+	protoReq.LikeId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
+	}
+
+	msg, err := client.CancelLike(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_NikkahIoService_CancelLike_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CancelLikeRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["like_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
+	}
+
+	protoReq.LikeId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
+	}
+
+	msg, err := server.CancelLike(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_NikkahIoService_CompleteLike_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CompleteLikeRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["like_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
+	}
+
+	protoReq.LikeId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
+	}
+
+	msg, err := client.CompleteLike(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_NikkahIoService_CompleteLike_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CompleteLikeRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["like_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
+	}
+
+	protoReq.LikeId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
+	}
+
+	msg, err := server.CompleteLike(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_NikkahIoService_AcceptNikkahMatchInvite_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AcceptNikkahMatchInviteRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["match_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
+	}
+
+	protoReq.MatchId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
+	}
+
+	msg, err := client.AcceptNikkahMatchInvite(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_NikkahIoService_AcceptNikkahMatchInvite_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AcceptNikkahMatchInviteRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["match_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
+	}
+
+	protoReq.MatchId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
+	}
+
+	msg, err := server.AcceptNikkahMatchInvite(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_NikkahIoService_RejectNikkahMatchInvite_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq RejectNikkahMatchInviteRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["match_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
+	}
+
+	protoReq.MatchId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
+	}
+
+	msg, err := client.RejectNikkahMatchInvite(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_NikkahIoService_RejectNikkahMatchInvite_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq RejectNikkahMatchInviteRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["match_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
+	}
+
+	protoReq.MatchId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
+	}
+
+	msg, err := server.RejectNikkahMatchInvite(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_NikkahIoService_EndNikkahMatch_0(ctx context.Context, marshaler runtime.Marshaler, client NikkahIoServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq EndNikkahMatchRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["match_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
+	}
+
+	protoReq.MatchId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
+	}
+
+	msg, err := client.EndNikkahMatch(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_NikkahIoService_EndNikkahMatch_0(ctx context.Context, marshaler runtime.Marshaler, server NikkahIoServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq EndNikkahMatchRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["match_id"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
+	}
+
+	protoReq.MatchId, err = runtime.Int32(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
+	}
+
+	msg, err := server.EndNikkahMatch(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -211,7 +505,7 @@ func local_request_NikkahIoService_GetProfile_0(ctx context.Context, marshaler r
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterNikkahIoServiceHandlerFromEndpoint instead.
 func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server NikkahIoServiceServer) error {
 
-	mux.Handle("POST", pattern_NikkahIoService_CreateProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_NikkahIoService_CreateNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -219,12 +513,12 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/CreateProfile", runtime.WithHTTPPathPattern("/v1/profiles"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/CreateNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_NikkahIoService_CreateProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_NikkahIoService_CreateNikkahProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -232,11 +526,11 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_NikkahIoService_CreateProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_CreateNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_NikkahIoService_GetSelfProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_NikkahIoService_GetSelfNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -244,12 +538,12 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/GetSelfProfile", runtime.WithHTTPPathPattern("/v1/profile"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/GetSelfNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_NikkahIoService_GetSelfProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_NikkahIoService_GetSelfNikkahProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -257,11 +551,11 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_NikkahIoService_GetSelfProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_GetSelfNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_NikkahIoService_UpdateSelfProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_NikkahIoService_UpdateSelfNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -269,12 +563,12 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/UpdateSelfProfile", runtime.WithHTTPPathPattern("/v1/profile"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/UpdateSelfNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_NikkahIoService_UpdateSelfProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_NikkahIoService_UpdateSelfNikkahProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -282,11 +576,11 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_NikkahIoService_UpdateSelfProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_UpdateSelfNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_NikkahIoService_ListProfiles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_NikkahIoService_ListNikkahProfiles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -294,12 +588,12 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/ListProfiles", runtime.WithHTTPPathPattern("/v1/profiles"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/ListNikkahProfiles", runtime.WithHTTPPathPattern("/v1/nikkah/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_NikkahIoService_ListProfiles_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_NikkahIoService_ListNikkahProfiles_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -307,11 +601,11 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_NikkahIoService_ListProfiles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_ListNikkahProfiles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_NikkahIoService_GetProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_NikkahIoService_GetNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -319,12 +613,12 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/GetProfile", runtime.WithHTTPPathPattern("/v1/profiles/{profile_id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/GetNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profiles/{profile_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_NikkahIoService_GetProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_NikkahIoService_GetNikkahProfile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -332,7 +626,157 @@ func RegisterNikkahIoServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 
-		forward_NikkahIoService_GetProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_GetNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_InitiateLike_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/InitiateLike", runtime.WithHTTPPathPattern("/v1/nikkah/likes"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NikkahIoService_InitiateLike_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_InitiateLike_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_CancelLike_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/CancelLike", runtime.WithHTTPPathPattern("/v1/nikkah/likes/{like_id}/cancel"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NikkahIoService_CancelLike_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_CancelLike_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_CompleteLike_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/CompleteLike", runtime.WithHTTPPathPattern("/v1/nikkah/likes/{like_id}/complete"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NikkahIoService_CompleteLike_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_CompleteLike_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_AcceptNikkahMatchInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/AcceptNikkahMatchInvite", runtime.WithHTTPPathPattern("/v1/nikkah/match/{match_id}/accept"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NikkahIoService_AcceptNikkahMatchInvite_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_AcceptNikkahMatchInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_RejectNikkahMatchInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/RejectNikkahMatchInvite", runtime.WithHTTPPathPattern("/v1/nikkah/match/{match_id}/reject"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NikkahIoService_RejectNikkahMatchInvite_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_RejectNikkahMatchInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_EndNikkahMatch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.NikkahIoService/EndNikkahMatch", runtime.WithHTTPPathPattern("/v1/nikkah/match/{match_id}/end"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_NikkahIoService_EndNikkahMatch_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_EndNikkahMatch_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -377,113 +821,245 @@ func RegisterNikkahIoServiceHandler(ctx context.Context, mux *runtime.ServeMux, 
 // "NikkahIoServiceClient" to call the correct interceptors.
 func RegisterNikkahIoServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client NikkahIoServiceClient) error {
 
-	mux.Handle("POST", pattern_NikkahIoService_CreateProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_NikkahIoService_CreateNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/CreateProfile", runtime.WithHTTPPathPattern("/v1/profiles"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/CreateNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_NikkahIoService_CreateProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_NikkahIoService_CreateNikkahProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_NikkahIoService_CreateProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_CreateNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_NikkahIoService_GetSelfProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_NikkahIoService_GetSelfNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/GetSelfProfile", runtime.WithHTTPPathPattern("/v1/profile"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/GetSelfNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_NikkahIoService_GetSelfProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_NikkahIoService_GetSelfNikkahProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_NikkahIoService_GetSelfProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_GetSelfNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_NikkahIoService_UpdateSelfProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_NikkahIoService_UpdateSelfNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/UpdateSelfProfile", runtime.WithHTTPPathPattern("/v1/profile"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/UpdateSelfNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profile"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_NikkahIoService_UpdateSelfProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_NikkahIoService_UpdateSelfNikkahProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_NikkahIoService_UpdateSelfProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_UpdateSelfNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_NikkahIoService_ListProfiles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_NikkahIoService_ListNikkahProfiles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/ListProfiles", runtime.WithHTTPPathPattern("/v1/profiles"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/ListNikkahProfiles", runtime.WithHTTPPathPattern("/v1/nikkah/profiles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_NikkahIoService_ListProfiles_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_NikkahIoService_ListNikkahProfiles_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_NikkahIoService_ListProfiles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_ListNikkahProfiles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_NikkahIoService_GetProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_NikkahIoService_GetNikkahProfile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/GetProfile", runtime.WithHTTPPathPattern("/v1/profiles/{profile_id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/GetNikkahProfile", runtime.WithHTTPPathPattern("/v1/nikkah/profiles/{profile_id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_NikkahIoService_GetProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_NikkahIoService_GetNikkahProfile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_NikkahIoService_GetProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_NikkahIoService_GetNikkahProfile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_InitiateLike_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/InitiateLike", runtime.WithHTTPPathPattern("/v1/nikkah/likes"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NikkahIoService_InitiateLike_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_InitiateLike_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_CancelLike_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/CancelLike", runtime.WithHTTPPathPattern("/v1/nikkah/likes/{like_id}/cancel"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NikkahIoService_CancelLike_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_CancelLike_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_CompleteLike_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/CompleteLike", runtime.WithHTTPPathPattern("/v1/nikkah/likes/{like_id}/complete"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NikkahIoService_CompleteLike_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_CompleteLike_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_AcceptNikkahMatchInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/AcceptNikkahMatchInvite", runtime.WithHTTPPathPattern("/v1/nikkah/match/{match_id}/accept"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NikkahIoService_AcceptNikkahMatchInvite_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_AcceptNikkahMatchInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_RejectNikkahMatchInvite_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/RejectNikkahMatchInvite", runtime.WithHTTPPathPattern("/v1/nikkah/match/{match_id}/reject"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NikkahIoService_RejectNikkahMatchInvite_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_RejectNikkahMatchInvite_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_NikkahIoService_EndNikkahMatch_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.NikkahIoService/EndNikkahMatch", runtime.WithHTTPPathPattern("/v1/nikkah/match/{match_id}/end"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_NikkahIoService_EndNikkahMatch_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_NikkahIoService_EndNikkahMatch_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -491,25 +1067,49 @@ func RegisterNikkahIoServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_NikkahIoService_CreateProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "profiles"}, ""))
+	pattern_NikkahIoService_CreateNikkahProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "nikkah", "profiles"}, ""))
 
-	pattern_NikkahIoService_GetSelfProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "profile"}, ""))
+	pattern_NikkahIoService_GetSelfNikkahProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "nikkah", "profile"}, ""))
 
-	pattern_NikkahIoService_UpdateSelfProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "profile"}, ""))
+	pattern_NikkahIoService_UpdateSelfNikkahProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "nikkah", "profile"}, ""))
 
-	pattern_NikkahIoService_ListProfiles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "profiles"}, ""))
+	pattern_NikkahIoService_ListNikkahProfiles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "nikkah", "profiles"}, ""))
 
-	pattern_NikkahIoService_GetProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "profiles", "profile_id"}, ""))
+	pattern_NikkahIoService_GetNikkahProfile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "nikkah", "profiles", "profile_id"}, ""))
+
+	pattern_NikkahIoService_InitiateLike_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "nikkah", "likes"}, ""))
+
+	pattern_NikkahIoService_CancelLike_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "nikkah", "likes", "like_id", "cancel"}, ""))
+
+	pattern_NikkahIoService_CompleteLike_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "nikkah", "likes", "like_id", "complete"}, ""))
+
+	pattern_NikkahIoService_AcceptNikkahMatchInvite_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "nikkah", "match", "match_id", "accept"}, ""))
+
+	pattern_NikkahIoService_RejectNikkahMatchInvite_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "nikkah", "match", "match_id", "reject"}, ""))
+
+	pattern_NikkahIoService_EndNikkahMatch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"v1", "nikkah", "match", "match_id", "end"}, ""))
 )
 
 var (
-	forward_NikkahIoService_CreateProfile_0 = runtime.ForwardResponseMessage
+	forward_NikkahIoService_CreateNikkahProfile_0 = runtime.ForwardResponseMessage
 
-	forward_NikkahIoService_GetSelfProfile_0 = runtime.ForwardResponseMessage
+	forward_NikkahIoService_GetSelfNikkahProfile_0 = runtime.ForwardResponseMessage
 
-	forward_NikkahIoService_UpdateSelfProfile_0 = runtime.ForwardResponseMessage
+	forward_NikkahIoService_UpdateSelfNikkahProfile_0 = runtime.ForwardResponseMessage
 
-	forward_NikkahIoService_ListProfiles_0 = runtime.ForwardResponseMessage
+	forward_NikkahIoService_ListNikkahProfiles_0 = runtime.ForwardResponseMessage
 
-	forward_NikkahIoService_GetProfile_0 = runtime.ForwardResponseMessage
+	forward_NikkahIoService_GetNikkahProfile_0 = runtime.ForwardResponseMessage
+
+	forward_NikkahIoService_InitiateLike_0 = runtime.ForwardResponseMessage
+
+	forward_NikkahIoService_CancelLike_0 = runtime.ForwardResponseMessage
+
+	forward_NikkahIoService_CompleteLike_0 = runtime.ForwardResponseMessage
+
+	forward_NikkahIoService_AcceptNikkahMatchInvite_0 = runtime.ForwardResponseMessage
+
+	forward_NikkahIoService_RejectNikkahMatchInvite_0 = runtime.ForwardResponseMessage
+
+	forward_NikkahIoService_EndNikkahMatch_0 = runtime.ForwardResponseMessage
 )

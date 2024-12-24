@@ -7,6 +7,7 @@ tags:
   - name: EventService
   - name: MasjidService
   - name: NikkahIoService
+  - name: RevertsIoService
   - name: UserService
 consumes:
   - application/json
@@ -25,7 +26,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: body
           in: body
@@ -46,7 +47,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: body
           in: body
@@ -67,7 +68,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: adhanFile
           description: The adhan file to create.
@@ -91,7 +92,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: pageSize
           description: |-
@@ -119,7 +120,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: event
           description: The event to create in the database.
@@ -143,7 +144,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: pageSize
           description: |-
@@ -171,7 +172,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: masjid
           description: The masjid to create in the database.
@@ -183,54 +184,199 @@ paths:
               - masjid
       tags:
         - MasjidService
-  /v1/profile:
-    get:
-      summary: Retrieves the profile of the authenticated user.
-      operationId: NikkahIoService_GetSelfProfile
+  /v1/nikkah/likes:
+    post:
+      summary: "Initiates a like process to another profile.\nThis does not send a like request to another profile. It is used when a user\nis interested in the bio and details of a profile, and wants to see the \npictures associated with the profile, before making a decision to send \na match request."
+      operationId: NikkahIoService_InitiateLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneProfile'
+            $ref: '#/definitions/limestoneLike'
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: like
+          description: The like to create in the database.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneLike'
+      tags:
+        - NikkahIoService
+  /v1/nikkah/likes/{likeId}/cancel:
+    post:
+      summary: |-
+        Cancels a like process to another profile.
+        This cancels a like process to another profile, if a user finds that
+        the user is not to their liking after initiating a like.
+      operationId: NikkahIoService_CancelLike
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneLike'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: likeId
+          description: The ID of the like process to cancel.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - NikkahIoService
+  /v1/nikkah/likes/{likeId}/complete:
+    post:
+      summary: |-
+        Completes a like process to another profile.
+        This completes a like process to another profile, if a user finds that
+        the user is to their liking after initiating a like. This notifies
+        the other user of this. Creates a match resource in the database.
+      operationId: NikkahIoService_CompleteLike
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneCompleteLikeResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: likeId
+          description: The ID of the like to complete.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}/accept:
+    post:
+      summary: |-
+        Accepts a received match request from a user.
+        This then notifies the other user that the match is accepted, and initiates a chat
+        between both users.
+      operationId: NikkahIoService_AcceptNikkahMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneNikkahMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match invite to accept.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}/end:
+    post:
+      summary: Ends a currently accepted match.
+      operationId: NikkahIoService_EndNikkahMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneNikkahMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match invite to end.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}/reject:
+    post:
+      summary: |-
+        Rejects a received match request.
+        This then silently notifies the other user of the rejection.
+      operationId: NikkahIoService_RejectNikkahMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneNikkahMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match invite to reject.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - NikkahIoService
+  /v1/nikkah/profile:
+    get:
+      summary: Retrieves the profile of the authenticated user.
+      operationId: NikkahIoService_GetSelfNikkahProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneNikkahProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
       tags:
         - NikkahIoService
     put:
       summary: Updates the profile of the authenticated user.
-      operationId: NikkahIoService_UpdateSelfProfile
+      operationId: NikkahIoService_UpdateSelfNikkahProfile
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneProfile'
+            $ref: '#/definitions/limestoneNikkahProfile'
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: body
+          description: UpdateSelfNikkahProfileRequest represents a request to update the authenticated user's profile.
           in: body
           required: true
           schema:
-            $ref: '#/definitions/limestoneUpdateSelfProfileRequest'
+            $ref: '#/definitions/limestoneUpdateSelfNikkahProfileRequest'
       tags:
         - NikkahIoService
-  /v1/profiles:
+  /v1/nikkah/profiles:
     get:
       summary: Lists profiles based on specified criteria.
-      operationId: NikkahIoService_ListProfiles
+      operationId: NikkahIoService_ListNikkahProfiles
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneListProfilesResponse'
+            $ref: '#/definitions/limestoneListNikkahProfilesResponse'
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: pageSize
           description: |-
@@ -241,7 +387,7 @@ paths:
           type: integer
           format: int32
         - name: pageToken
-          description: "A page token from a previous `ListProfiles` call. If this is provided, then the \nnext page will be returned."
+          description: "A page token from a previous `ListNikkahProfiles` call. If this is provided, then the \nnext page will be returned."
           in: query
           required: false
           type: string
@@ -249,40 +395,40 @@ paths:
         - NikkahIoService
     post:
       summary: Creates a marriage profile for the authenticated user.
-      operationId: NikkahIoService_CreateProfile
+      operationId: NikkahIoService_CreateNikkahProfile
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneProfile'
+            $ref: '#/definitions/limestoneNikkahProfile'
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: profile
           description: The profile to create in the database.
           in: body
           required: true
           schema:
-            $ref: '#/definitions/limestoneProfile'
+            $ref: '#/definitions/limestoneNikkahProfile'
             required:
               - profile
       tags:
         - NikkahIoService
-  /v1/profiles/{profileId}:
+  /v1/nikkah/profiles/{profileId}:
     get:
       summary: Gets the details of a specific profile.
-      operationId: NikkahIoService_GetProfile
+      operationId: NikkahIoService_GetNikkahProfile
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneProfile'
+            $ref: '#/definitions/limestoneNikkahProfile'
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: profileId
           description: The ID of the profile to retrieve.
@@ -291,6 +437,209 @@ paths:
           type: string
       tags:
         - NikkahIoService
+  /v1/reverts/match/{matchId}/accept:
+    post:
+      summary: |-
+        Accepts a received match request from a user.
+        This then notifies the other user that the match is accepted, and initiates a chat
+        between both users.
+      operationId: RevertsIoService_AcceptRevertMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match invite to accept.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - RevertsIoService
+  /v1/reverts/match/{matchId}/end:
+    post:
+      summary: Ends a currently accepted match.
+      operationId: RevertsIoService_EndRevertMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match invite to end.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - RevertsIoService
+  /v1/reverts/match/{matchId}/reject:
+    post:
+      summary: |-
+        Rejects a received match request.
+        This then silently notifies the other user of the rejection.
+      operationId: RevertsIoService_RejectRevertMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match invite to reject.
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - RevertsIoService
+  /v1/reverts/match/{receiverProfileId}:
+    post:
+      summary: |-
+        Accepts a received match request from a user.
+        This then notifies the other user that the match is accepted, and initiates a chat
+        between both users.
+      operationId: RevertsIoService_CreateRevertMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: receiverProfileId
+          description: The ID of the profile receiving the match invite.
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
+  /v1/reverts/profile:
+    get:
+      summary: Retrieves the profile of the authenticated user.
+      operationId: RevertsIoService_GetSelfRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      tags:
+        - RevertsIoService
+    put:
+      summary: Updates the profile of the authenticated user.
+      operationId: RevertsIoService_UpdateSelfRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUpdateSelfRevertProfileRequest'
+      tags:
+        - RevertsIoService
+  /v1/reverts/profiles:
+    get:
+      summary: Lists profiles based on specified criteria.
+      operationId: RevertsIoService_ListRevertProfiles
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListRevertProfilesResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: pageSize
+          description: |-
+            The maximum number of profiles to return. Fewer profiles might be returned.
+            Default value is 25.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          description: "A page token from a previous `ListRevertProfiles` call. If this is provided, then the \nnext page will be returned."
+          in: query
+          required: false
+          type: string
+      tags:
+        - RevertsIoService
+    post:
+      summary: Creates a reverts matching profile for the authenticated user.
+      operationId: RevertsIoService_CreateRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profile
+          description: The profile to create in the database.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+            required:
+              - profile
+      tags:
+        - RevertsIoService
+  /v1/reverts/profiles/{profileId}:
+    get:
+      summary: Gets the details of a specific profile.
+      operationId: RevertsIoService_GetRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          description: The ID of the profile to retrieve.
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
   /v1/users:
     post:
       summary: Creates the given User with the given password.
@@ -303,7 +652,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: user
           description: The user to create.
@@ -332,7 +681,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: adhanFile.id
           description: The unique id associated with this file.
@@ -389,7 +738,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: event.id
           description: The unique id associated with the event.
@@ -476,7 +825,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id_1
           description: The id of the event that should be returned.
@@ -497,7 +846,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id_1
           description: The id of the event that should be deleted.
@@ -519,7 +868,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id_2
           description: The id of the masjid that should be returned.
@@ -540,7 +889,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id_2
           description: The id of the masjid that should be deleted.
@@ -562,7 +911,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id_3
           description: The id of the user to get.
@@ -583,7 +932,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id_3
           description: The id of the user to delete.
@@ -605,7 +954,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           description: The adhan file id to get.
@@ -626,7 +975,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           description: The adhan file id to delete.
@@ -650,7 +999,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: masjid.id
           description: The unique id of the masjid. This field is output only.
@@ -710,7 +1059,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: user.id
           description: The ID of the user. This field is output only.
@@ -757,23 +1106,6 @@ paths:
       tags:
         - UserService
 definitions:
-  BirthDateMonth:
-    type: string
-    enum:
-      - MONTH_UNSPECIFIED
-      - JANUARY
-      - FEBRUARY
-      - MARCH
-      - APRIL
-      - MAY
-      - JUNE
-      - JULY
-      - AUGUST
-      - SEPTEMBER
-      - OCTOBER
-      - NOVEMBER
-      - DECEMBER
-    default: MONTH_UNSPECIFIED
   EventEventType:
     type: string
     enum:
@@ -926,18 +1258,19 @@ definitions:
         format: int32
         description: Adjustment offset for Isha in minutes. Value can be negative.
     description: "The manual adjustments to apply to the prayer timings. The value that each field is set to is \nthe offset which will be added to the calculated time to obtain the final prayer time."
-  ProfileBirthDate:
+  googlerpcStatus:
     type: object
     properties:
-      year:
+      code:
         type: integer
         format: int32
-      month:
-        $ref: '#/definitions/BirthDateMonth'
-      day:
-        type: integer
-        format: int32
-    description: A message describing the birth date of a user.
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
   limestoneAdhanFile:
     type: object
     properties:
@@ -982,6 +1315,16 @@ definitions:
         type: integer
         format: int32
         description: The ID of the authenticated user (if successful).
+  limestoneCompleteLikeResponse:
+    type: object
+    properties:
+      like:
+        $ref: '#/definitions/limestoneLike'
+        description: The like that was completed.
+      match:
+        $ref: '#/definitions/limestoneNikkahMatch'
+        description: The match that was initiated.
+    description: CompleteLikeResponse represents a response to a complete like request.
   limestoneDeleteAdhanFileResponse:
     type: object
   limestoneDeleteEventResponse:
@@ -1053,6 +1396,47 @@ definitions:
       user:
         $ref: '#/definitions/limestoneUser'
         description: The authenticated user.
+  limestoneLike:
+    type: object
+    properties:
+      likeId:
+        type: integer
+        format: int32
+        description: The unique identifier for the like process. This field is output only.
+      likerProfileId:
+        type: integer
+        format: int32
+        description: The ID of the profile who initiated the like.
+      likedProfileId:
+        type: integer
+        format: int32
+        description: The ID of the profile which was liked.
+      status:
+        $ref: '#/definitions/limestoneLikeStatus'
+        description: The current status of the like process.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+    description: Like represents a like process initiated by a user towards another user's profile.
+  limestoneLikeStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - INITIATED
+      - COMPLETED
+      - CANCELLED
+    default: STATUS_UNSPECIFIED
+    description: |-
+      Denotes an enum that specifies the current status of the like.
+
+       - INITIATED: The like is initiated, so the user can see the pictures of the other profile.
+       - COMPLETED: The like has been completed, indicating mutual interest.
+       - CANCELLED: The like has been cancelled.
   limestoneListEventsResponse:
     type: object
     properties:
@@ -1071,15 +1455,35 @@ definitions:
           type: object
           $ref: '#/definitions/limestoneMasjid'
         description: The list of returned masjids.
-  limestoneListProfilesResponse:
+  limestoneListNikkahProfilesResponse:
     type: object
     properties:
       profiles:
         type: array
         items:
           type: object
-          $ref: '#/definitions/limestoneProfile'
+          $ref: '#/definitions/limestoneNikkahProfile'
         description: The list of returned profiles.
+      nextPageToken:
+        type: string
+        description: |-
+          A page token that can be used in a subsequent `ListNikkahProfiles`
+          call to fetch the next page of results.
+    description: ListNikkahProfilesResponse represents a response to a list of profiles.
+  limestoneListRevertProfilesResponse:
+    type: object
+    properties:
+      profiles:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneRevertProfile'
+        description: The list of returned profiles.
+      nextPageToken:
+        type: string
+        description: |-
+          A page token that can be used in a subsequent `ListRevertProfiles`
+          call to fetch the next page of results.
   limestoneMasjid:
     type: object
     properties:
@@ -1112,6 +1516,113 @@ definitions:
     description: |-
       Defines a proto representing the main data corresponding to a masjid.
       This data includes the masjid name, address, phone number and prayer times configuration.
+  limestoneNikkahMatch:
+    type: object
+    properties:
+      matchId:
+        type: integer
+        format: int32
+        description: The unique identifier for the match. This field is output only.
+      initiatorProfileId:
+        type: integer
+        format: int32
+        description: The ID of the profile who initiated the match.
+      receiverProfileId:
+        type: integer
+        format: int32
+        description: The ID of the profile which received the match.
+      status:
+        $ref: '#/definitions/limestoneNikkahMatchStatus'
+        description: The current status of the match.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+    description: NikkahMatch represents a successful match between two users.
+  limestoneNikkahMatchStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - INITIATED
+      - ACCEPTED
+      - REJECTED
+      - ENDED
+    default: STATUS_UNSPECIFIED
+    description: "Denotes an enum that specifies the current status of the match.\n\n - INITIATED: The match has been initiated, so one side has sent the invite to the other.\n - ACCEPTED: The match has been accepted, indicating mutual interest.\n - REJECTED: The match has been rejected.\n - ENDED: The match has been ended. \nThis should occur after the match was in ACCEPTED status."
+  limestoneNikkahProfile:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique id associated with the profile. Field is output only.
+      userId:
+        type: string
+        description: The user id associated with the profile.
+      name:
+        type: string
+        description: The user id associated with the profile.
+      gender:
+        $ref: '#/definitions/limestoneNikkahProfileGender'
+        description: The gender of the user.
+      birthDate:
+        $ref: '#/definitions/limestoneNikkahProfileBirthDate'
+        description: The birthdate of the user.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+    description: Represents a user's profile in the nikkah.io.
+  limestoneNikkahProfileBirthDate:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int32
+        title: Year of birth (e.g., 1995)
+      month:
+        $ref: '#/definitions/limestoneNikkahProfileBirthDateMonth'
+      day:
+        type: integer
+        format: int32
+        title: Day of birth (1-31)
+    description: A message describing the birth date of a user.
+  limestoneNikkahProfileBirthDateMonth:
+    type: string
+    enum:
+      - MONTH_UNSPECIFIED
+      - JANUARY
+      - FEBRUARY
+      - MARCH
+      - APRIL
+      - MAY
+      - JUNE
+      - JULY
+      - AUGUST
+      - SEPTEMBER
+      - OCTOBER
+      - NOVEMBER
+      - DECEMBER
+    default: MONTH_UNSPECIFIED
+    title: Month of birth (1-12)
+  limestoneNikkahProfileGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+    description: |-
+      Defines an enum representing the gender of the user.
+
+       - GENDER_UNSPECIFIED: Default value.
   limestonePrayerTimesConfiguration:
     type: object
     properties:
@@ -1146,44 +1657,6 @@ definitions:
     description: |-
       A message that holds prayer times configuration. This message contains all the fields
       necessary to calculate prayer times.
-  limestoneProfile:
-    type: object
-    properties:
-      id:
-        type: string
-        description: The unique id associated with the profile. Field is output only.
-      userId:
-        type: string
-        description: The user id associated with the profile.
-      name:
-        type: string
-        description: The user id associated with the profile.
-      gender:
-        $ref: '#/definitions/limestoneProfileGender'
-        description: The gender of the user.
-      birthDate:
-        $ref: '#/definitions/ProfileBirthDate'
-        description: The birthdate of the user.
-      createTime:
-        type: string
-        format: date-time
-        description: The create time of the event. This field is output only.
-      updateTime:
-        type: string
-        format: date-time
-        description: The update time of the event. This field is output only.
-    description: Represents a user's profile in the nikkah.io.
-  limestoneProfileGender:
-    type: string
-    enum:
-      - GENDER_UNSPECIFIED
-      - MALE
-      - FEMALE
-    default: GENDER_UNSPECIFIED
-    description: |-
-      Defines an enum representing the gender of the user.
-
-       - GENDER_UNSPECIFIED: Default value.
   limestoneRefreshTokenRequest:
     type: object
     properties:
@@ -1196,11 +1669,127 @@ definitions:
       accessToken:
         type: string
         description: The access token for subsequent authenticated requests.
-  limestoneUpdateSelfProfileRequest:
+  limestoneRevertMatch:
+    type: object
+    properties:
+      matchId:
+        type: integer
+        format: int32
+        description: The unique identifier for the match. This field is output only.
+      initiatorProfileId:
+        type: integer
+        format: int32
+        description: The ID of the profile who initiated the match.
+      receiverProfileId:
+        type: integer
+        format: int32
+        description: The ID of the profile which received the match.
+      status:
+        $ref: '#/definitions/limestoneRevertMatchStatus'
+        description: The current status of the match.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+    description: RevertMatch represents a successful match between two users.
+  limestoneRevertMatchStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - INITIATED
+      - ACCEPTED
+      - REJECTED
+      - ENDED
+    default: STATUS_UNSPECIFIED
+    description: "Denotes an enum that specifies the current status of the match.\n\n - INITIATED: The match has been initiated, so one side has sent the invite to the other.\n - ACCEPTED: The match has been accepted, indicating mutual interest.\n - REJECTED: The match has been rejected.\n - ENDED: The match has been ended. \nThis should occur after the match was in ACCEPTED status.\n\nChanged to 4 to be unique"
+  limestoneRevertProfile:
+    type: object
+    properties:
+      id:
+        type: string
+        description: The unique id associated with the profile. Field is output only.
+      userId:
+        type: string
+        description: The user id associated with the profile.
+      name:
+        type: string
+        description: The user id associated with the profile.
+      gender:
+        $ref: '#/definitions/limestoneRevertProfileGender'
+        description: The gender of the user.
+      birthDate:
+        $ref: '#/definitions/limestoneRevertProfileBirthDate'
+        description: The birthdate of the user.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+    description: Represents a user's profile in the nikkah.io.
+  limestoneRevertProfileBirthDate:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int32
+      month:
+        $ref: '#/definitions/limestoneRevertProfileBirthDateMonth'
+      day:
+        type: integer
+        format: int32
+    description: A message describing the birth date of a user.
+  limestoneRevertProfileBirthDateMonth:
+    type: string
+    enum:
+      - MONTH_UNSPECIFIED
+      - JANUARY
+      - FEBRUARY
+      - MARCH
+      - APRIL
+      - MAY
+      - JUNE
+      - JULY
+      - AUGUST
+      - SEPTEMBER
+      - OCTOBER
+      - NOVEMBER
+      - DECEMBER
+    default: MONTH_UNSPECIFIED
+  limestoneRevertProfileGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+    description: |-
+      Defines an enum representing the gender of the user.
+
+       - GENDER_UNSPECIFIED: Default value.
+  limestoneUpdateSelfNikkahProfileRequest:
     type: object
     properties:
       profile:
-        $ref: '#/definitions/limestoneProfile'
+        $ref: '#/definitions/limestoneNikkahProfile'
+        description: |-
+          The profile to update in the database.
+
+          The profile's `name` field is used to identify the profile to update.
+    description: UpdateSelfNikkahProfileRequest represents a request to update the authenticated user's profile.
+    required:
+      - profile
+  limestoneUpdateSelfRevertProfileRequest:
+    type: object
+    properties:
+      profile:
+        $ref: '#/definitions/limestoneRevertProfile'
         description: |-
           The event to update in the database.
 
@@ -1260,16 +1849,3 @@ definitions:
       '@type':
         type: string
     additionalProperties: {}
-  rpcStatus:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-      message:
-        type: string
-      details:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/protobufAny'
