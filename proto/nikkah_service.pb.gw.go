@@ -255,7 +255,7 @@ func request_NikkahIoService_CancelLike_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
 	}
 
-	protoReq.LikeId, err = runtime.Int32(val)
+	protoReq.LikeId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
 	}
@@ -281,7 +281,7 @@ func local_request_NikkahIoService_CancelLike_0(ctx context.Context, marshaler r
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
 	}
 
-	protoReq.LikeId, err = runtime.Int32(val)
+	protoReq.LikeId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
 	}
@@ -307,7 +307,7 @@ func request_NikkahIoService_CompleteLike_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
 	}
 
-	protoReq.LikeId, err = runtime.Int32(val)
+	protoReq.LikeId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
 	}
@@ -333,7 +333,7 @@ func local_request_NikkahIoService_CompleteLike_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "like_id")
 	}
 
-	protoReq.LikeId, err = runtime.Int32(val)
+	protoReq.LikeId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "like_id", err)
 	}
@@ -359,7 +359,7 @@ func request_NikkahIoService_AcceptNikkahMatchInvite_0(ctx context.Context, mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
 	}
 
-	protoReq.MatchId, err = runtime.Int32(val)
+	protoReq.MatchId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
 	}
@@ -385,7 +385,7 @@ func local_request_NikkahIoService_AcceptNikkahMatchInvite_0(ctx context.Context
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
 	}
 
-	protoReq.MatchId, err = runtime.Int32(val)
+	protoReq.MatchId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
 	}
@@ -411,7 +411,7 @@ func request_NikkahIoService_RejectNikkahMatchInvite_0(ctx context.Context, mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
 	}
 
-	protoReq.MatchId, err = runtime.Int32(val)
+	protoReq.MatchId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
 	}
@@ -437,7 +437,7 @@ func local_request_NikkahIoService_RejectNikkahMatchInvite_0(ctx context.Context
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
 	}
 
-	protoReq.MatchId, err = runtime.Int32(val)
+	protoReq.MatchId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
 	}
@@ -463,7 +463,7 @@ func request_NikkahIoService_EndNikkahMatch_0(ctx context.Context, marshaler run
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
 	}
 
-	protoReq.MatchId, err = runtime.Int32(val)
+	protoReq.MatchId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
 	}
@@ -489,7 +489,7 @@ func local_request_NikkahIoService_EndNikkahMatch_0(ctx context.Context, marshal
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "match_id")
 	}
 
-	protoReq.MatchId, err = runtime.Int32(val)
+	protoReq.MatchId, err = runtime.String(val)
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "match_id", err)
 	}

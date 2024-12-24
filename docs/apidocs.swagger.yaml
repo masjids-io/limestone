@@ -227,8 +227,7 @@ paths:
           description: The ID of the like process to cancel.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - NikkahIoService
   /v1/nikkah/likes/{likeId}/complete:
@@ -253,8 +252,7 @@ paths:
           description: The ID of the like to complete.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - NikkahIoService
   /v1/nikkah/match/{matchId}/accept:
@@ -278,8 +276,7 @@ paths:
           description: The ID of the match invite to accept.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - NikkahIoService
   /v1/nikkah/match/{matchId}/end:
@@ -300,8 +297,7 @@ paths:
           description: The ID of the match invite to end.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - NikkahIoService
   /v1/nikkah/match/{matchId}/reject:
@@ -324,8 +320,7 @@ paths:
           description: The ID of the match invite to reject.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - NikkahIoService
   /v1/nikkah/profile:
@@ -458,8 +453,7 @@ paths:
           description: The ID of the match invite to accept.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - RevertsIoService
   /v1/reverts/match/{matchId}/end:
@@ -480,8 +474,7 @@ paths:
           description: The ID of the match invite to end.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - RevertsIoService
   /v1/reverts/match/{matchId}/reject:
@@ -504,8 +497,7 @@ paths:
           description: The ID of the match invite to reject.
           in: path
           required: true
-          type: integer
-          format: int32
+          type: string
       tags:
         - RevertsIoService
   /v1/reverts/match/{receiverProfileId}:
@@ -1400,16 +1392,13 @@ definitions:
     type: object
     properties:
       likeId:
-        type: integer
-        format: int32
+        type: string
         description: The unique identifier for the like process. This field is output only.
       likerProfileId:
-        type: integer
-        format: int32
+        type: string
         description: The ID of the profile who initiated the like.
       likedProfileId:
-        type: integer
-        format: int32
+        type: string
         description: The ID of the profile which was liked.
       status:
         $ref: '#/definitions/limestoneLikeStatus'
@@ -1520,16 +1509,13 @@ definitions:
     type: object
     properties:
       matchId:
-        type: integer
-        format: int32
+        type: string
         description: The unique identifier for the match. This field is output only.
       initiatorProfileId:
-        type: integer
-        format: int32
+        type: string
         description: The ID of the profile who initiated the match.
       receiverProfileId:
-        type: integer
-        format: int32
+        type: string
         description: The ID of the profile which received the match.
       status:
         $ref: '#/definitions/limestoneNikkahMatchStatus'
@@ -1673,16 +1659,13 @@ definitions:
     type: object
     properties:
       matchId:
-        type: integer
-        format: int32
+        type: string
         description: The unique identifier for the match. This field is output only.
       initiatorProfileId:
-        type: integer
-        format: int32
+        type: string
         description: The ID of the profile who initiated the match.
       receiverProfileId:
-        type: integer
-        format: int32
+        type: string
         description: The ID of the profile which received the match.
       status:
         $ref: '#/definitions/limestoneRevertMatchStatus'
