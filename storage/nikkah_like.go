@@ -15,8 +15,8 @@ import (
 	pb "github.com/mnadev/limestone/proto"
 )
 
-// Like represents a like process initiated by a user towards another user's profile.
-type Like struct {
+// NikkahLike represents a like process initiated by a user towards another user's profile.
+type NikkahLike struct {
 	ID             uuid.UUID  `gorm:"primaryKey;type:char(36)"`
 	LikerProfileID string     `gorm:"type:uuid"`
 	LikedProfileID string     `gorm:"type:uuid"`
@@ -38,18 +38,18 @@ const (
 	LikeStatusCancelled
 )
 
-// NewLike creates a new Like struct given the Like proto.
-func NewLike(l *pb.Like) (*Like, error) {
-	return &Like{
+// NewNikkahLike creates a new NikkahLike struct given the NikkahLike proto.
+func NewNikkahLike(l *pb.NikkahLike) (*NikkahLike, error) {
+	return &NikkahLike{
 		LikerProfileID: l.GetLikerProfileId(),
 		LikedProfileID: l.GetLikedProfileId(),
 		Status:         LikeStatus(l.GetStatus()),
 	}, status.Error(codes.OK, codes.OK.String())
 }
 
-// ToProto converts a Like struct to its corresponding proto message.
-func (l *Like) ToProto() *pb.Like {
-	return &pb.Like{
+// ToProto converts a NikkahLike struct to its corresponding proto message.
+func (l *NikkahLike) ToProto() *pb.NikkahLike {
+	return &pb.NikkahLike{
 		LikeId:         l.ID.String(),
 		LikerProfileId: l.LikerProfileID,
 		LikedProfileId: l.LikedProfileID,
