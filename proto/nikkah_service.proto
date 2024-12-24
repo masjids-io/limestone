@@ -11,38 +11,43 @@ option go_package = "github.com/mnadev/limestone/proto";
 
 service NikkahIoService {
   // Creates a marriage profile for the authenticated user.
-  rpc CreateProfile (CreateProfileRequest) returns (Profile) {
+  rpc CreateNikkahProfile (CreateNikkahProfileRequest) returns (NikkahProfile) {
     option (google.api.http) = {
       post: "/v1/nikkah/profiles"
       body: "profile"
     };
     option (google.api.method_signature) = "profile";
   }
+
   // Retrieves the profile of the authenticated user.
-  rpc GetSelfProfile (GetSelfProfileRequest) returns (Profile) {
+  rpc GetSelfNikkahProfile (GetSelfNikkahProfileRequest) returns (NikkahProfile) {
     option (google.api.http) = {
       get: "/v1/nikkah/profile"
     };
   }
+
   // Updates the profile of the authenticated user.
-  rpc UpdateSelfProfile (UpdateSelfProfileRequest) returns (Profile) {
+  rpc UpdateSelfNikkahProfile (UpdateSelfNikkahProfileRequest) returns (NikkahProfile) {
     option (google.api.http) = {
       put: "/v1/nikkah/profile"
       body: "*"
     };
   }
+
   // Lists profiles based on specified criteria.
-  rpc ListProfiles (ListProfilesRequest) returns (ListProfilesResponse) {
+  rpc ListNikkahProfiles (ListNikkahProfilesRequest) returns (ListNikkahProfilesResponse) {
     option (google.api.http) = {
       get: "/v1/nikkah/profiles"
     };
   }
+
   // Gets the details of a specific profile.
-  rpc GetProfile (GetProfileRequest) returns (Profile) {
+  rpc GetNikkahProfile (GetNikkahProfileRequest) returns (NikkahProfile) {
     option (google.api.http) = {
       get: "/v1/nikkah/profiles/{profile_id}"
     };
   }
+
   // Initiates a like process to another profile.
   // This does not send a like request to another profile. It is used when a user
   // is interested in the bio and details of a profile, and wants to see the 
@@ -55,6 +60,7 @@ service NikkahIoService {
     };
     option (google.api.method_signature) = "like";
   }
+
   // Cancels a like process to another profile.
   // This cancels a like process to another profile, if a user finds that
   // the user is not to their liking after initiating a like.
@@ -63,6 +69,7 @@ service NikkahIoService {
       post: "/v1/nikkah/likes/{like_id}/cancel"
     };
   }
+
   // Completes a like process to another profile.
   // This completes a like process to another profile, if a user finds that
   // the user is to their liking after initiating a like. This notifies
@@ -72,23 +79,26 @@ service NikkahIoService {
       post: "/v1/nikkah/likes/{like_id}/complete"
     };
   }
+
   // Accepts a received match request from a user.
   // This then notifies the other user that the match is accepted, and initiates a chat
   // between both users.
-  rpc AcceptMatchInvite (AcceptMatchInviteRequest) returns (Match) {
+  rpc AcceptNikkahMatchInvite (AcceptNikkahMatchInviteRequest) returns (NikkahMatch) {
     option (google.api.http) = {
       post: "/v1/nikkah/match/{match_id}/accept"
     };
   }
+
   // Rejects a received match request.
   // This then silently notifies the other user of the rejection.
-  rpc RejectMatchInvite (RejectMatchInviteRequest) returns (Match) {
+  rpc RejectNikkahMatchInvite (RejectNikkahMatchInviteRequest) returns (NikkahMatch) {
     option (google.api.http) = {
       post: "/v1/nikkah/match/{match_id}/reject"
     };
   }
+
   // Ends a currently accepted match.
-  rpc EndMatch (EndMatchRequest) returns (Match) {
+  rpc EndNikkahMatch (EndNikkahMatchRequest) returns (NikkahMatch) {
     option (google.api.http) = {
       post: "/v1/nikkah/match/{match_id}/end"
     };
@@ -96,15 +106,15 @@ service NikkahIoService {
 }
 
 // Represents a user's profile in the nikkah.io.
-message Profile {
+message NikkahProfile {
   // The unique id associated with the profile. Field is output only.
   string id = 1;
   // The user id associated with the profile.
   string user_id = 2; 
   // The user id associated with the profile.
   string name = 3; 
-	// Defines an enum representing the gender of the user.
-	enum Gender {
+  // Defines an enum representing the gender of the user.
+  enum Gender {
     // Default value.
     GENDER_UNSPECIFIED = 0;
     MALE = 1;
@@ -115,8 +125,9 @@ message Profile {
   
   // A message describing the birth date of a user.
   message BirthDate {
+    // Year of birth (e.g., 1995)
     int32 year = 1;
-  
+    // Month of birth (1-12)
     enum Month {
       MONTH_UNSPECIFIED = 0; 
       JANUARY = 1;
@@ -133,6 +144,7 @@ message Profile {
       DECEMBER = 12;
     }
     Month month = 2;
+    // Day of birth (1-31)
     int32 day = 3;
   }
   // The birthdate of the user.
@@ -154,12 +166,12 @@ message Like {
   // Denotes an enum that specifies the current status of the like.
   enum Status {
     STATUS_UNSPECIFIED = 0;
-    // The like is initiated, so the user can see 
+    // The like is initiated, so the user can see the pictures of the other profile.
     INITIATED = 1;
     // The like has been completed, indicating mutual interest.
-    CANCELLED = 2;
+    COMPLETED = 2;
     // The like has been cancelled.
-    COMPLETED = 3;
+    CANCELLED = 3; 
   }
   // The current status of the like process.
   Status status = 4;
@@ -169,8 +181,8 @@ message Like {
   google.protobuf.Timestamp update_time = 6 ; 
 }
 
-// Match represents a successful match between two users.
-message Match {
+// NikkahMatch represents a successful match between two users.
+message NikkahMatch {
   // The unique identifier for the match. This field is output only.
   int32 match_id = 1;
   // The ID of the profile who initiated the match.
@@ -188,7 +200,7 @@ message Match {
     REJECTED = 3;
     // The match has been ended. 
     // This should occur after the match was in ACCEPTED status.
-    ENDED = 3;
+    ENDED = 4;
   }
   // The current status of the match.
   Status status = 4;
@@ -198,76 +210,90 @@ message Match {
   google.protobuf.Timestamp update_time = 6 ; 
 }
 
-message CreateProfileRequest {
+// CreateNikkahProfileRequest represents a request to create a profile.
+message CreateNikkahProfileRequest {
   // The profile to create in the database.
-  Profile profile = 1 [(google.api.field_behavior) = REQUIRED];
+  NikkahProfile profile = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-// GetSelfProfileRequest is an empty request, as the profile is fetched for the authenticated user.
-message GetSelfProfileRequest {}
+// GetSelfNikkahProfileRequest is an empty request, as the profile is fetched for the authenticated user.
+message GetSelfNikkahProfileRequest {}
 
-message UpdateSelfProfileRequest {
-  // The event to update in the database.
+// UpdateSelfNikkahProfileRequest represents a request to update the authenticated user's profile.
+message UpdateSelfNikkahProfileRequest {
+  // The profile to update in the database.
   //
-  // The event's `id` field is used to identify the book to update.
-  // Format: events/{event}
-  Profile profile = 1 [(google.api.field_behavior) = REQUIRED];
+  // The profile's `name` field is used to identify the profile to update.
+  NikkahProfile profile = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-message ListProfilesRequest {
+// ListNikkahProfilesRequest represents a request to list profiles.
+message ListNikkahProfilesRequest {
   // The maximum number of profiles to return. Fewer profiles might be returned.
   // Default value is 25.
-  int32 page_size = 2;
+  int32 page_size = 1;
 
-  // A page token from a previous `ListProfiles` call. If this is provided, then the 
+  // A page token from a previous `ListNikkahProfiles` call. If this is provided, then the 
   // next page will be returned.
-  string page_token = 3;
+  string page_token = 2;
 }
 
-message ListProfilesResponse {
+// ListNikkahProfilesResponse represents a response to a list of profiles.
+message ListNikkahProfilesResponse {
   // The list of returned profiles.
-  repeated Profile profiles = 1;
+  repeated NikkahProfile profiles = 1;
+
+  // A page token that can be used in a subsequent `ListNikkahProfiles`
+  // call to fetch the next page of results.
+  string next_page_token = 2;
 }
 
-// GetProfileRequest represents the request to get a specific profile.
-message GetProfileRequest {
+// GetNikkahProfileRequest represents the request to get a specific profile.
+message GetNikkahProfileRequest {
   // The ID of the profile to retrieve.
   string profile_id = 1;
 }
 
+// InitiateLikeRequest represents a request to initiate a like.
 message InitiateLikeRequest {
   // The like to create in the database.
   Like like = 1;
 }
 
+// CancelLikeRequest represents a request to cancel a like.
 message CancelLikeRequest {
   // The ID of the like process to cancel.
   int32 like_id = 1;
 }
 
+// CompleteLikeRequest represents a request to complete a like.
 message CompleteLikeRequest {
   // The ID of the like to complete.
   int32 like_id = 1;
 }
 
+// CompleteLikeResponse represents a response to a complete like request.
 message CompleteLikeResponse {
   // The like that was completed.
   Like like = 1;
   // The match that was initiated.
-  Match match = 2;
+  NikkahMatch match = 2;
 }
 
-message AcceptMatchInviteRequest {
+// AcceptNikkahMatchInviteRequest represents a request to accept a match.
+message AcceptNikkahMatchInviteRequest {
   // The ID of the match invite to accept. 
   int32 match_id = 1;
 }
 
-message RejectMatchInviteRequest {
+// RejectNikkahMatchInviteRequest represents a request to reject a match.
+message RejectNikkahMatchInviteRequest {
   // The ID of the match invite to reject. 
   int32 match_id = 1;
 }
 
-message EndMatchRequest {
+// EndNikkahMatchRequest represents a request to end a match.
+message EndNikkahMatchRequest {
   // The ID of the match invite to end. 
   int32 match_id = 1;
 }
