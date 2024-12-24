@@ -187,12 +187,12 @@ paths:
   /v1/nikkah/likes:
     post:
       summary: "Initiates a like process to another profile.\nThis does not send a like request to another profile. It is used when a user\nis interested in the bio and details of a profile, and wants to see the \npictures associated with the profile, before making a decision to send \na match request."
-      operationId: NikkahIoService_InitiateLike
+      operationId: NikkahIoService_InitiateNikkahLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneLike'
+            $ref: '#/definitions/limestoneNikkahLike'
         default:
           description: An unexpected error response.
           schema:
@@ -203,7 +203,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/limestoneLike'
+            $ref: '#/definitions/limestoneNikkahLike'
       tags:
         - NikkahIoService
   /v1/nikkah/likes/{likeId}/cancel:
@@ -212,12 +212,12 @@ paths:
         Cancels a like process to another profile.
         This cancels a like process to another profile, if a user finds that
         the user is not to their liking after initiating a like.
-      operationId: NikkahIoService_CancelLike
+      operationId: NikkahIoService_CancelNikkahLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneLike'
+            $ref: '#/definitions/limestoneNikkahLike'
         default:
           description: An unexpected error response.
           schema:
@@ -237,12 +237,12 @@ paths:
         This completes a like process to another profile, if a user finds that
         the user is to their liking after initiating a like. This notifies
         the other user of this. Creates a match resource in the database.
-      operationId: NikkahIoService_CompleteLike
+      operationId: NikkahIoService_CompleteNikkahLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneCompleteLikeResponse'
+            $ref: '#/definitions/limestoneCompleteNikkahLikeResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -1307,16 +1307,16 @@ definitions:
         type: integer
         format: int32
         description: The ID of the authenticated user (if successful).
-  limestoneCompleteLikeResponse:
+  limestoneCompleteNikkahLikeResponse:
     type: object
     properties:
       like:
-        $ref: '#/definitions/limestoneLike'
+        $ref: '#/definitions/limestoneNikkahLike'
         description: The like that was completed.
       match:
         $ref: '#/definitions/limestoneNikkahMatch'
         description: The match that was initiated.
-    description: CompleteLikeResponse represents a response to a complete like request.
+    description: CompleteNikkahLikeResponse represents a response to a complete like request.
   limestoneDeleteAdhanFileResponse:
     type: object
   limestoneDeleteEventResponse:
@@ -1388,44 +1388,6 @@ definitions:
       user:
         $ref: '#/definitions/limestoneUser'
         description: The authenticated user.
-  limestoneLike:
-    type: object
-    properties:
-      likeId:
-        type: string
-        description: The unique identifier for the like process. This field is output only.
-      likerProfileId:
-        type: string
-        description: The ID of the profile who initiated the like.
-      likedProfileId:
-        type: string
-        description: The ID of the profile which was liked.
-      status:
-        $ref: '#/definitions/limestoneLikeStatus'
-        description: The current status of the like process.
-      createTime:
-        type: string
-        format: date-time
-        description: The create time of the event. This field is output only.
-      updateTime:
-        type: string
-        format: date-time
-        description: The update time of the event. This field is output only.
-    description: Like represents a like process initiated by a user towards another user's profile.
-  limestoneLikeStatus:
-    type: string
-    enum:
-      - STATUS_UNSPECIFIED
-      - INITIATED
-      - COMPLETED
-      - CANCELLED
-    default: STATUS_UNSPECIFIED
-    description: |-
-      Denotes an enum that specifies the current status of the like.
-
-       - INITIATED: The like is initiated, so the user can see the pictures of the other profile.
-       - COMPLETED: The like has been completed, indicating mutual interest.
-       - CANCELLED: The like has been cancelled.
   limestoneListEventsResponse:
     type: object
     properties:
@@ -1505,6 +1467,44 @@ definitions:
     description: |-
       Defines a proto representing the main data corresponding to a masjid.
       This data includes the masjid name, address, phone number and prayer times configuration.
+  limestoneNikkahLike:
+    type: object
+    properties:
+      likeId:
+        type: string
+        description: The unique identifier for the like process. This field is output only.
+      likerProfileId:
+        type: string
+        description: The ID of the profile who initiated the like.
+      likedProfileId:
+        type: string
+        description: The ID of the profile which was liked.
+      status:
+        $ref: '#/definitions/limestoneNikkahLikeStatus'
+        description: The current status of the like process.
+      createTime:
+        type: string
+        format: date-time
+        description: The create time of the event. This field is output only.
+      updateTime:
+        type: string
+        format: date-time
+        description: The update time of the event. This field is output only.
+    description: NikkahLike represents a like process initiated by a user towards another user's profile.
+  limestoneNikkahLikeStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - INITIATED
+      - COMPLETED
+      - CANCELLED
+    default: STATUS_UNSPECIFIED
+    description: |-
+      Denotes an enum that specifies the current status of the like.
+
+       - INITIATED: The like is initiated, so the user can see the pictures of the other profile.
+       - COMPLETED: The like has been completed, indicating mutual interest.
+       - CANCELLED: The like has been cancelled.
   limestoneNikkahMatch:
     type: object
     properties:
