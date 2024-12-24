@@ -53,7 +53,7 @@ service NikkahIoService {
   // is interested in the bio and details of a profile, and wants to see the 
   // pictures associated with the profile, before making a decision to send 
   // a match request.
-  rpc InitiateLike (InitiateLikeRequest) returns (Like) {
+  rpc InitiateNikkahLike (InitiateNikkahLikeRequest) returns (NikkahLike) {
     option (google.api.http) = {
       post: "/v1/nikkah/likes"
       body: "like"
@@ -64,7 +64,7 @@ service NikkahIoService {
   // Cancels a like process to another profile.
   // This cancels a like process to another profile, if a user finds that
   // the user is not to their liking after initiating a like.
-  rpc CancelLike (CancelLikeRequest) returns (Like) {
+  rpc CancelNikkahLike (CancelNikkahLikeRequest) returns (NikkahLike) {
     option (google.api.http) = {
       post: "/v1/nikkah/likes/{like_id}/cancel"
     };
@@ -74,7 +74,7 @@ service NikkahIoService {
   // This completes a like process to another profile, if a user finds that
   // the user is to their liking after initiating a like. This notifies
   // the other user of this. Creates a match resource in the database.
-  rpc CompleteLike (CompleteLikeRequest) returns (CompleteLikeResponse) {
+  rpc CompleteNikkahLike (CompleteNikkahLikeRequest) returns (CompleteNikkahLikeResponse) {
     option (google.api.http) = {
       post: "/v1/nikkah/likes/{like_id}/complete"
     };
@@ -155,8 +155,8 @@ message NikkahProfile {
   google.protobuf.Timestamp update_time = 7; 
 }
 
-// Like represents a like process initiated by a user towards another user's profile.
-message Like {
+// NikkahLike represents a like process initiated by a user towards another user's profile.
+message NikkahLike {
   // The unique identifier for the like process. This field is output only.
   string like_id = 1;
   // The ID of the profile who initiated the like.
@@ -254,28 +254,28 @@ message GetNikkahProfileRequest {
   string profile_id = 1;
 }
 
-// InitiateLikeRequest represents a request to initiate a like.
-message InitiateLikeRequest {
+// InitiateNikkahLikeRequest represents a request to initiate a like.
+message InitiateNikkahLikeRequest {
   // The like to create in the database.
-  Like like = 1;
+  NikkahLike like = 1;
 }
 
-// CancelLikeRequest represents a request to cancel a like.
-message CancelLikeRequest {
+// CancelNikkahLikeRequest represents a request to cancel a like.
+message CancelNikkahLikeRequest {
   // The ID of the like process to cancel.
   string like_id = 1;
 }
 
-// CompleteLikeRequest represents a request to complete a like.
-message CompleteLikeRequest {
+// CompleteNikkahLikeRequest represents a request to complete a like.
+message CompleteNikkahLikeRequest {
   // The ID of the like to complete.
   string like_id = 1;
 }
 
-// CompleteLikeResponse represents a response to a complete like request.
-message CompleteLikeResponse {
+// CompleteNikkahLikeResponse represents a response to a complete like request.
+message CompleteNikkahLikeResponse {
   // The like that was completed.
-  Like like = 1;
+  NikkahLike like = 1;
   // The match that was initiated.
   NikkahMatch match = 2;
 }
