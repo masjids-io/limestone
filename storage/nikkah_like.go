@@ -53,7 +53,7 @@ func (l *NikkahLike) ToProto() *pb.NikkahLike {
 		LikeId:         l.ID.String(),
 		LikerProfileId: l.LikerProfileID,
 		LikedProfileId: l.LikedProfileID,
-		Status:         pb.Like_Status(l.Status),
+		Status:         pb.NikkahLike_Status(l.Status),
 		CreateTime:     timestamppb.New(l.CreatedAt),
 		UpdateTime:     timestamppb.New(l.UpdatedAt),
 	}
