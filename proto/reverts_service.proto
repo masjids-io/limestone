@@ -125,11 +125,11 @@ message RevertProfile {
 // RevertMatch represents a successful match between two users.
 message RevertMatch {
   // The unique identifier for the match. This field is output only.
-  int32 match_id = 1;
+  string match_id = 1;
   // The ID of the profile who initiated the match.
-  int32 initiator_profile_id = 2;
+  string initiator_profile_id = 2;
   // The ID of the profile which received the match.
-  int32 receiver_profile_id = 3;
+  string receiver_profile_id = 3;
   // Denotes an enum that specifies the current status of the match.
   enum Status {
     STATUS_UNSPECIFIED = 0;
@@ -198,15 +198,15 @@ message CreateRevertMatchInviteRequest {
 
 message AcceptRevertMatchInviteRequest {
   // The ID of the match invite to accept. 
-  int32 match_id = 1;
+  string match_id = 1;
 }
 
 message RejectRevertMatchInviteRequest {
   // The ID of the match invite to reject. 
-  int32 match_id = 1;
+  string match_id = 1;
 }
 
 message EndRevertMatchRequest {
   // The ID of the match invite to end. 
-  int32 match_id = 1;
+  string match_id = 1;
 }

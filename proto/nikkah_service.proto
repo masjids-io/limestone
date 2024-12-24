@@ -158,11 +158,11 @@ message NikkahProfile {
 // Like represents a like process initiated by a user towards another user's profile.
 message Like {
   // The unique identifier for the like process. This field is output only.
-  int32 like_id = 1;
+  string like_id = 1;
   // The ID of the profile who initiated the like.
-  int32 liker_profile_id = 2;
+  string liker_profile_id = 2;
   // The ID of the profile which was liked.
-  int32 liked_profile_id = 3;
+  string liked_profile_id = 3;
   // Denotes an enum that specifies the current status of the like.
   enum Status {
     STATUS_UNSPECIFIED = 0;
@@ -184,11 +184,11 @@ message Like {
 // NikkahMatch represents a successful match between two users.
 message NikkahMatch {
   // The unique identifier for the match. This field is output only.
-  int32 match_id = 1;
+  string match_id = 1;
   // The ID of the profile who initiated the match.
-  int32 initiator_profile_id = 2;
+  string initiator_profile_id = 2;
   // The ID of the profile which received the match.
-  int32 receiver_profile_id = 3;
+  string receiver_profile_id = 3;
   // Denotes an enum that specifies the current status of the match.
   enum Status {
     STATUS_UNSPECIFIED = 0;
@@ -263,13 +263,13 @@ message InitiateLikeRequest {
 // CancelLikeRequest represents a request to cancel a like.
 message CancelLikeRequest {
   // The ID of the like process to cancel.
-  int32 like_id = 1;
+  string like_id = 1;
 }
 
 // CompleteLikeRequest represents a request to complete a like.
 message CompleteLikeRequest {
   // The ID of the like to complete.
-  int32 like_id = 1;
+  string like_id = 1;
 }
 
 // CompleteLikeResponse represents a response to a complete like request.
@@ -283,17 +283,17 @@ message CompleteLikeResponse {
 // AcceptNikkahMatchInviteRequest represents a request to accept a match.
 message AcceptNikkahMatchInviteRequest {
   // The ID of the match invite to accept. 
-  int32 match_id = 1;
+  string match_id = 1;
 }
 
 // RejectNikkahMatchInviteRequest represents a request to reject a match.
 message RejectNikkahMatchInviteRequest {
   // The ID of the match invite to reject. 
-  int32 match_id = 1;
+  string match_id = 1;
 }
 
 // EndNikkahMatchRequest represents a request to end a match.
 message EndNikkahMatchRequest {
   // The ID of the match invite to end. 
-  int32 match_id = 1;
+  string match_id = 1;
 }
