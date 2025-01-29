@@ -83,7 +83,7 @@ service RevertsIoService {
 // Represents a user's profile in the nikkah.io.
 message RevertProfile {
   // The unique id associated with the profile. Field is output only.
-  string id = 1;
+  string id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
   // The user id associated with the profile.
   string user_id = 2; 
   // The user id associated with the profile.
@@ -123,15 +123,15 @@ message RevertProfile {
   // The birthdate of the user.
   BirthDate birth_date = 5; 
   // The create time of the event. This field is output only.
-  google.protobuf.Timestamp create_time = 6; 
+  google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
   // The update time of the event. This field is output only.
-  google.protobuf.Timestamp update_time = 7; 
+  google.protobuf.Timestamp update_time = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 // RevertMatch represents a successful match between two users.
 message RevertMatch {
   // The unique identifier for the match. This field is output only.
-  string match_id = 1;
+  string match_id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
   // The ID of the profile who initiated the match.
   string initiator_profile_id = 2;
   // The ID of the profile which received the match.
@@ -152,9 +152,9 @@ message RevertMatch {
   // The current status of the match.
   Status status = 4;
   // The create time of the event. This field is output only.
-  google.protobuf.Timestamp create_time = 5; 
+  google.protobuf.Timestamp create_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
   // The update time of the event. This field is output only.
-  google.protobuf.Timestamp update_time = 6 ; 
+  google.protobuf.Timestamp update_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 message CreateRevertProfileRequest {
