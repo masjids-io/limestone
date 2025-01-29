@@ -25,9 +25,11 @@ const (
 	NikkahIoService_ListNikkahProfiles_FullMethodName      = "/limestone.NikkahIoService/ListNikkahProfiles"
 	NikkahIoService_GetNikkahProfile_FullMethodName        = "/limestone.NikkahIoService/GetNikkahProfile"
 	NikkahIoService_InitiateNikkahLike_FullMethodName      = "/limestone.NikkahIoService/InitiateNikkahLike"
+	NikkahIoService_GetNikkahLike_FullMethodName           = "/limestone.NikkahIoService/GetNikkahLike"
 	NikkahIoService_CancelNikkahLike_FullMethodName        = "/limestone.NikkahIoService/CancelNikkahLike"
 	NikkahIoService_CompleteNikkahLike_FullMethodName      = "/limestone.NikkahIoService/CompleteNikkahLike"
 	NikkahIoService_AcceptNikkahMatchInvite_FullMethodName = "/limestone.NikkahIoService/AcceptNikkahMatchInvite"
+	NikkahIoService_GetNikkahMatch_FullMethodName          = "/limestone.NikkahIoService/GetNikkahMatch"
 	NikkahIoService_RejectNikkahMatchInvite_FullMethodName = "/limestone.NikkahIoService/RejectNikkahMatchInvite"
 	NikkahIoService_EndNikkahMatch_FullMethodName          = "/limestone.NikkahIoService/EndNikkahMatch"
 )
@@ -52,6 +54,8 @@ type NikkahIoServiceClient interface {
 	// pictures associated with the profile, before making a decision to send
 	// a match request.
 	InitiateNikkahLike(ctx context.Context, in *InitiateNikkahLikeRequest, opts ...grpc.CallOption) (*NikkahLike, error)
+	// Gets a like with the given id.
+	GetNikkahLike(ctx context.Context, in *GetNikkahLikeRequest, opts ...grpc.CallOption) (*NikkahLike, error)
 	// Cancels a like process to another profile.
 	// This cancels a like process to another profile, if a user finds that
 	// the user is not to their liking after initiating a like.
@@ -65,6 +69,8 @@ type NikkahIoServiceClient interface {
 	// This then notifies the other user that the match is accepted, and initiates a chat
 	// between both users.
 	AcceptNikkahMatchInvite(ctx context.Context, in *AcceptNikkahMatchInviteRequest, opts ...grpc.CallOption) (*NikkahMatch, error)
+	// Gets a match with the given id.
+	GetNikkahMatch(ctx context.Context, in *GetNikkahMatchRequest, opts ...grpc.CallOption) (*NikkahMatch, error)
 	// Rejects a received match request.
 	// This then silently notifies the other user of the rejection.
 	RejectNikkahMatchInvite(ctx context.Context, in *RejectNikkahMatchInviteRequest, opts ...grpc.CallOption) (*NikkahMatch, error)
@@ -140,6 +146,16 @@ func (c *nikkahIoServiceClient) InitiateNikkahLike(ctx context.Context, in *Init
 	return out, nil
 }
 
+func (c *nikkahIoServiceClient) GetNikkahLike(ctx context.Context, in *GetNikkahLikeRequest, opts ...grpc.CallOption) (*NikkahLike, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NikkahLike)
+	err := c.cc.Invoke(ctx, NikkahIoService_GetNikkahLike_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *nikkahIoServiceClient) CancelNikkahLike(ctx context.Context, in *CancelNikkahLikeRequest, opts ...grpc.CallOption) (*NikkahLike, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(NikkahLike)
@@ -164,6 +180,16 @@ func (c *nikkahIoServiceClient) AcceptNikkahMatchInvite(ctx context.Context, in 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(NikkahMatch)
 	err := c.cc.Invoke(ctx, NikkahIoService_AcceptNikkahMatchInvite_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nikkahIoServiceClient) GetNikkahMatch(ctx context.Context, in *GetNikkahMatchRequest, opts ...grpc.CallOption) (*NikkahMatch, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(NikkahMatch)
+	err := c.cc.Invoke(ctx, NikkahIoService_GetNikkahMatch_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -210,6 +236,8 @@ type NikkahIoServiceServer interface {
 	// pictures associated with the profile, before making a decision to send
 	// a match request.
 	InitiateNikkahLike(context.Context, *InitiateNikkahLikeRequest) (*NikkahLike, error)
+	// Gets a like with the given id.
+	GetNikkahLike(context.Context, *GetNikkahLikeRequest) (*NikkahLike, error)
 	// Cancels a like process to another profile.
 	// This cancels a like process to another profile, if a user finds that
 	// the user is not to their liking after initiating a like.
@@ -223,6 +251,8 @@ type NikkahIoServiceServer interface {
 	// This then notifies the other user that the match is accepted, and initiates a chat
 	// between both users.
 	AcceptNikkahMatchInvite(context.Context, *AcceptNikkahMatchInviteRequest) (*NikkahMatch, error)
+	// Gets a match with the given id.
+	GetNikkahMatch(context.Context, *GetNikkahMatchRequest) (*NikkahMatch, error)
 	// Rejects a received match request.
 	// This then silently notifies the other user of the rejection.
 	RejectNikkahMatchInvite(context.Context, *RejectNikkahMatchInviteRequest) (*NikkahMatch, error)
@@ -256,6 +286,9 @@ func (UnimplementedNikkahIoServiceServer) GetNikkahProfile(context.Context, *Get
 func (UnimplementedNikkahIoServiceServer) InitiateNikkahLike(context.Context, *InitiateNikkahLikeRequest) (*NikkahLike, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitiateNikkahLike not implemented")
 }
+func (UnimplementedNikkahIoServiceServer) GetNikkahLike(context.Context, *GetNikkahLikeRequest) (*NikkahLike, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNikkahLike not implemented")
+}
 func (UnimplementedNikkahIoServiceServer) CancelNikkahLike(context.Context, *CancelNikkahLikeRequest) (*NikkahLike, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelNikkahLike not implemented")
 }
@@ -264,6 +297,9 @@ func (UnimplementedNikkahIoServiceServer) CompleteNikkahLike(context.Context, *C
 }
 func (UnimplementedNikkahIoServiceServer) AcceptNikkahMatchInvite(context.Context, *AcceptNikkahMatchInviteRequest) (*NikkahMatch, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AcceptNikkahMatchInvite not implemented")
+}
+func (UnimplementedNikkahIoServiceServer) GetNikkahMatch(context.Context, *GetNikkahMatchRequest) (*NikkahMatch, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNikkahMatch not implemented")
 }
 func (UnimplementedNikkahIoServiceServer) RejectNikkahMatchInvite(context.Context, *RejectNikkahMatchInviteRequest) (*NikkahMatch, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RejectNikkahMatchInvite not implemented")
@@ -400,6 +436,24 @@ func _NikkahIoService_InitiateNikkahLike_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NikkahIoService_GetNikkahLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNikkahLikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).GetNikkahLike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_GetNikkahLike_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).GetNikkahLike(ctx, req.(*GetNikkahLikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _NikkahIoService_CancelNikkahLike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CancelNikkahLikeRequest)
 	if err := dec(in); err != nil {
@@ -450,6 +504,24 @@ func _NikkahIoService_AcceptNikkahMatchInvite_Handler(srv interface{}, ctx conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(NikkahIoServiceServer).AcceptNikkahMatchInvite(ctx, req.(*AcceptNikkahMatchInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NikkahIoService_GetNikkahMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNikkahMatchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NikkahIoServiceServer).GetNikkahMatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: NikkahIoService_GetNikkahMatch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NikkahIoServiceServer).GetNikkahMatch(ctx, req.(*GetNikkahMatchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -522,6 +594,10 @@ var NikkahIoService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _NikkahIoService_InitiateNikkahLike_Handler,
 		},
 		{
+			MethodName: "GetNikkahLike",
+			Handler:    _NikkahIoService_GetNikkahLike_Handler,
+		},
+		{
 			MethodName: "CancelNikkahLike",
 			Handler:    _NikkahIoService_CancelNikkahLike_Handler,
 		},
@@ -532,6 +608,10 @@ var NikkahIoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AcceptNikkahMatchInvite",
 			Handler:    _NikkahIoService_AcceptNikkahMatchInvite_Handler,
+		},
+		{
+			MethodName: "GetNikkahMatch",
+			Handler:    _NikkahIoService_GetNikkahMatch_Handler,
 		},
 		{
 			MethodName: "RejectNikkahMatchInvite",

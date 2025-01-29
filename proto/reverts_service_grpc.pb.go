@@ -25,6 +25,7 @@ const (
 	RevertsIoService_ListRevertProfiles_FullMethodName      = "/limestone.RevertsIoService/ListRevertProfiles"
 	RevertsIoService_GetRevertProfile_FullMethodName        = "/limestone.RevertsIoService/GetRevertProfile"
 	RevertsIoService_CreateRevertMatchInvite_FullMethodName = "/limestone.RevertsIoService/CreateRevertMatchInvite"
+	RevertsIoService_GetRevertMatch_FullMethodName          = "/limestone.RevertsIoService/GetRevertMatch"
 	RevertsIoService_AcceptRevertMatchInvite_FullMethodName = "/limestone.RevertsIoService/AcceptRevertMatchInvite"
 	RevertsIoService_RejectRevertMatchInvite_FullMethodName = "/limestone.RevertsIoService/RejectRevertMatchInvite"
 	RevertsIoService_EndRevertMatch_FullMethodName          = "/limestone.RevertsIoService/EndRevertMatch"
@@ -48,6 +49,8 @@ type RevertsIoServiceClient interface {
 	// This then notifies the other user that the match is accepted, and initiates a chat
 	// between both users.
 	CreateRevertMatchInvite(ctx context.Context, in *CreateRevertMatchInviteRequest, opts ...grpc.CallOption) (*RevertMatch, error)
+	// Gets a match with the given id.
+	GetRevertMatch(ctx context.Context, in *GetRevertMatchRequest, opts ...grpc.CallOption) (*RevertMatch, error)
 	// Accepts a received match request from a user.
 	// This then notifies the other user that the match is accepted, and initiates a chat
 	// between both users.
@@ -127,6 +130,16 @@ func (c *revertsIoServiceClient) CreateRevertMatchInvite(ctx context.Context, in
 	return out, nil
 }
 
+func (c *revertsIoServiceClient) GetRevertMatch(ctx context.Context, in *GetRevertMatchRequest, opts ...grpc.CallOption) (*RevertMatch, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RevertMatch)
+	err := c.cc.Invoke(ctx, RevertsIoService_GetRevertMatch_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *revertsIoServiceClient) AcceptRevertMatchInvite(ctx context.Context, in *AcceptRevertMatchInviteRequest, opts ...grpc.CallOption) (*RevertMatch, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RevertMatch)
@@ -175,6 +188,8 @@ type RevertsIoServiceServer interface {
 	// This then notifies the other user that the match is accepted, and initiates a chat
 	// between both users.
 	CreateRevertMatchInvite(context.Context, *CreateRevertMatchInviteRequest) (*RevertMatch, error)
+	// Gets a match with the given id.
+	GetRevertMatch(context.Context, *GetRevertMatchRequest) (*RevertMatch, error)
 	// Accepts a received match request from a user.
 	// This then notifies the other user that the match is accepted, and initiates a chat
 	// between both users.
@@ -211,6 +226,9 @@ func (UnimplementedRevertsIoServiceServer) GetRevertProfile(context.Context, *Ge
 }
 func (UnimplementedRevertsIoServiceServer) CreateRevertMatchInvite(context.Context, *CreateRevertMatchInviteRequest) (*RevertMatch, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateRevertMatchInvite not implemented")
+}
+func (UnimplementedRevertsIoServiceServer) GetRevertMatch(context.Context, *GetRevertMatchRequest) (*RevertMatch, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRevertMatch not implemented")
 }
 func (UnimplementedRevertsIoServiceServer) AcceptRevertMatchInvite(context.Context, *AcceptRevertMatchInviteRequest) (*RevertMatch, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AcceptRevertMatchInvite not implemented")
@@ -350,6 +368,24 @@ func _RevertsIoService_CreateRevertMatchInvite_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RevertsIoService_GetRevertMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRevertMatchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RevertsIoServiceServer).GetRevertMatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RevertsIoService_GetRevertMatch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RevertsIoServiceServer).GetRevertMatch(ctx, req.(*GetRevertMatchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RevertsIoService_AcceptRevertMatchInvite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AcceptRevertMatchInviteRequest)
 	if err := dec(in); err != nil {
@@ -434,6 +470,10 @@ var RevertsIoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateRevertMatchInvite",
 			Handler:    _RevertsIoService_CreateRevertMatchInvite_Handler,
+		},
+		{
+			MethodName: "GetRevertMatch",
+			Handler:    _RevertsIoService_GetRevertMatch_Handler,
 		},
 		{
 			MethodName: "AcceptRevertMatchInvite",

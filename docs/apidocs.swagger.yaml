@@ -206,6 +206,27 @@ paths:
             $ref: '#/definitions/limestoneNikkahLike'
       tags:
         - NikkahIoService
+  /v1/nikkah/likes/{likeId}:
+    get:
+      summary: Gets a like with the given id.
+      operationId: NikkahIoService_GetNikkahLike
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneNikkahLike'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: likeId
+          description: The ID of the like to retrieve.
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
   /v1/nikkah/likes/{likeId}/cancel:
     post:
       summary: |-
@@ -250,6 +271,27 @@ paths:
       parameters:
         - name: likeId
           description: The ID of the like to complete.
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}:
+    get:
+      summary: Gets a match with the given id.
+      operationId: NikkahIoService_GetNikkahMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneNikkahMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match to retrieve.
           in: path
           required: true
           type: string
@@ -432,6 +474,27 @@ paths:
           type: string
       tags:
         - NikkahIoService
+  /v1/reverts/match/{matchId}:
+    get:
+      summary: Gets a match with the given id.
+      operationId: RevertsIoService_GetRevertMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneRevertMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          description: The ID of the match to retrieve.
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
   /v1/reverts/match/{matchId}/accept:
     post:
       summary: |-
