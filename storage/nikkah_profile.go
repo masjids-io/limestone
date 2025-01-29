@@ -26,6 +26,15 @@ func NewNikkahProfile(np *pb.NikkahProfile) (*NikkahProfile, error) {
 	if np.GetUserId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "user cannot be nil")
 	}
+	if (np.GetBirthDate().GetDay() > 31) || (np.GetBirthDate().GetDay() < 1) {
+		return nil, status.Error(codes.InvalidArgument, "invalid day")
+	}
+	if np.GetBirthDate().GetYear() < 1900 {
+		return nil, status.Error(codes.InvalidArgument, "invalid year")
+	}
+	if np.GetName() == "" {
+		return nil, status.Error(codes.InvalidArgument, "name cannot be empty")
+	}
 
 	return &NikkahProfile{
 		UserID: np.GetUserId(),
