@@ -27,17 +27,14 @@ type Event struct {
 	Description       string
 	StartTime         time.Time
 	EndTime           time.Time
-	GenderRestriction GenderRestriction `sql:"type:ENUM('NO_RESTRICTION', 
-														'MALE_ONLY',
-														'FEMALE_ONLY')" 
-														gorm:"column:gender_restriction"`
-	EventTypes      string
-	IsPaid          bool
-	RequiresRsvp    bool
-	MaxParticipants int32
-	LivestreamLink  string
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	GenderRestriction GenderRestriction `sql:"type:ENUM('NO_RESTRICTION','MALE_ONLY','FEMALE_ONLY')" gorm:"column:gender_restriction"`
+	EventTypes        string
+	IsPaid            bool
+	RequiresRsvp      bool
+	MaxParticipants   int32
+	LivestreamLink    string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
 }
 
 // NewEvent creates a new Event struct given the Event proto.
@@ -48,7 +45,7 @@ func NewEvent(ep *pb.Event) (*Event, error) {
 		Description:       ep.GetDescription(),
 		StartTime:         ep.GetStartTime().AsTime(),
 		EndTime:           ep.GetEndTime().AsTime(),
-		GenderRestriction: FromProtoToInternalGenderRestriction(ep.GetGenderRestriction()),
+		GenderRestriction: GenderRestriction(ep.GetGenderRestriction()),
 		IsPaid:            ep.GetIsPaid(),
 		RequiresRsvp:      ep.GetRequiresRsvp(),
 		MaxParticipants:   ep.GetMaxParticipants(),
@@ -74,7 +71,7 @@ func (e *Event) ToProto() *pb.Event {
 		Description:       e.Description,
 		StartTime:         timestamppb.New(e.StartTime),
 		EndTime:           timestamppb.New(e.EndTime),
-		GenderRestriction: FromInternalToProtoGenderRestriction(e.GenderRestriction),
+		GenderRestriction: pb.Event_GenderRestriction(e.GenderRestriction),
 		IsPaid:            e.IsPaid,
 		RequiresRsvp:      e.RequiresRsvp,
 		MaxParticipants:   e.MaxParticipants,
@@ -117,16 +114,6 @@ func FromProtoToInternalEventType(et pb.Event_EventType) string {
 	return ""
 }
 
-func FromProtoToInternalGenderRestriction(g pb.Event_GenderRestriction) GenderRestriction {
-	switch g {
-	case pb.Event_MALE_ONLY:
-		return MALE_ONLY
-	case pb.Event_FEMALE_ONLY:
-		return FEMALE_ONLY
-	}
-	return NO_RESTRICTION
-}
-
 func FromInternalToProtoEvent(s string) pb.Event_EventType {
 	switch s {
 	case "EDUCATIONAL":
@@ -147,14 +134,4 @@ func FromInternalToProtoEvent(s string) pb.Event_EventType {
 		return pb.Event_FUNERAL
 	}
 	return pb.Event_WORSHIP
-}
-
-func FromInternalToProtoGenderRestriction(g GenderRestriction) pb.Event_GenderRestriction {
-	switch g {
-	case MALE_ONLY:
-		return pb.Event_MALE_ONLY
-	case FEMALE_ONLY:
-		return pb.Event_FEMALE_ONLY
-	}
-	return pb.Event_NO_RESTRICTION
 }
