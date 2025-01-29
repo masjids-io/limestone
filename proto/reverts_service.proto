@@ -51,6 +51,12 @@ service RevertsIoService {
       post: "/v1/reverts/match/{receiver_profile_id}"
     };
   }
+  // Gets a match with the given id.
+  rpc GetRevertMatch (GetRevertMatchRequest) returns (RevertMatch) {
+    option (google.api.http) = {
+      get: "/v1/reverts/match/{match_id}"
+    };
+  }
   // Accepts a received match request from a user.
   // This then notifies the other user that the match is accepted, and initiates a chat
   // between both users.
@@ -196,11 +202,21 @@ message CreateRevertMatchInviteRequest {
   string receiver_profile_id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
+// GetRevertMatchRequest represents the request to get a specific match.
+message GetRevertMatchRequest {
+  // The ID of the match to retrieve.
+  string match_id = 1;
+}
+
+// Accepts a received match request from a user.
+// This then notifies the other user that the match is accepted, and initiates a chat
+// between both users.
 message AcceptRevertMatchInviteRequest {
   // The ID of the match invite to accept. 
   string match_id = 1;
 }
 
+// Rejects a received match request from a user.
 message RejectRevertMatchInviteRequest {
   // The ID of the match invite to reject. 
   string match_id = 1;

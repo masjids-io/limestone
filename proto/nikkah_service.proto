@@ -61,6 +61,13 @@ service NikkahIoService {
     option (google.api.method_signature) = "like";
   }
 
+  // Gets a like with the given id.
+  rpc GetNikkahLike (GetNikkahLikeRequest) returns (NikkahLike) {
+    option (google.api.http) = {
+      get: "/v1/nikkah/likes/{like_id}"
+    };
+  }
+
   // Cancels a like process to another profile.
   // This cancels a like process to another profile, if a user finds that
   // the user is not to their liking after initiating a like.
@@ -86,6 +93,13 @@ service NikkahIoService {
   rpc AcceptNikkahMatchInvite (AcceptNikkahMatchInviteRequest) returns (NikkahMatch) {
     option (google.api.http) = {
       post: "/v1/nikkah/match/{match_id}/accept"
+    };
+  }
+
+  // Gets a match with the given id.
+  rpc GetNikkahMatch (GetNikkahMatchRequest) returns (NikkahMatch) {
+    option (google.api.http) = {
+      get: "/v1/nikkah/match/{match_id}"
     };
   }
 
@@ -260,6 +274,12 @@ message InitiateNikkahLikeRequest {
   NikkahLike like = 1;
 }
 
+// GetNikkahLikeRequest represents a request to get a specific like.
+message GetNikkahLikeRequest {
+  // The ID of the like to retrieve.
+  string like_id = 1;
+}
+
 // CancelNikkahLikeRequest represents a request to cancel a like.
 message CancelNikkahLikeRequest {
   // The ID of the like process to cancel.
@@ -283,6 +303,12 @@ message CompleteNikkahLikeResponse {
 // AcceptNikkahMatchInviteRequest represents a request to accept a match.
 message AcceptNikkahMatchInviteRequest {
   // The ID of the match invite to accept. 
+  string match_id = 1;
+}
+
+// GetNikkahMatchRequest represents a request to get a specific match.
+message GetNikkahMatchRequest {
+  // The ID of the match to retrieve.
   string match_id = 1;
 }
 
