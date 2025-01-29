@@ -97,3 +97,58 @@ func GetAdhanFileProto() *pb.AdhanFile {
 		File:     []byte("SomeData"),
 	}
 }
+
+func GetNikkahProfileProto() *pb.NikkahProfile {
+	return &pb.NikkahProfile{
+		Id:     DefaultId,
+		UserId: DefaultId,
+		Name:   "John Doe",
+		Gender: pb.NikkahProfile_MALE,
+		BirthDate: &pb.NikkahProfile_BirthDate{
+			Year:  1990,
+			Month: pb.NikkahProfile_BirthDate_JANUARY,
+			Day:   1,
+		},
+	}
+}
+
+func GetNikkahLikeProto() *pb.NikkahLike {
+	return &pb.NikkahLike{
+		LikeId:         DefaultId,
+		LikerProfileId: DefaultId,
+		LikedProfileId: DefaultId,
+		Status:         pb.NikkahLike_INITIATED,
+	}
+}
+
+func GetNikkahMatchProto() *pb.NikkahMatch {
+	return &pb.NikkahMatch{
+		MatchId:            DefaultId,
+		InitiatorProfileId: DefaultId,
+		ReceiverProfileId:  DefaultId,
+		Status:             pb.NikkahMatch_INITIATED,
+	}
+}
+
+func GetRevertProfileProto() *pb.RevertProfile {
+	return &pb.RevertProfile{
+		Id:     DefaultId,
+		UserId: DefaultId,
+		Name:   "John Doe",
+		Gender: pb.RevertProfile_MALE,
+		BirthDate: &pb.RevertProfile_BirthDate{
+			Year:  1990,
+			Month: pb.RevertProfile_BirthDate_JANUARY,
+			Day:   1,
+		},
+	}
+}
+
+func GetRevertMatchProto() *pb.RevertMatch {
+	return &pb.RevertMatch{
+		MatchId:            DefaultId,
+		InitiatorProfileId: DefaultId,
+		ReceiverProfileId:  DefaultId,
+		Status:             pb.RevertMatch_INITIATED,
+	}
+}

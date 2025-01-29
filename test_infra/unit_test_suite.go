@@ -29,10 +29,33 @@ func (suite *UnitTestSuite) BeforeTest(suiteName, testName string) {
 		panic(err)
 	}
 
-	db.AutoMigrate(&storage.AdhanFile{})
-	db.AutoMigrate(&storage.Event{})
-	db.AutoMigrate(&storage.Masjid{})
-	db.AutoMigrate(&storage.User{})
+	if !db.Migrator().HasTable(&storage.AdhanFile{}) {
+		db.AutoMigrate(&storage.AdhanFile{})
+	}
+	if !db.Migrator().HasTable(&storage.Event{}) {
+		db.AutoMigrate(&storage.Event{})
+	}
+	if !db.Migrator().HasTable(&storage.Masjid{}) {
+		db.AutoMigrate(&storage.Masjid{})
+	}
+	if !db.Migrator().HasTable(&storage.User{}) {
+		db.AutoMigrate(&storage.User{})
+	}
+	if !db.Migrator().HasTable(&storage.NikkahProfile{}) {
+		db.AutoMigrate(&storage.NikkahProfile{})
+	}
+	if !db.Migrator().HasTable(&storage.NikkahLike{}) {
+		db.AutoMigrate(&storage.NikkahLike{})
+	}
+	if !db.Migrator().HasTable(&storage.NikkahMatch{}) {
+		db.AutoMigrate(&storage.NikkahMatch{})
+	}
+	if !db.Migrator().HasTable(&storage.RevertProfile{}) {
+		db.AutoMigrate(&storage.RevertProfile{})
+	}
+	if !db.Migrator().HasTable(&storage.RevertMatch{}) {
+		db.AutoMigrate(&storage.RevertMatch{})
+	}
 
 	suite.StorageManager = &storage.StorageManager{
 		DB: db,

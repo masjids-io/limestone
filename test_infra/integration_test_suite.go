@@ -51,10 +51,33 @@ func (suite *IntegrationTestSuite) BeforeTest(suiteName, testName string) {
 		panic(err)
 	}
 
-	suite.DB.AutoMigrate(&storage.AdhanFile{})
-	suite.DB.AutoMigrate(&storage.Event{})
-	suite.DB.AutoMigrate(&storage.Masjid{})
-	suite.DB.AutoMigrate(&storage.User{})
+	if !suite.DB.Migrator().HasTable(&storage.AdhanFile{}) {
+		suite.DB.AutoMigrate(&storage.AdhanFile{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.Event{}) {
+		suite.DB.AutoMigrate(&storage.Event{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.Masjid{}) {
+		suite.DB.AutoMigrate(&storage.Masjid{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.User{}) {
+		suite.DB.AutoMigrate(&storage.User{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.NikkahProfile{}) {
+		suite.DB.AutoMigrate(&storage.NikkahProfile{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.NikkahLike{}) {
+		suite.DB.AutoMigrate(&storage.NikkahLike{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.NikkahMatch{}) {
+		suite.DB.AutoMigrate(&storage.NikkahMatch{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.RevertProfile{}) {
+		suite.DB.AutoMigrate(&storage.RevertProfile{})
+	}
+	if !suite.DB.Migrator().HasTable(&storage.RevertMatch{}) {
+		suite.DB.AutoMigrate(&storage.RevertMatch{})
+	}
 
 	pb.RegisterAdhanServiceServer(suite.Server, &adhan_service.AdhanServiceServer{
 		Smgr: &storage.StorageManager{
