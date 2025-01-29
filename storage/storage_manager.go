@@ -270,3 +270,232 @@ func (s *StorageManager) DeleteAdhanFile(id string) error {
 	}
 	return nil
 }
+
+// CreateNikkahProfile creates a NikkahProfile in the database for the given NikkahProfile proto.
+func (s *StorageManager) CreateNikkahProfile(np *pb.NikkahProfile) (*NikkahProfile, error) {
+	if np == nil {
+		return nil, status.Error(codes.InvalidArgument, "profile cannot be nil")
+	}
+
+	if np.GetUserId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "user cannot be nil")
+	}
+
+	// Check if the user exists.
+	_, err := s.GetUser(np.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+
+	profile, err := NewNikkahProfile(np)
+	if err != nil {
+		return nil, err
+	}
+	result := s.DB.Create(profile)
+
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return profile, nil
+}
+
+// UpdateNikkahProfile updates a NikkahProfile in the database for the given NikkahProfile proto.
+func (s *StorageManager) UpdateNikkahProfile(np *pb.NikkahProfile) (*NikkahProfile, error) {
+	if np == nil {
+		return nil, status.Error(codes.InvalidArgument, "profile cannot be nil")
+	}
+	profile, err := s.GetNikkahProfile(np.GetId())
+	if err != nil {
+		return nil, err
+	}
+
+	if np.GetUserId() != profile.UserID {
+		return nil, status.Error(codes.InvalidArgument, "user does not match profile")
+	}
+
+	new_profile, err := NewNikkahProfile(np)
+	if err != nil {
+		return nil, err
+	}
+
+	result := s.DB.Save(new_profile)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return new_profile, nil
+}
+
+// GetNikkahProfile returns a NikkahProfile with the given id.
+func (s *StorageManager) GetNikkahProfile(id string) (*NikkahProfile, error) {
+	if id == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be null")
+	}
+
+	var profile NikkahProfile
+	result := s.DB.First(&profile, "id = ?", id)
+
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+
+	return &profile, nil
+}
+
+// DeleteNikkahProfile deletes a NikkahProfile with the given id.
+func (s *StorageManager) DeleteNikkahProfile(id string) error {
+	profile, err := s.GetNikkahProfile(id)
+	if err != nil {
+		return err
+	}
+
+	result := s.DB.Delete(profile, profile.ID)
+	if result.Error != nil {
+		return gormToGrpcError(result.Error)
+	}
+	return nil
+}
+
+// CreateNikkahLike creates a NikkahLike in the database for the given NikkahLike proto.
+func (s *StorageManager) CreateNikkahLike(l *pb.NikkahLike) (*NikkahLike, error) {
+	if l == nil {
+		return nil, status.Error(codes.InvalidArgument, "like cannot be nil")
+	}
+
+	_, err := s.GetNikkahProfile(l.GetLikerProfileId())
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.GetNikkahProfile(l.GetLikedProfileId())
+	if err != nil {
+		return nil, err
+	}
+
+	like, err := NewNikkahLike(l)
+	if err != nil {
+		return nil, err
+	}
+	result := s.DB.Create(like)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return like, nil
+}
+
+// UpdateNikkahLike updates a NikkahLike in the database for the given NikkahLike proto.
+func (s *StorageManager) UpdateNikkahLike(l *pb.NikkahLike) (*NikkahLike, error) {
+	if l == nil {
+		return nil, status.Error(codes.InvalidArgument, "like cannot be nil")
+	}
+
+	like, err := s.GetNikkahLike(l.GetLikeId())
+	if err != nil {
+		return nil, err
+	}
+
+	if like.LikerProfileID != l.GetLikerProfileId() {
+		return nil, status.Error(codes.InvalidArgument, "liker profile does not match")
+	}
+
+	if like.LikedProfileID != l.GetLikedProfileId() {
+		return nil, status.Error(codes.InvalidArgument, "liked profile does not match")
+	}
+
+	new_like, err := NewNikkahLike(l)
+	if err != nil {
+		return nil, err
+	}
+
+	result := s.DB.Save(new_like)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return new_like, nil
+}
+
+// GetNikkahLike returns a NikkahLike with the given id.
+func (s *StorageManager) GetNikkahLike(id string) (*NikkahLike, error) {
+	if id == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be empty")
+	}
+	var like NikkahLike
+	result := s.DB.First(&like, "id = ?", id)
+
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return &like, nil
+}
+
+// CreateNikkahMatch creates a NikkahMatch in the database for the given NikkahMatch proto.
+func (s *StorageManager) CreateNikkahMatch(m *pb.NikkahMatch) (*NikkahMatch, error) {
+	if m == nil {
+		return nil, status.Error(codes.InvalidArgument, "match cannot be nil")
+	}
+
+	_, err := s.GetNikkahProfile(m.GetInitiatorProfileId())
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = s.GetNikkahProfile(m.GetReceiverProfileId())
+	if err != nil {
+		return nil, err
+	}
+
+	match, err := NewNikkahMatch(m)
+	if err != nil {
+		return nil, err
+	}
+
+	result := s.DB.Create(match)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return match, nil
+}
+
+// UpdateNikkahMatch updates a NikkahMatch in the database for the given NikkahMatch proto.
+func (s *StorageManager) UpdateNikkahMatch(m *pb.NikkahMatch) (*NikkahMatch, error) {
+	if m == nil {
+		return nil, status.Error(codes.InvalidArgument, "match cannot be nil")
+	}
+
+	match, err := s.GetNikkahMatch(m.GetMatchId())
+	if err != nil {
+		return nil, err
+	}
+
+	if match.InitiatorProfileID.String() != m.GetInitiatorProfileId() {
+		return nil, status.Error(codes.InvalidArgument, "initiator profile does not match")
+	}
+
+	if match.ReceiverProfileID.String() != m.GetReceiverProfileId() {
+		return nil, status.Error(codes.InvalidArgument, "receiver profile does not match")
+	}
+
+	new_match, err := NewNikkahMatch(m)
+	if err != nil {
+		return nil, err
+	}
+
+	result := s.DB.Save(new_match)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return new_match, nil
+}
+
+// GetNikkahMatch returns a NikkahMatch with the given id.
+func (s *StorageManager) GetNikkahMatch(id string) (*NikkahMatch, error) {
+	if id == "" {
+		return nil, status.Error(codes.InvalidArgument, "id cannot be empty")
+	}
+	var match NikkahMatch
+	result := s.DB.First(&match, "id = ?", id)
+
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+	return &match, nil
+}

@@ -40,6 +40,13 @@ const (
 
 // NewNikkahLike creates a new NikkahLike struct given the NikkahLike proto.
 func NewNikkahLike(l *pb.NikkahLike) (*NikkahLike, error) {
+	if l.GetLikedProfileId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "liked profile cannot be empty")
+	}
+	if l.GetLikerProfileId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "liker profile cannot be empty")
+	}
+
 	return &NikkahLike{
 		LikerProfileID: l.GetLikerProfileId(),
 		LikedProfileID: l.GetLikedProfileId(),

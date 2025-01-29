@@ -20,8 +20,8 @@ type RevertProfile struct {
 	ID        uuid.UUID `gorm:"primaryKey"`
 	UserID    string    `gorm:"uniqueIndex"`
 	Name      string
-	Gender    gender `gorm:"type:gender"`
-	BirthDate BirthDate
+	Gender    gender    `gorm:"type:gender"`
+	BirthDate BirthDate `gorm:"embedded"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

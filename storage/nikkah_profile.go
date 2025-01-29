@@ -16,17 +16,22 @@ type NikkahProfile struct {
 	UserID    string    `gorm:"uniqueIndex;type:uuid"`
 	Name      string    `gorm:"type:varchar(255)"`
 	Gender    gender    `gorm:"type:gender"`
-	BirthDate *BirthDate
+	BirthDate BirthDate `gorm:"embedded"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 // NewNikkahProfile creates a new NikkahProfile struct given the NikkahProfile proto.
 func NewNikkahProfile(np *pb.NikkahProfile) (*NikkahProfile, error) {
+	if np.GetUserId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "user cannot be nil")
+	}
+
 	return &NikkahProfile{
 		Name:   np.GetName(),
+		UserID: np.GetUserId(),
 		Gender: gender(np.GetGender().String()),
-		BirthDate: &BirthDate{
+		BirthDate: BirthDate{
 			Year:  np.GetBirthDate().GetYear(),
 			Month: Month(np.GetBirthDate().GetMonth()),
 			Day:   int8(np.GetBirthDate().GetDay()),
