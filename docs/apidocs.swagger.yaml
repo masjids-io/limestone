@@ -1536,6 +1536,7 @@ definitions:
       likeId:
         type: string
         description: The unique identifier for the like process. This field is output only.
+        readOnly: true
       likerProfileId:
         type: string
         description: The ID of the profile who initiated the like.
@@ -1549,10 +1550,12 @@ definitions:
         type: string
         format: date-time
         description: The create time of the event. This field is output only.
+        readOnly: true
       updateTime:
         type: string
         format: date-time
         description: The update time of the event. This field is output only.
+        readOnly: true
     description: NikkahLike represents a like process initiated by a user towards another user's profile.
   limestoneNikkahLikeStatus:
     type: string
@@ -1574,6 +1577,7 @@ definitions:
       matchId:
         type: string
         description: The unique identifier for the match. This field is output only.
+        readOnly: true
       initiatorProfileId:
         type: string
         description: The ID of the profile who initiated the match.
@@ -1587,10 +1591,12 @@ definitions:
         type: string
         format: date-time
         description: The create time of the event. This field is output only.
+        readOnly: true
       updateTime:
         type: string
         format: date-time
         description: The update time of the event. This field is output only.
+        readOnly: true
     description: NikkahMatch represents a successful match between two users.
   limestoneNikkahMatchStatus:
     type: string
@@ -1608,6 +1614,7 @@ definitions:
       id:
         type: string
         description: The unique id associated with the profile. Field is output only.
+        readOnly: true
       userId:
         type: string
         description: The user id associated with the profile.
@@ -1624,10 +1631,12 @@ definitions:
         type: string
         format: date-time
         description: The create time of the event. This field is output only.
+        readOnly: true
       updateTime:
         type: string
         format: date-time
         description: The update time of the event. This field is output only.
+        readOnly: true
     description: Represents a user's profile in the nikkah.io.
   limestoneNikkahProfileBirthDate:
     type: object
@@ -1724,6 +1733,7 @@ definitions:
       matchId:
         type: string
         description: The unique identifier for the match. This field is output only.
+        readOnly: true
       initiatorProfileId:
         type: string
         description: The ID of the profile who initiated the match.
@@ -1737,10 +1747,12 @@ definitions:
         type: string
         format: date-time
         description: The create time of the event. This field is output only.
+        readOnly: true
       updateTime:
         type: string
         format: date-time
         description: The update time of the event. This field is output only.
+        readOnly: true
     description: RevertMatch represents a successful match between two users.
   limestoneRevertMatchStatus:
     type: string
@@ -1758,6 +1770,7 @@ definitions:
       id:
         type: string
         description: The unique id associated with the profile. Field is output only.
+        readOnly: true
       userId:
         type: string
         description: The user id associated with the profile.
@@ -1774,10 +1787,12 @@ definitions:
         type: string
         format: date-time
         description: The create time of the event. This field is output only.
+        readOnly: true
       updateTime:
         type: string
         format: date-time
         description: The update time of the event. This field is output only.
+        readOnly: true
     description: Represents a user's profile in the nikkah.io.
   limestoneRevertProfileBirthDate:
     type: object
