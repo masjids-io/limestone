@@ -91,19 +91,7 @@ const (
 // necessary to calculate prayer times.
 type PrayerTimesConfiguration struct {
 	// The calculation method to use.
-	CalculationMethod CalculationMethod `sql:"type:ENUM('OTHER', 
-														'MUSLIM_WORLD_LEAGUE', 
-														'EGYPTIAN', 
-														'KARACHI', 
-														'UMM_AL_QURA', 
-														'DUBAI', 
-														'MOON_SIGHTING_COMMITTEE', 
-														'NORTH_AMERICA', 
-														'KUWAIT', 
-														'QATAR', 
-														'SINGAPORE', 
-														'UOIF')" 
-														gorm:"column:calculation_method"`
+	CalculationMethod CalculationMethod `sql:"type:ENUM('OTHER','MUSLIM_WORLD_LEAGUE','EGYPTIAN','KARACHI','UMM_AL_QURA','DUBAI','MOON_SIGHTING_COMMITTEE','NORTH_AMERICA','KUWAIT','QATAR','SINGAPORE','UOIF')" gorm:"column:calculation_method"`
 	// The Fajr angle to use. This does not need to be set if the calculation method is set.
 	// If both fields are set, then the calculation method field takes precedence.
 	FajrAngle float64 `gorm:"default:0"`
@@ -113,15 +101,9 @@ type PrayerTimesConfiguration struct {
 	// Minutes after Maghrib (if set, the time for Isha will be Maghrib plus the Isha interval).
 	IshaInterval int32 `gorm:"default:0"`
 	// The juristic method to use for calculating Asr timings.
-	AsrMethod AsrJuristicMethod `sql:"type:ENUM('SHAFI_HANBALI_MALIKI', 
-												'HANAFI')" 
-												gorm:"column:asr_method"`
+	AsrMethod AsrJuristicMethod `sql:"type:ENUM('SHAFI_HANBALI_MALIKI','HANAFI')" gorm:"column:asr_method"`
 	// The high latitude rule to use to calculate Fajr and Isha prayers.
-	HighLatitudeRule HighLatitudeRule `sql:"type:ENUM('NO_HIGH_LATITUDE_RULE', 
-													  'MIDDLE_OF_THE_NIGHT', 
-													  'SEVENTH_OF_THE_NIGHT', 
-													  'TWILIGHT_ANGLE')" 
-													   gorm:"column:high_latitude_rule"`
+	HighLatitudeRule HighLatitudeRule `sql:"type:ENUM('NO_HIGH_LATITUDE_RULE','MIDDLE_OF_THE_NIGHT','SEVENTH_OF_THE_NIGHT','TWILIGHT_ANGLE')" gorm:"column:high_latitude_rule"`
 	// The prayer adjustments (aka offsets) to apply to the calculated prayer times.
 	Adjustments PrayerAdjustments `gorm:"embedded"`
 }
