@@ -28,8 +28,8 @@ func NewNikkahProfile(np *pb.NikkahProfile) (*NikkahProfile, error) {
 	}
 
 	return &NikkahProfile{
-		Name:   np.GetName(),
 		UserID: np.GetUserId(),
+		Name:   np.GetName(),
 		Gender: gender(np.GetGender().String()),
 		BirthDate: BirthDate{
 			Year:  np.GetBirthDate().GetYear(),

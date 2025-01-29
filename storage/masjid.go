@@ -54,12 +54,12 @@ func NewMasjid(m *pb.Masjid) *Masjid {
 			Extension:        m.GetPhoneNumber().GetExtension(),
 		},
 		PrayerConfig: PrayerTimesConfiguration{
-			CalculationMethod: FromMasjidToInternalCalculationMethodEnum(m.GetPrayerConfig().GetMethod()),
+			CalculationMethod: CalculationMethod(m.GetPrayerConfig().GetMethod()),
 			FajrAngle:         m.GetPrayerConfig().GetFajrAngle(),
 			IshaAngle:         m.GetPrayerConfig().GetIshaAngle(),
 			IshaInterval:      m.GetPrayerConfig().GetIshaInterval(),
-			AsrMethod:         FromMasjidToInternalAsrMethodEnum(m.GetPrayerConfig().GetAsrMethod()),
-			HighLatitudeRule:  FromMasjidToInternalHighLatitudeEnum(m.GetPrayerConfig().GetHighLatitudeRule()),
+			AsrMethod:         AsrJuristicMethod(m.GetPrayerConfig().GetAsrMethod()),
+			HighLatitudeRule:  HighLatitudeRule(m.GetPrayerConfig().GetHighLatitudeRule()),
 			Adjustments: PrayerAdjustments{
 				FajrAdjustment:    m.GetPrayerConfig().GetAdjustments().GetFajrAdjustment(),
 				DhuhrAdjustment:   m.GetPrayerConfig().GetAdjustments().GetDhuhrAdjustment(),
@@ -90,12 +90,12 @@ func (m *Masjid) ToProto() *pb.Masjid {
 			Extension:   m.PhoneNumber.Extension,
 		},
 		PrayerConfig: &pb.PrayerTimesConfiguration{
-			Method:           FromInternalToMasjidCalculationMethodEnum(m.PrayerConfig.CalculationMethod),
+			Method:           pb.PrayerTimesConfiguration_CalculationMethod(m.PrayerConfig.CalculationMethod),
 			FajrAngle:        m.PrayerConfig.FajrAngle,
 			IshaAngle:        m.PrayerConfig.IshaAngle,
 			IshaInterval:     m.PrayerConfig.IshaInterval,
-			AsrMethod:        FromInternalToMasjidAsrMethodEnum(m.PrayerConfig.AsrMethod),
-			HighLatitudeRule: FromInternalToMasjidHighLatitudeEnum(m.PrayerConfig.HighLatitudeRule),
+			AsrMethod:        pb.PrayerTimesConfiguration_AsrJuristicMethod(m.PrayerConfig.AsrMethod),
+			HighLatitudeRule: pb.PrayerTimesConfiguration_HighLatitudeRule(m.PrayerConfig.HighLatitudeRule),
 			Adjustments: &pb.PrayerTimesConfiguration_PrayerAdjustments{
 				FajrAdjustment:    m.PrayerConfig.Adjustments.FajrAdjustment,
 				DhuhrAdjustment:   m.PrayerConfig.Adjustments.DhuhrAdjustment,
