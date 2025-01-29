@@ -29,6 +29,9 @@ type RevertProfile struct {
 // NewRevertProfile creates a new RevertProfile struct given the RevertProfile proto.
 // This function assumes that the user ID has already been validated to exist.
 func NewRevertProfile(rp *pb.RevertProfile) (*RevertProfile, error) {
+	if rp.GetUserId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "user cannot be nil")
+	}
 	if (rp.GetBirthDate().GetDay() > 31) || (rp.GetBirthDate().GetDay() < 1) {
 		return nil, status.Error(codes.InvalidArgument, "invalid day")
 	}
