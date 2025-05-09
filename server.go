@@ -4,17 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
-	"net"
-	"net/http"
-	"os"
-
-	"google.golang.org/grpc"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-
+	"github.com/lpernett/godotenv"
 	"github.com/mnadev/limestone/adhan_service"
 	"github.com/mnadev/limestone/auth"
 	"github.com/mnadev/limestone/event_service"
@@ -22,6 +13,14 @@ import (
 	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 	"github.com/mnadev/limestone/user_service"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"log"
+	"net"
+	"net/http"
+	"os"
 )
 
 var (
@@ -30,20 +29,26 @@ var (
 )
 
 func main() {
-	lis, err := net.Listen("tcp", *grpcEndpoint)
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatal("Error loading .env file")
 	}
 
+	lis, err := net.Listen("tcp", *grpcEndpoint)
+	if err != nil {
+		log.Fatalf("failed to listen for gRPC: %v", err)
+	}
+	log.Printf("gRPC server listening on %s", *grpcEndpoint)
+
 	server := grpc.NewServer(
-		grpc.UnaryInterceptor(auth.AuthInterceptor),
+		grpc.UnaryInterceptor(auth.VerifyJWTInterceptor),
 	)
 
-	host := os.Getenv("db-host")
-	port := os.Getenv("db-port")
-	dbName := os.Getenv("db-name")
-	dbUser := os.Getenv("db-user")
-	password := os.Getenv("db-password")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+	dbUser := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		host,
 		port,
@@ -52,6 +57,10 @@ func main() {
 		password,
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+	log.Println("Database connected successfully.")
 	DB.AutoMigrate(storage.AdhanFile{})
 	DB.AutoMigrate(storage.Event{})
 	DB.AutoMigrate(storage.Masjid{})
@@ -82,6 +91,8 @@ func main() {
 	}
 	pb.RegisterUserServiceServer(server, &user_server)
 
+	reflection.Register(server) //debug grpc with grpcurl
+
 	go func() {
 		if err := server.Serve(lis); err != nil {
 			log.Fatalf("failed to serve gRPC traffic: %s", err)
@@ -95,21 +106,21 @@ func main() {
 	mux := runtime.NewServeMux()
 	err = pb.RegisterAdhanServiceHandlerServer(ctx, mux, &adhan_service_server)
 	if err != nil {
-		log.Fatalf("failed to serve: %s", err)
+		log.Fatalf("failed to register AdhanService handler: %s", err)
 	}
 	err = pb.RegisterEventServiceHandlerServer(ctx, mux, &event_server)
 	if err != nil {
-		log.Fatalf("failed to serve: %s", err)
+		log.Fatalf("failed to register EventService handler: %s", err)
 	}
 	err = pb.RegisterMasjidServiceHandlerServer(ctx, mux, &masjid_server)
 	if err != nil {
-		log.Fatalf("failed to serve: %s", err)
+		log.Fatalf("failed to register MasjidService handler: %s", err)
 	}
 	err = pb.RegisterUserServiceHandlerServer(ctx, mux, &user_server)
 	if err != nil {
-		log.Fatalf("failed to serve: %s", err)
+		log.Fatalf("failed to register UserService handler: %s", err)
 	}
-
+	log.Printf("HTTP server listening on %s", *httpEndpoint)
 	if err = http.ListenAndServe(*httpEndpoint, mux); err != nil {
 		log.Fatalf("failed to serve HTTP traffic: %s", err)
 	}

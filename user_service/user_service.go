@@ -2,10 +2,11 @@ package user_service
 
 import (
 	"context"
-
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/mnadev/limestone/auth"
 	pb "github.com/mnadev/limestone/proto"
 	"github.com/mnadev/limestone/storage"
 )
@@ -47,4 +48,37 @@ func (s *UserServiceServer) DeleteUser(ctx context.Context, in *pb.DeleteUserReq
 		return nil, err
 	}
 	return &pb.DeleteUserResponse{}, status.Error(codes.OK, codes.OK.String())
+}
+
+func (s *UserServiceServer) AuthenticateUser(ctx context.Context, in *pb.AuthenticateUserRequest) (*pb.AuthenticateUserResponse, error) {
+	var user *storage.User
+	var err error
+
+	if in.GetUsername() != "" {
+		user, err = s.Smgr.GetUserByUsername(in.GetUsername())
+	} else if in.GetEmail() != "" {
+		user, err = s.Smgr.GetUserByEmail(in.GetEmail())
+	} else {
+		return nil, status.Errorf(codes.InvalidArgument, "username or email must be provided")
+	}
+
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "invalid username/email or password")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(in.GetPassword()))
+	if err != nil {
+		return nil, status.Errorf(codes.Unauthenticated, "invalid username/email or password")
+	}
+
+	// Generate JWT tokens
+	accessToken, refreshToken, err := auth.GenerateJWT(user.ID.String())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to generate JWT tokens: %v", err)
+	}
+
+	return &pb.AuthenticateUserResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }

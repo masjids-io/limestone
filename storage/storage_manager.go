@@ -499,3 +499,23 @@ func (s *StorageManager) GetNikkahMatch(id string) (*NikkahMatch, error) {
 	}
 	return &match, nil
 }
+
+func (s *StorageManager) GetUserByUsername(username string) (*User, error) {
+	var user User
+	result := s.DB.Where("username = ?", username).First(&user)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+
+	return &user, nil
+}
+
+func (s *StorageManager) GetUserByEmail(email string) (*User, error) {
+	var user User
+	result := s.DB.Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		return nil, gormToGrpcError(result.Error)
+	}
+
+	return &user, nil
+}
