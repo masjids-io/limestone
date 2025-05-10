@@ -724,6 +724,27 @@ paths:
           type: string
       tags:
         - UserService
+  /v1/users/{id}:
+    get:
+      summary: Gets a User from the database and tokens provided the auth token is valid.
+      operationId: UserService_GetUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneGetUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          description: The id of the user to get.
+          in: path
+          required: true
+          type: string
+      tags:
+        - UserService
   /v1/{adhanFile.id}:
     patch:
       summary: Updates an adhan audio file in the database for a masjid.
@@ -955,27 +976,6 @@ paths:
       tags:
         - MasjidService
   /v1/{id_3}:
-    get:
-      summary: Gets a User from the database and tokens provided the auth token is valid.
-      operationId: UserService_GetUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneGetUserResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: id_3
-          description: The id of the user to get.
-          in: path
-          required: true
-          type: string
-          pattern: users/[^/]+
-      tags:
-        - UserService
     delete:
       summary: Deletes a User from the database provided the auth token is valid.
       operationId: UserService_DeleteUser
@@ -1727,6 +1727,8 @@ definitions:
       accessToken:
         type: string
         description: The access token for subsequent authenticated requests.
+      refreshToken:
+        type: string
   limestoneRevertMatch:
     type: object
     properties:

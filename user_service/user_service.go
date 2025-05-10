@@ -82,3 +82,14 @@ func (s *UserServiceServer) AuthenticateUser(ctx context.Context, in *pb.Authent
 		RefreshToken: refreshToken,
 	}, nil
 }
+
+func (s *UserServiceServer) RefreshToken(ctx context.Context, in *pb.RefreshTokenRequest) (*pb.RefreshTokenResponse, error) {
+	accessToken, refreshToken, err := auth.RefreshToken(in.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RefreshTokenResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
+}
