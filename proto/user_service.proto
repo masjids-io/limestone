@@ -21,7 +21,7 @@ service UserService {
 	// Gets a User from the database and tokens provided the auth token is valid.
 	rpc GetUser(GetUserRequest) returns (GetUserResponse) {
     option (google.api.http) = {
-      get: "/v1/{id=users/*}"
+      get: "/v1/users/{id}"
     };
     option (google.api.method_signature) = "id";
 	}
@@ -176,4 +176,5 @@ message RefreshTokenRequest {
 message RefreshTokenResponse {
 	// The access token for subsequent authenticated requests.
 	string access_token = 1;
+	string refresh_token = 2;
 }
