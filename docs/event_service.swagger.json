@@ -1,0 +1,406 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "event_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "EventService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/events": {
+      "get": {
+        "summary": "Returns a paginated list of events from the database.",
+        "operationId": "EventService_ListEvents",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneListEventsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageSize",
+            "description": "The maximum number of events to return. Fewer events might be returned.\nDefault value is 25.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "A page token from a previous `ListEvents` call. If this is provided, then the \nnext page will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "EventService"
+        ]
+      },
+      "post": {
+        "summary": "Creates a event in the database.",
+        "operationId": "EventService_CreateEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "event",
+            "description": "The event to create in the database.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/limestoneEvent",
+              "required": [
+                "event"
+              ]
+            }
+          }
+        ],
+        "tags": [
+          "EventService"
+        ]
+      }
+    },
+    "/v1/{event.id}": {
+      "patch": {
+        "summary": "Updates a event in the database with the corresponding id to the given\nevent (i.e. all fields are overwritten).",
+        "operationId": "EventService_UpdateEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "event.id",
+            "description": "The unique id associated with the event.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "events/[^/]+"
+          },
+          {
+            "name": "event",
+            "description": "The event to update in the database.\n\nThe event's `id` field is used to identify the book to update.\nFormat: events/{event}",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organizationId": {
+                  "type": "string",
+                  "description": "The id of the organization which owns the event."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the event."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The description of the event."
+                },
+                "startTime": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The start time of the event."
+                },
+                "endTime": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The end time of the event."
+                },
+                "genderRestriction": {
+                  "$ref": "#/definitions/EventGenderRestriction",
+                  "description": "The gender restriction associated with the event."
+                },
+                "types": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/EventEventType"
+                  },
+                  "description": "The different event types associated with this event."
+                },
+                "isPaid": {
+                  "type": "boolean",
+                  "description": "Whether or not the event is a paid event."
+                },
+                "requiresRsvp": {
+                  "type": "boolean",
+                  "description": "Whether or not the event requires RSVP."
+                },
+                "maxParticipants": {
+                  "type": "integer",
+                  "format": "int32",
+                  "description": "The maximum number of participants for this event. If set to -1, then there\nis no limit on the number of participants."
+                },
+                "livestreamLink": {
+                  "type": "string",
+                  "description": "The livestream link for this event. If empty, then there is no livestream\nassociated with the event."
+                },
+                "createTime": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The create time of the event. This field is output only."
+                },
+                "updateTime": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The update time of the event. This field is output only."
+                }
+              },
+              "description": "The event's `id` field is used to identify the book to update.\nFormat: events/{event}",
+              "title": "The event to update in the database."
+            }
+          }
+        ],
+        "tags": [
+          "EventService"
+        ]
+      }
+    },
+    "/v1/{id}": {
+      "get": {
+        "summary": "Gets a event from the database with the given id.",
+        "operationId": "EventService_GetEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The id of the event that should be returned.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "events/[^/]+"
+          }
+        ],
+        "tags": [
+          "EventService"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a event from the database with the given id.",
+        "operationId": "EventService_DeleteEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneDeleteEventResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The id of the event that should be deleted.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "events/[^/]+"
+          }
+        ],
+        "tags": [
+          "EventService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "EventEventType": {
+      "type": "string",
+      "enum": [
+        "WORSHIP",
+        "EDUCATIONAL",
+        "COMMUNITY",
+        "ATHLETIC",
+        "FUNDRAISING",
+        "YOUTH",
+        "CHILDREN_SPECIFIC",
+        "MATRIMONIAL",
+        "FUNERAL"
+      ],
+      "default": "WORSHIP",
+      "description": "Specifies the different event types an event can be specified as.\n\n - WORSHIP: The event is a worship event such as Eid salah.\n - EDUCATIONAL: The event is an educational event such as a class or lecture.\n - COMMUNITY: The event is a social community event.\n - ATHLETIC: The event is an athletic event such as fitness class or a sports game.\n - FUNDRAISING: The event is related to fundraising.\n - YOUTH: The event is relevant to the youth.\n - CHILDREN_SPECIFIC: The event is specific to children.\n - MATRIMONIAL: The event is related to marriage.\n - FUNERAL: The event is a funeral."
+    },
+    "EventGenderRestriction": {
+      "type": "string",
+      "enum": [
+        "NO_RESTRICTION",
+        "MALE_ONLY",
+        "FEMALE_ONLY"
+      ],
+      "default": "NO_RESTRICTION",
+      "description": "Specifies the gender restriction associated with the event.\n\n - NO_RESTRICTION: No restriction on gender for event, aka co-ed.\n - MALE_ONLY: Male only event.\n - FEMALE_ONLY: Female only event."
+    },
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "limestoneDeleteEventResponse": {
+      "type": "object"
+    },
+    "limestoneEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique id associated with the event."
+        },
+        "organizationId": {
+          "type": "string",
+          "description": "The id of the organization which owns the event."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the event."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the event."
+        },
+        "startTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The start time of the event."
+        },
+        "endTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The end time of the event."
+        },
+        "genderRestriction": {
+          "$ref": "#/definitions/EventGenderRestriction",
+          "description": "The gender restriction associated with the event."
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EventEventType"
+          },
+          "description": "The different event types associated with this event."
+        },
+        "isPaid": {
+          "type": "boolean",
+          "description": "Whether or not the event is a paid event."
+        },
+        "requiresRsvp": {
+          "type": "boolean",
+          "description": "Whether or not the event requires RSVP."
+        },
+        "maxParticipants": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The maximum number of participants for this event. If set to -1, then there\nis no limit on the number of participants."
+        },
+        "livestreamLink": {
+          "type": "string",
+          "description": "The livestream link for this event. If empty, then there is no livestream\nassociated with the event."
+        },
+        "createTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The create time of the event. This field is output only."
+        },
+        "updateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The update time of the event. This field is output only."
+        }
+      }
+    },
+    "limestoneListEventsResponse": {
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/limestoneEvent"
+          },
+          "description": "The list of returned events."
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    }
+  }
+}

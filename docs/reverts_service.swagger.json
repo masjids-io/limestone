@@ -1,0 +1,532 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "reverts_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "RevertsIoService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/reverts/match/{matchId}": {
+      "get": {
+        "summary": "Gets a match with the given id.",
+        "operationId": "RevertsIoService_GetRevertMatch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertMatch"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchId",
+            "description": "The ID of the match to retrieve.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    },
+    "/v1/reverts/match/{matchId}/accept": {
+      "post": {
+        "summary": "Accepts a received match request from a user.\nThis then notifies the other user that the match is accepted, and initiates a chat\nbetween both users.",
+        "operationId": "RevertsIoService_AcceptRevertMatchInvite",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertMatch"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchId",
+            "description": "The ID of the match invite to accept.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    },
+    "/v1/reverts/match/{matchId}/end": {
+      "post": {
+        "summary": "Ends a currently accepted match.",
+        "operationId": "RevertsIoService_EndRevertMatch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertMatch"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchId",
+            "description": "The ID of the match invite to end.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    },
+    "/v1/reverts/match/{matchId}/reject": {
+      "post": {
+        "summary": "Rejects a received match request.\nThis then silently notifies the other user of the rejection.",
+        "operationId": "RevertsIoService_RejectRevertMatchInvite",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertMatch"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchId",
+            "description": "The ID of the match invite to reject.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    },
+    "/v1/reverts/match/{receiverProfileId}": {
+      "post": {
+        "summary": "Accepts a received match request from a user.\nThis then notifies the other user that the match is accepted, and initiates a chat\nbetween both users.",
+        "operationId": "RevertsIoService_CreateRevertMatchInvite",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertMatch"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "receiverProfileId",
+            "description": "The ID of the profile receiving the match invite.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    },
+    "/v1/reverts/profile": {
+      "get": {
+        "summary": "Retrieves the profile of the authenticated user.",
+        "operationId": "RevertsIoService_GetSelfRevertProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertProfile"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "RevertsIoService"
+        ]
+      },
+      "put": {
+        "summary": "Updates the profile of the authenticated user.",
+        "operationId": "RevertsIoService_UpdateSelfRevertProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertProfile"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/limestoneUpdateSelfRevertProfileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    },
+    "/v1/reverts/profiles": {
+      "get": {
+        "summary": "Lists profiles based on specified criteria.",
+        "operationId": "RevertsIoService_ListRevertProfiles",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneListRevertProfilesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pageSize",
+            "description": "The maximum number of profiles to return. Fewer profiles might be returned.\nDefault value is 25.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageToken",
+            "description": "A page token from a previous `ListRevertProfiles` call. If this is provided, then the \nnext page will be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      },
+      "post": {
+        "summary": "Creates a reverts matching profile for the authenticated user.",
+        "operationId": "RevertsIoService_CreateRevertProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertProfile"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "profile",
+            "description": "The profile to create in the database.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertProfile",
+              "required": [
+                "profile"
+              ]
+            }
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    },
+    "/v1/reverts/profiles/{profileId}": {
+      "get": {
+        "summary": "Gets the details of a specific profile.",
+        "operationId": "RevertsIoService_GetRevertProfile",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/limestoneRevertProfile"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "profileId",
+            "description": "The ID of the profile to retrieve.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "RevertsIoService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "limestoneListRevertProfilesResponse": {
+      "type": "object",
+      "properties": {
+        "profiles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/limestoneRevertProfile"
+          },
+          "description": "The list of returned profiles."
+        },
+        "nextPageToken": {
+          "type": "string",
+          "description": "A page token that can be used in a subsequent `ListRevertProfiles`\ncall to fetch the next page of results."
+        }
+      }
+    },
+    "limestoneRevertMatch": {
+      "type": "object",
+      "properties": {
+        "matchId": {
+          "type": "string",
+          "description": "The unique identifier for the match. This field is output only.",
+          "readOnly": true
+        },
+        "initiatorProfileId": {
+          "type": "string",
+          "description": "The ID of the profile who initiated the match."
+        },
+        "receiverProfileId": {
+          "type": "string",
+          "description": "The ID of the profile which received the match."
+        },
+        "status": {
+          "$ref": "#/definitions/limestoneRevertMatchStatus",
+          "description": "The current status of the match."
+        },
+        "createTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The create time of the event. This field is output only.",
+          "readOnly": true
+        },
+        "updateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The update time of the event. This field is output only.",
+          "readOnly": true
+        }
+      },
+      "description": "RevertMatch represents a successful match between two users."
+    },
+    "limestoneRevertMatchStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_UNSPECIFIED",
+        "INITIATED",
+        "ACCEPTED",
+        "REJECTED",
+        "ENDED"
+      ],
+      "default": "STATUS_UNSPECIFIED",
+      "description": "Denotes an enum that specifies the current status of the match.\n\n - INITIATED: The match has been initiated, so one side has sent the invite to the other.\n - ACCEPTED: The match has been accepted, indicating mutual interest.\n - REJECTED: The match has been rejected.\n - ENDED: The match has been ended. \nThis should occur after the match was in ACCEPTED status.\n\nChanged to 4 to be unique"
+    },
+    "limestoneRevertProfile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique id associated with the profile. Field is output only.",
+          "readOnly": true
+        },
+        "userId": {
+          "type": "string",
+          "description": "The user id associated with the profile."
+        },
+        "name": {
+          "type": "string",
+          "description": "The user id associated with the profile."
+        },
+        "gender": {
+          "$ref": "#/definitions/limestoneRevertProfileGender",
+          "description": "The gender of the user."
+        },
+        "birthDate": {
+          "$ref": "#/definitions/limestoneRevertProfileBirthDate",
+          "description": "The birthdate of the user."
+        },
+        "createTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The create time of the event. This field is output only.",
+          "readOnly": true
+        },
+        "updateTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The update time of the event. This field is output only.",
+          "readOnly": true
+        }
+      },
+      "description": "Represents a user's profile in the nikkah.io."
+    },
+    "limestoneRevertProfileBirthDate": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "month": {
+          "$ref": "#/definitions/limestoneRevertProfileBirthDateMonth"
+        },
+        "day": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "description": "A message describing the birth date of a user."
+    },
+    "limestoneRevertProfileBirthDateMonth": {
+      "type": "string",
+      "enum": [
+        "MONTH_UNSPECIFIED",
+        "JANUARY",
+        "FEBRUARY",
+        "MARCH",
+        "APRIL",
+        "MAY",
+        "JUNE",
+        "JULY",
+        "AUGUST",
+        "SEPTEMBER",
+        "OCTOBER",
+        "NOVEMBER",
+        "DECEMBER"
+      ],
+      "default": "MONTH_UNSPECIFIED"
+    },
+    "limestoneRevertProfileGender": {
+      "type": "string",
+      "enum": [
+        "GENDER_UNSPECIFIED",
+        "MALE",
+        "FEMALE"
+      ],
+      "default": "GENDER_UNSPECIFIED",
+      "description": "Defines an enum representing the gender of the user.\n\n - GENDER_UNSPECIFIED: Default value."
+    },
+    "limestoneUpdateSelfRevertProfileRequest": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "$ref": "#/definitions/limestoneRevertProfile",
+          "description": "The event to update in the database.\n\nThe event's `id` field is used to identify the book to update.\nFormat: events/{event}"
+        }
+      },
+      "required": [
+        "profile"
+      ]
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    }
+  }
+}

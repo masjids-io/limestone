@@ -1,0 +1,22 @@
+version: v2
+managed:
+  enabled: true
+  override:
+    - file_option: go_package
+      value: .
+    - module: buf.build/googleapis/googleapis
+      file_option: go_package
+      value: google.golang.org/genproto/googleapis/rpc/status
+    - module: buf.build/grpc-ecosystem/grpc-gateway
+      file_option: go_package
+      value: github.com/grpc-ecosystem/grpc-gateway/v2/runtime
+
+plugins:
+  - remote: buf.build/grpc-ecosystem/gateway:v2.16.0
+    out: gen/go
+  - remote: buf.build/protocolbuffers/go
+    out: gen/go
+  - remote: buf.build/grpc/go
+    out: gen/go
+  - remote: buf.build/grpc-ecosystem/openapiv2:v2.19.0
+    out: docs
