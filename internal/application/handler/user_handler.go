@@ -2,15 +2,16 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"github.com/google/uuid"
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
 	services "github.com/mnadev/limestone/internal/application/services"
-	"github.com/mnadev/limestone/internal/infrastructure/grpc/auth"
-	"golang.org/x/crypto/bcrypt"
+	auth2 "github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"gorm.io/gorm"
 )
 
 type UserGrpcHandler struct {
@@ -22,14 +23,33 @@ func NewUserGrpcHandler(svc *services.UserService) *UserGrpcHandler {
 	return &UserGrpcHandler{Svc: svc}
 }
 
-func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.StandardResponse, error) {
+func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.StandardUserResponse, error) {
+	if req.GetEmail() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "email is required")
+	}
+	if req.GetUsername() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "username is required")
+	}
+	if req.GetPassword() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "password is required")
+	}
+	if req.GetFirstName() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "first name is required")
+	}
+	if req.GetLastName() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "last name is required")
+	}
+	if req.GetPhoneNumber() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "phone number is required")
+	}
+
 	password := req.GetPassword()
 	if len(password) < 8 {
-		return &pb.StandardResponse{Code: codes.Canceled.String(), Status: "failed", Message: "password must be at least 8 characters"}, nil
+		return nil, status.Errorf(codes.InvalidArgument, "password must be at least 8 characters")
 	}
-	hashPassword, err := auth.HashPassword(password)
+	hashPassword, err := auth2.HashPassword(password)
 	if err != nil {
-		return &pb.StandardResponse{Code: codes.Internal.String(), Status: "failed", Message: err.Error()}, nil
+		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 	u := &entity.User{
 		ID:             uuid.New(),
@@ -40,17 +60,20 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 		FirstName:      req.GetFirstName(),
 		LastName:       req.GetLastName(),
 		PhoneNumber:    req.GetPhoneNumber(),
-		Gender:         entity.Gender(req.Gender.String()),
+		Gender:         entity.Gender(req.GetGender().String()),
 	}
 	responseCreatedUser, err := h.Svc.CreateUser(ctx, u)
 	if err != nil {
-		return &pb.StandardResponse{Code: codes.Internal.String(), Status: "Failed", Message: err.Error()}, nil
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return &pb.StandardUserResponse{Code: codes.AlreadyExists.String(), Status: "failed", Message: "email or username already exists"}, nil
+		}
+		return &pb.StandardUserResponse{Code: codes.Internal.String(), Status: "Failed", Message: err.Error()}, nil
 	}
-	return &pb.StandardResponse{
+	return &pb.StandardUserResponse{
 		Code:    codes.OK.String(),
 		Status:  "success",
 		Message: "user created successfully",
-		Data: &pb.StandardResponse_User{
+		Data: &pb.StandardUserResponse_User{
 			User: &pb.User{
 				Id:              responseCreatedUser.ID.String(),
 				Email:           responseCreatedUser.Email,
@@ -73,38 +96,4 @@ func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (
 		return nil, err
 	}
 	return &pb.GetUserResponse{User: &pb.User{Id: user.ID.String(), Email: user.Email, Username: user.Username}}, nil
-}
-
-func (h *UserGrpcHandler) AuthenticateUser(ctx context.Context, req *pb.AuthenticateUserRequest) (*pb.AuthenticateUserResponse, error) {
-	var user *entity.User
-	var err error
-
-	if req.GetUsername() != "" {
-		user, err = h.Svc.GetUserByUsername(ctx, req.GetUsername())
-	} else if req.GetEmail() != "" {
-		user, err = h.Svc.GetUserByEmail(ctx, req.GetEmail())
-	} else {
-		return nil, status.Errorf(codes.InvalidArgument, "username or email must be provided")
-	}
-
-	if err != nil || user == nil {
-		return nil, status.Errorf(codes.Unauthenticated, "invalid username/email or password")
-	}
-
-	// Compare the hashed password
-	err = bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(req.GetPassword()))
-	if err != nil {
-		return nil, status.Errorf(codes.Unauthenticated, "invalid username/email or password")
-	}
-
-	// Generate JWT tokens
-	accessToken, refreshToken, err := auth.GenerateJWT(user.ID.String())
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to generate JWT tokens: %v", err)
-	}
-
-	return &pb.AuthenticateUserResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
 }

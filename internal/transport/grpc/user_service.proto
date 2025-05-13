@@ -11,7 +11,7 @@ option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service UserService {
   // Creates the given User with the given password.
-  rpc CreateUser(CreateUserRequest) returns (StandardResponse) {
+  rpc CreateUser(CreateUserRequest) returns (StandardUserResponse) {
     option (google.api.http) = {
       post: "/v1/users"
       body: "*"
@@ -39,20 +39,6 @@ service UserService {
       delete: "/v1/{id=users/*}"
     };
     option (google.api.method_signature) = "id";
-  }
-  // Authenticates a user based on their username or email and password
-  rpc AuthenticateUser (AuthenticateUserRequest) returns (AuthenticateUserResponse) {
-    option (google.api.http) = {
-      post: "/users/authenticate"
-      body: "*"
-    };
-  }
-  // Refreshes an existing authentication token
-  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse) {
-    option (google.api.http) = {
-      post: "/users/refresh_token"
-      body: "*"
-    };
   }
 }
 
@@ -116,12 +102,13 @@ message User {
   google.protobuf.Timestamp update_time = 10;
 }
 
-message StandardResponse {
+message StandardUserResponse {
   string code = 1;
   string status = 2;
   string message = 3;
   oneof data {
     User user = 4;
+
   }
 }
 
@@ -164,33 +151,3 @@ message DeleteUserRequest {
 
 // Empty response returned for DeleteUser RPC.
 message DeleteUserResponse {}
-
-message AuthenticateUserRequest {
-  // Use either username or email for authentication.
-  oneof identifier {
-    string username = 1;
-    string email = 2;
-  }
-  // The password for authentication
-  string password = 3;
-}
-
-message AuthenticateUserResponse {
-  // The access token for subsequent authenticated requests.
-  string access_token = 1;
-  // The refresh token to obtain a new access token when it expires.
-  string refresh_token = 2;
-  // The ID of the authenticated user (if successful).
-  int32 user_id = 3;
-}
-
-message RefreshTokenRequest {
-  // The refresh JWT for the user.
-  string refresh_token = 1;
-}
-
-message RefreshTokenResponse {
-  // The access token for subsequent authenticated requests.
-  string access_token = 1;
-  string refresh_token = 2;
-}

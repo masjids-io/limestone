@@ -7,7 +7,7 @@ import (
 	"net"
 
 	"github.com/mnadev/limestone/internal/application/handler"
-	"github.com/mnadev/limestone/internal/infrastructure/grpc/auth"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"github.com/mnadev/limestone/internal/infrastructure/storage"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -15,20 +15,29 @@ import (
 )
 
 func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listener) {
-	listener, err := net.Listen("tcp", grpcEndpoint)
+	listener, err := net.Listen("tcp", grpcEndpoint) // Use a constant or config
 	if err != nil {
-		log.Fatalf("failed to listen for gRPC: %v", err)
+		log.Printf("failed to listen for gRPC: %s", err)
 	}
 	log.Printf("gRPC server listening on %s", grpcEndpoint)
 
-	repo := storage.NewGormUserRepository(db)
-	svc := services.NewUserService(repo)
-	handler := handler.NewUserGrpcHandler(svc)
-
 	server := grpc.NewServer(
-		grpc.UnaryInterceptor(auth.VerifyJWTInterceptor),
+		grpc.UnaryInterceptor(auth.VerifyJWTInterceptor), // Apply auth globally
 	)
-	pb.RegisterUserServiceServer(server, handler)
+
+	// Initialize repositories and services
+	userRepo := storage.NewGormUserRepository(db)
+	userService := services.NewUserService(userRepo)
+	authService := services.NewAuthService(userRepo) // Assuming AuthService
+
+	// Initialize handlers
+	userHandler := handler.NewUserGrpcHandler(userService)
+	authHandler := handler.NewAuthGrpcHandler(authService)
+
+	// Register services with their handlers
+	pb.RegisterUserServiceServer(server, userHandler)
+	pb.RegisterAuthServiceServer(server, authHandler) // Assuming AuthService
+
 	reflection.Register(server)
 
 	return server, listener

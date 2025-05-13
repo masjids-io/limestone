@@ -378,33 +378,33 @@ func (x *User) GetUpdateTime() *timestamppb.Timestamp {
 	return nil
 }
 
-type StandardResponse struct {
+type StandardUserResponse struct {
 	state   protoimpl.MessageState `protogen:"open.v1"`
 	Code    string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
 	Status  string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
 	Message string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 	// Types that are valid to be assigned to Data:
 	//
-	//	*StandardResponse_User
-	Data          isStandardResponse_Data `protobuf_oneof:"data"`
+	//	*StandardUserResponse_User
+	Data          isStandardUserResponse_Data `protobuf_oneof:"data"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *StandardResponse) Reset() {
-	*x = StandardResponse{}
+func (x *StandardUserResponse) Reset() {
+	*x = StandardUserResponse{}
 	mi := &file_user_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *StandardResponse) String() string {
+func (x *StandardUserResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*StandardResponse) ProtoMessage() {}
+func (*StandardUserResponse) ProtoMessage() {}
 
-func (x *StandardResponse) ProtoReflect() protoreflect.Message {
+func (x *StandardUserResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_user_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -416,57 +416,57 @@ func (x *StandardResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use StandardResponse.ProtoReflect.Descriptor instead.
-func (*StandardResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use StandardUserResponse.ProtoReflect.Descriptor instead.
+func (*StandardUserResponse) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *StandardResponse) GetCode() string {
+func (x *StandardUserResponse) GetCode() string {
 	if x != nil {
 		return x.Code
 	}
 	return ""
 }
 
-func (x *StandardResponse) GetStatus() string {
+func (x *StandardUserResponse) GetStatus() string {
 	if x != nil {
 		return x.Status
 	}
 	return ""
 }
 
-func (x *StandardResponse) GetMessage() string {
+func (x *StandardUserResponse) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
 	return ""
 }
 
-func (x *StandardResponse) GetData() isStandardResponse_Data {
+func (x *StandardUserResponse) GetData() isStandardUserResponse_Data {
 	if x != nil {
 		return x.Data
 	}
 	return nil
 }
 
-func (x *StandardResponse) GetUser() *User {
+func (x *StandardUserResponse) GetUser() *User {
 	if x != nil {
-		if x, ok := x.Data.(*StandardResponse_User); ok {
+		if x, ok := x.Data.(*StandardUserResponse_User); ok {
 			return x.User
 		}
 	}
 	return nil
 }
 
-type isStandardResponse_Data interface {
-	isStandardResponse_Data()
+type isStandardUserResponse_Data interface {
+	isStandardUserResponse_Data()
 }
 
-type StandardResponse_User struct {
+type StandardUserResponse_User struct {
 	User *User `protobuf:"bytes,4,opt,name=user,proto3,oneof"`
 }
 
-func (*StandardResponse_User) isStandardResponse_Data() {}
+func (*StandardUserResponse_User) isStandardUserResponse_Data() {}
 
 type CreateUserRequest struct {
 	state           protoimpl.MessageState   `protogen:"open.v1"`
@@ -785,260 +785,6 @@ func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{8}
 }
 
-type AuthenticateUserRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Use either username or email for authentication.
-	//
-	// Types that are valid to be assigned to Identifier:
-	//
-	//	*AuthenticateUserRequest_Username
-	//	*AuthenticateUserRequest_Email
-	Identifier isAuthenticateUserRequest_Identifier `protobuf_oneof:"identifier"`
-	// The password for authentication
-	Password      string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *AuthenticateUserRequest) Reset() {
-	*x = AuthenticateUserRequest{}
-	mi := &file_user_service_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AuthenticateUserRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AuthenticateUserRequest) ProtoMessage() {}
-
-func (x *AuthenticateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_service_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AuthenticateUserRequest.ProtoReflect.Descriptor instead.
-func (*AuthenticateUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_service_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *AuthenticateUserRequest) GetIdentifier() isAuthenticateUserRequest_Identifier {
-	if x != nil {
-		return x.Identifier
-	}
-	return nil
-}
-
-func (x *AuthenticateUserRequest) GetUsername() string {
-	if x != nil {
-		if x, ok := x.Identifier.(*AuthenticateUserRequest_Username); ok {
-			return x.Username
-		}
-	}
-	return ""
-}
-
-func (x *AuthenticateUserRequest) GetEmail() string {
-	if x != nil {
-		if x, ok := x.Identifier.(*AuthenticateUserRequest_Email); ok {
-			return x.Email
-		}
-	}
-	return ""
-}
-
-func (x *AuthenticateUserRequest) GetPassword() string {
-	if x != nil {
-		return x.Password
-	}
-	return ""
-}
-
-type isAuthenticateUserRequest_Identifier interface {
-	isAuthenticateUserRequest_Identifier()
-}
-
-type AuthenticateUserRequest_Username struct {
-	Username string `protobuf:"bytes,1,opt,name=username,proto3,oneof"`
-}
-
-type AuthenticateUserRequest_Email struct {
-	Email string `protobuf:"bytes,2,opt,name=email,proto3,oneof"`
-}
-
-func (*AuthenticateUserRequest_Username) isAuthenticateUserRequest_Identifier() {}
-
-func (*AuthenticateUserRequest_Email) isAuthenticateUserRequest_Identifier() {}
-
-type AuthenticateUserResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The access token for subsequent authenticated requests.
-	AccessToken string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	// The refresh token to obtain a new access token when it expires.
-	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	// The ID of the authenticated user (if successful).
-	UserId        int32 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *AuthenticateUserResponse) Reset() {
-	*x = AuthenticateUserResponse{}
-	mi := &file_user_service_proto_msgTypes[10]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *AuthenticateUserResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*AuthenticateUserResponse) ProtoMessage() {}
-
-func (x *AuthenticateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_user_service_proto_msgTypes[10]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use AuthenticateUserResponse.ProtoReflect.Descriptor instead.
-func (*AuthenticateUserResponse) Descriptor() ([]byte, []int) {
-	return file_user_service_proto_rawDescGZIP(), []int{10}
-}
-
-func (x *AuthenticateUserResponse) GetAccessToken() string {
-	if x != nil {
-		return x.AccessToken
-	}
-	return ""
-}
-
-func (x *AuthenticateUserResponse) GetRefreshToken() string {
-	if x != nil {
-		return x.RefreshToken
-	}
-	return ""
-}
-
-func (x *AuthenticateUserResponse) GetUserId() int32 {
-	if x != nil {
-		return x.UserId
-	}
-	return 0
-}
-
-type RefreshTokenRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The refresh JWT for the user.
-	RefreshToken  string `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *RefreshTokenRequest) Reset() {
-	*x = RefreshTokenRequest{}
-	mi := &file_user_service_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RefreshTokenRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RefreshTokenRequest) ProtoMessage() {}
-
-func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_service_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RefreshTokenRequest.ProtoReflect.Descriptor instead.
-func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
-	return file_user_service_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *RefreshTokenRequest) GetRefreshToken() string {
-	if x != nil {
-		return x.RefreshToken
-	}
-	return ""
-}
-
-type RefreshTokenResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The access token for subsequent authenticated requests.
-	AccessToken   string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	RefreshToken  string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *RefreshTokenResponse) Reset() {
-	*x = RefreshTokenResponse{}
-	mi := &file_user_service_proto_msgTypes[12]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *RefreshTokenResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RefreshTokenResponse) ProtoMessage() {}
-
-func (x *RefreshTokenResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_user_service_proto_msgTypes[12]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RefreshTokenResponse.ProtoReflect.Descriptor instead.
-func (*RefreshTokenResponse) Descriptor() ([]byte, []int) {
-	return file_user_service_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *RefreshTokenResponse) GetAccessToken() string {
-	if x != nil {
-		return x.AccessToken
-	}
-	return ""
-}
-
-func (x *RefreshTokenResponse) GetRefreshToken() string {
-	if x != nil {
-		return x.RefreshToken
-	}
-	return ""
-}
-
 var File_user_service_proto protoreflect.FileDescriptor
 
 const file_user_service_proto_rawDesc = "" +
@@ -1074,8 +820,8 @@ const file_user_service_proto_rawDesc = "" +
 	"\x12GENDER_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04MALE\x10\x01\x12\n" +
 	"\n" +
-	"\x06FEMALE\x10\x02\"\x87\x01\n" +
-	"\x10StandardResponse\x12\x12\n" +
+	"\x06FEMALE\x10\x02\"\x8b\x01\n" +
+	"\x14StandardUserResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
 	"\amessage\x18\x03 \x01(\tR\amessage\x12%\n" +
@@ -1104,32 +850,15 @@ const file_user_service_proto_rawDesc = "" +
 	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserR\x04user\"(\n" +
 	"\x11DeleteUserRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x14\n" +
-	"\x12DeleteUserResponse\"y\n" +
-	"\x17AuthenticateUserRequest\x12\x1c\n" +
-	"\busername\x18\x01 \x01(\tH\x00R\busername\x12\x16\n" +
-	"\x05email\x18\x02 \x01(\tH\x00R\x05email\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpasswordB\f\n" +
+	"\x12DeleteUserResponse2\xf8\x03\n" +
+	"\vUserService\x12\xb6\x01\n" +
 	"\n" +
-	"identifier\"{\n" +
-	"\x18AuthenticateUserResponse\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\x05R\x06userId\":\n" +
-	"\x13RefreshTokenRequest\x12#\n" +
-	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"^\n" +
-	"\x14RefreshTokenResponse\x12!\n" +
-	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken2\xe3\x05\n" +
-	"\vUserService\x12\xb2\x01\n" +
-	"\n" +
-	"CreateUser\x12\x1c.limestone.CreateUserRequest\x1a\x1b.limestone.StandardResponse\"i\xdaARemail,username,password,is_email_verified,first_name,last_name,phone_number,gender\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/v1/users\x12]\n" +
+	"CreateUser\x12\x1c.limestone.CreateUserRequest\x1a\x1f.limestone.StandardUserResponse\"i\xdaARemail,username,password,is_email_verified,first_name,last_name,phone_number,gender\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/v1/users\x12]\n" +
 	"\aGetUser\x12\x19.limestone.GetUserRequest\x1a\x1a.limestone.GetUserResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/users/{id}\x12g\n" +
 	"\n" +
 	"UpdateUser\x12\x1c.limestone.UpdateUserRequest\x1a\x0f.limestone.User\"*\xdaA\x04user\x82\xd3\xe4\x93\x02\x1d:\x04user2\x15/v1/{user.id=users/*}\x12h\n" +
 	"\n" +
-	"DeleteUser\x12\x1c.limestone.DeleteUserRequest\x1a\x1d.limestone.DeleteUserResponse\"\x1d\xdaA\x02id\x82\xd3\xe4\x93\x02\x12*\x10/v1/{id=users/*}\x12{\n" +
-	"\x10AuthenticateUser\x12\".limestone.AuthenticateUserRequest\x1a#.limestone.AuthenticateUserResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/users/authenticate\x12p\n" +
-	"\fRefreshToken\x12\x1e.limestone.RefreshTokenRequest\x1a\x1f.limestone.RefreshTokenResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/users/refresh_tokenBh\n" +
+	"DeleteUser\x12\x1c.limestone.DeleteUserRequest\x1a\x1d.limestone.DeleteUserResponse\"\x1d\xdaA\x02id\x82\xd3\xe4\x93\x02\x12*\x10/v1/{id=users/*}Bh\n" +
 	"\rcom.limestoneB\x10UserServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
 
 var (
@@ -1145,32 +874,28 @@ func file_user_service_proto_rawDescGZIP() []byte {
 }
 
 var file_user_service_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_user_service_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_user_service_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_user_service_proto_goTypes = []any{
-	(MasjidRole_Role)(0),             // 0: limestone.MasjidRole.Role
-	(User_Gender)(0),                 // 1: limestone.User.Gender
-	(CreateUserRequest_Gender)(0),    // 2: limestone.CreateUserRequest.Gender
-	(*MasjidRole)(nil),               // 3: limestone.MasjidRole
-	(*User)(nil),                     // 4: limestone.User
-	(*StandardResponse)(nil),         // 5: limestone.StandardResponse
-	(*CreateUserRequest)(nil),        // 6: limestone.CreateUserRequest
-	(*GetUserRequest)(nil),           // 7: limestone.GetUserRequest
-	(*GetUserResponse)(nil),          // 8: limestone.GetUserResponse
-	(*UpdateUserRequest)(nil),        // 9: limestone.UpdateUserRequest
-	(*DeleteUserRequest)(nil),        // 10: limestone.DeleteUserRequest
-	(*DeleteUserResponse)(nil),       // 11: limestone.DeleteUserResponse
-	(*AuthenticateUserRequest)(nil),  // 12: limestone.AuthenticateUserRequest
-	(*AuthenticateUserResponse)(nil), // 13: limestone.AuthenticateUserResponse
-	(*RefreshTokenRequest)(nil),      // 14: limestone.RefreshTokenRequest
-	(*RefreshTokenResponse)(nil),     // 15: limestone.RefreshTokenResponse
-	(*timestamppb.Timestamp)(nil),    // 16: google.protobuf.Timestamp
+	(MasjidRole_Role)(0),          // 0: limestone.MasjidRole.Role
+	(User_Gender)(0),              // 1: limestone.User.Gender
+	(CreateUserRequest_Gender)(0), // 2: limestone.CreateUserRequest.Gender
+	(*MasjidRole)(nil),            // 3: limestone.MasjidRole
+	(*User)(nil),                  // 4: limestone.User
+	(*StandardUserResponse)(nil),  // 5: limestone.StandardUserResponse
+	(*CreateUserRequest)(nil),     // 6: limestone.CreateUserRequest
+	(*GetUserRequest)(nil),        // 7: limestone.GetUserRequest
+	(*GetUserResponse)(nil),       // 8: limestone.GetUserResponse
+	(*UpdateUserRequest)(nil),     // 9: limestone.UpdateUserRequest
+	(*DeleteUserRequest)(nil),     // 10: limestone.DeleteUserRequest
+	(*DeleteUserResponse)(nil),    // 11: limestone.DeleteUserResponse
+	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
 }
 var file_user_service_proto_depIdxs = []int32{
 	0,  // 0: limestone.MasjidRole.role:type_name -> limestone.MasjidRole.Role
 	1,  // 1: limestone.User.gender:type_name -> limestone.User.Gender
-	16, // 2: limestone.User.create_time:type_name -> google.protobuf.Timestamp
-	16, // 3: limestone.User.update_time:type_name -> google.protobuf.Timestamp
-	4,  // 4: limestone.StandardResponse.user:type_name -> limestone.User
+	12, // 2: limestone.User.create_time:type_name -> google.protobuf.Timestamp
+	12, // 3: limestone.User.update_time:type_name -> google.protobuf.Timestamp
+	4,  // 4: limestone.StandardUserResponse.user:type_name -> limestone.User
 	2,  // 5: limestone.CreateUserRequest.gender:type_name -> limestone.CreateUserRequest.Gender
 	4,  // 6: limestone.GetUserResponse.user:type_name -> limestone.User
 	4,  // 7: limestone.UpdateUserRequest.user:type_name -> limestone.User
@@ -1178,16 +903,12 @@ var file_user_service_proto_depIdxs = []int32{
 	7,  // 9: limestone.UserService.GetUser:input_type -> limestone.GetUserRequest
 	9,  // 10: limestone.UserService.UpdateUser:input_type -> limestone.UpdateUserRequest
 	10, // 11: limestone.UserService.DeleteUser:input_type -> limestone.DeleteUserRequest
-	12, // 12: limestone.UserService.AuthenticateUser:input_type -> limestone.AuthenticateUserRequest
-	14, // 13: limestone.UserService.RefreshToken:input_type -> limestone.RefreshTokenRequest
-	5,  // 14: limestone.UserService.CreateUser:output_type -> limestone.StandardResponse
-	8,  // 15: limestone.UserService.GetUser:output_type -> limestone.GetUserResponse
-	4,  // 16: limestone.UserService.UpdateUser:output_type -> limestone.User
-	11, // 17: limestone.UserService.DeleteUser:output_type -> limestone.DeleteUserResponse
-	13, // 18: limestone.UserService.AuthenticateUser:output_type -> limestone.AuthenticateUserResponse
-	15, // 19: limestone.UserService.RefreshToken:output_type -> limestone.RefreshTokenResponse
-	14, // [14:20] is the sub-list for method output_type
-	8,  // [8:14] is the sub-list for method input_type
+	5,  // 12: limestone.UserService.CreateUser:output_type -> limestone.StandardUserResponse
+	8,  // 13: limestone.UserService.GetUser:output_type -> limestone.GetUserResponse
+	4,  // 14: limestone.UserService.UpdateUser:output_type -> limestone.User
+	11, // 15: limestone.UserService.DeleteUser:output_type -> limestone.DeleteUserResponse
+	12, // [12:16] is the sub-list for method output_type
+	8,  // [8:12] is the sub-list for method input_type
 	8,  // [8:8] is the sub-list for extension type_name
 	8,  // [8:8] is the sub-list for extension extendee
 	0,  // [0:8] is the sub-list for field type_name
@@ -1199,11 +920,7 @@ func file_user_service_proto_init() {
 		return
 	}
 	file_user_service_proto_msgTypes[2].OneofWrappers = []any{
-		(*StandardResponse_User)(nil),
-	}
-	file_user_service_proto_msgTypes[9].OneofWrappers = []any{
-		(*AuthenticateUserRequest_Username)(nil),
-		(*AuthenticateUserRequest_Email)(nil),
+		(*StandardUserResponse_User)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1211,7 +928,7 @@ func file_user_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_service_proto_rawDesc), len(file_user_service_proto_rawDesc)),
 			NumEnums:      3,
-			NumMessages:   13,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"github.com/mnadev/limestone/internal/infrastructure/server"
 	"log"
 
 	"github.com/lpernett/godotenv"
 	"github.com/mnadev/limestone/internal/infrastructure/database"
-	"github.com/mnadev/limestone/internal/infrastructure/grpc/auth"
 )
 
 var (

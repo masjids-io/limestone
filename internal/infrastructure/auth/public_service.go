@@ -12,5 +12,6 @@ var UnprotectedRoutes = map[string]bool{
 }
 
 var UnprotectedRoutesHTTP = map[UnprotectedRoute]bool{
-	{Path: "/v1/users", Method: "POST"}: true,
+	{Path: "/v1/users", Method: "POST"}:      true,
+	{Path: "/v1/auth/login", Method: "POST"}: true,
 }

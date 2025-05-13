@@ -16,72 +16,6 @@
     "application/json"
   ],
   "paths": {
-    "/users/authenticate": {
-      "post": {
-        "summary": "Authenticates a user based on their username or email and password",
-        "operationId": "UserService_AuthenticateUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/limestoneAuthenticateUserResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/limestoneAuthenticateUserRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UserService"
-        ]
-      }
-    },
-    "/users/refresh_token": {
-      "post": {
-        "summary": "Refreshes an existing authentication token",
-        "operationId": "UserService_RefreshToken",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/limestoneRefreshTokenResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/limestoneRefreshTokenRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UserService"
-        ]
-      }
-    },
     "/v1/users": {
       "post": {
         "summary": "Creates the given User with the given password.",
@@ -90,7 +24,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneStandardResponse"
+              "$ref": "#/definitions/limestoneStandardUserResponse"
             }
           },
           "default": {
@@ -264,39 +198,6 @@
     }
   },
   "definitions": {
-    "limestoneAuthenticateUserRequest": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string",
-          "title": "The password for authentication"
-        }
-      }
-    },
-    "limestoneAuthenticateUserResponse": {
-      "type": "object",
-      "properties": {
-        "accessToken": {
-          "type": "string",
-          "description": "The access token for subsequent authenticated requests."
-        },
-        "refreshToken": {
-          "type": "string",
-          "description": "The refresh token to obtain a new access token when it expires."
-        },
-        "userId": {
-          "type": "integer",
-          "format": "int32",
-          "description": "The ID of the authenticated user (if successful)."
-        }
-      }
-    },
     "limestoneCreateUserRequest": {
       "type": "object",
       "properties": {
@@ -349,28 +250,7 @@
         }
       }
     },
-    "limestoneRefreshTokenRequest": {
-      "type": "object",
-      "properties": {
-        "refreshToken": {
-          "type": "string",
-          "description": "The refresh JWT for the user."
-        }
-      }
-    },
-    "limestoneRefreshTokenResponse": {
-      "type": "object",
-      "properties": {
-        "accessToken": {
-          "type": "string",
-          "description": "The access token for subsequent authenticated requests."
-        },
-        "refreshToken": {
-          "type": "string"
-        }
-      }
-    },
-    "limestoneStandardResponse": {
+    "limestoneStandardUserResponse": {
       "type": "object",
       "properties": {
         "code": {
