@@ -7,16 +7,16 @@ import "google/protobuf/timestamp.proto";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone/gen/go/internal/transport/grpc";
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service UserService {
   // Creates the given User with the given password.
-  rpc CreateUser(CreateUserRequest) returns (User) {
+  rpc CreateUser(CreateUserRequest) returns (StandardResponse) {
     option (google.api.http) = {
       post: "/v1/users"
-      body: "user"
+      body: "*"
     };
-    option (google.api.method_signature) = "user,password";
+    option (google.api.method_signature) = "email,username,password,is_email_verified,first_name,last_name,phone_number,gender";
   }
   // Gets a User from the database and tokens provided the auth token is valid.
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {
@@ -116,14 +116,30 @@ message User {
   google.protobuf.Timestamp update_time = 10;
 }
 
-message CreateUserRequest {
-  // The user to create.
-  User user = 1 [(google.api.field_behavior) = REQUIRED];
+message StandardResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    User user = 4;
+  }
+}
 
-  // The password for the user. This password is hashed before being
-  // stored in the database.
-  // The password must be at least 8 characters.
-  string password = 2 [(google.api.field_behavior) = REQUIRED];
+message CreateUserRequest {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+  bool is_email_verified = 4;
+  string first_name = 5;
+  string last_name = 6;
+  string phone_number = 7;
+  enum Gender {
+    // Default value.
+    GENDER_UNSPECIFIED = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+  Gender gender = 8;
 }
 
 message GetUserRequest {

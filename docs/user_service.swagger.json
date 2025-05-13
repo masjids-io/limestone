@@ -90,7 +90,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneUser"
+              "$ref": "#/definitions/limestoneStandardResponse"
             }
           },
           "default": {
@@ -102,23 +102,12 @@
         },
         "parameters": [
           {
-            "name": "user",
-            "description": "The user to create.",
+            "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/limestoneUser",
-              "required": [
-                "user"
-              ]
+              "$ref": "#/definitions/limestoneCreateUserRequest"
             }
-          },
-          {
-            "name": "password",
-            "description": "The password for the user. This password is hashed before being\nstored in the database.\nThe password must be at least 8 characters.",
-            "in": "query",
-            "required": true,
-            "type": "string"
           }
         ],
         "tags": [
@@ -251,7 +240,7 @@
                   "description": "The phone number associated with the user."
                 },
                 "gender": {
-                  "$ref": "#/definitions/UserGender"
+                  "$ref": "#/definitions/limestoneUserGender"
                 },
                 "createTime": {
                   "type": "string",
@@ -275,16 +264,6 @@
     }
   },
   "definitions": {
-    "UserGender": {
-      "type": "string",
-      "enum": [
-        "GENDER_UNSPECIFIED",
-        "MALE",
-        "FEMALE"
-      ],
-      "default": "GENDER_UNSPECIFIED",
-      "description": "Defines an enum representing the gender of the user.\n\n - GENDER_UNSPECIFIED: Default value."
-    },
     "limestoneAuthenticateUserRequest": {
       "type": "object",
       "properties": {
@@ -317,6 +296,45 @@
           "description": "The ID of the authenticated user (if successful)."
         }
       }
+    },
+    "limestoneCreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "isEmailVerified": {
+          "type": "boolean"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "gender": {
+          "$ref": "#/definitions/limestoneCreateUserRequestGender"
+        }
+      }
+    },
+    "limestoneCreateUserRequestGender": {
+      "type": "string",
+      "enum": [
+        "GENDER_UNSPECIFIED",
+        "MALE",
+        "FEMALE"
+      ],
+      "default": "GENDER_UNSPECIFIED",
+      "description": " - GENDER_UNSPECIFIED: Default value."
     },
     "limestoneDeleteUserResponse": {
       "type": "object",
@@ -352,6 +370,23 @@
         }
       }
     },
+    "limestoneStandardResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/limestoneUser"
+        }
+      }
+    },
     "limestoneUser": {
       "type": "object",
       "properties": {
@@ -384,7 +419,7 @@
           "description": "The phone number associated with the user."
         },
         "gender": {
-          "$ref": "#/definitions/UserGender"
+          "$ref": "#/definitions/limestoneUserGender"
         },
         "createTime": {
           "type": "string",
@@ -398,6 +433,16 @@
         }
       },
       "description": "Defines a User."
+    },
+    "limestoneUserGender": {
+      "type": "string",
+      "enum": [
+        "GENDER_UNSPECIFIED",
+        "MALE",
+        "FEMALE"
+      ],
+      "default": "GENDER_UNSPECIFIED",
+      "description": "Defines an enum representing the gender of the user.\n\n - GENDER_UNSPECIFIED: Default value."
     },
     "protobufAny": {
       "type": "object",

@@ -178,7 +178,8 @@ func RefreshToken(refreshTokenString string) (string, string, error) {
 
 func VerifyJWTInterceptorRest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if _, isUnprotected := UnprotectedRoutesHTTP[r.URL.Path]; isUnprotected {
+		route := UnprotectedRoute{Path: r.URL.Path, Method: r.Method}
+		if _, isUnprotected := UnprotectedRoutesHTTP[route]; isUnprotected {
 			next.ServeHTTP(w, r)
 			return
 		}

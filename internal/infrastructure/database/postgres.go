@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"github.com/mnadev/limestone/internal/infrastructure/storage"
+	"github.com/mnadev/limestone/internal/application/domain/entity"
 	"log"
 	"os"
 
@@ -31,6 +31,6 @@ func SetupDatabase() *gorm.DB {
 	//DB.AutoMigrate(storage.AdhanFile{})
 	//DB.AutoMigrate(storage.Event{})
 	//DB.AutoMigrate(storage.Masjid{})
-	DB.AutoMigrate(storage.User{})
+	DB.AutoMigrate(entity.User{})
 	return DB
 }

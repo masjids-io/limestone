@@ -3,15 +3,17 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/mnadev/limestone/internal/infrastructure/server"
+	"log"
+
 	"github.com/lpernett/godotenv"
 	"github.com/mnadev/limestone/internal/infrastructure/database"
 	"github.com/mnadev/limestone/internal/infrastructure/grpc/auth"
-	"log"
 )
 
 var (
-	grpcEndpoint = flag.String("grpc_endpoint", "localhost:8081", "gRPC server endpoint")
-	httpEndpoint = flag.String("http_endpoint", "localhost:8080", "HTTP server endpoint")
+	grpcEndpoint = flag.String("grpc_endpoint", ":8081", "gRPC server endpoint")
+	httpEndpoint = flag.String("http_endpoint", ":8080", "HTTP server endpoint")
 )
 
 func loadEnv() {
@@ -22,16 +24,17 @@ func loadEnv() {
 }
 
 func main() {
+	flag.Parse()
 	loadEnv()
 	db := database.SetupDatabase()
-	grpcServer, grpcListener := setupGRPCServer(db)
-	startGRPCServer(grpcServer, grpcListener)
 
+	// Start gRPC
+	grpcServer, grpcListener := server.SetupGRPCServer(db, *grpcEndpoint)
+	server.StartGRPCServer(grpcServer, grpcListener)
+
+	// Start REST Gateway
 	ctx := context.Background()
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	restMux := setupRESTGateway(ctx, db)
+	restMux := server.SetupRESTGateway(ctx, db, *grpcEndpoint)
 	restHandler := auth.VerifyJWTInterceptorRest(restMux)
-	startRESTGateway(ctx, restHandler)
+	server.StartRESTGateway(ctx, restHandler, *httpEndpoint)
 }
