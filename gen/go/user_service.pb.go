@@ -23,23 +23,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Defines the different possible roles a user might have in a masjid.
 type MasjidRole_Role int32
 
 const (
-	// Default value.
 	MasjidRole_ROLE_UNSPECIFIED MasjidRole_Role = 0
-	// This role specifies someone who is just a member of the masjid.
-	MasjidRole_MASJID_MEMBER MasjidRole_Role = 1
-	// This role specifies someone who has some responsibility at the masjid
-	// but is not an administrator.
+	MasjidRole_MASJID_MEMBER    MasjidRole_Role = 1
 	MasjidRole_MASJID_VOLUNTEER MasjidRole_Role = 2
-	// This role specifies someone at the masjid who is involved in a
-	// high-level administrative capacity.
-	MasjidRole_MASJID_ADMIN MasjidRole_Role = 3
-	// This role specifies someone at the masjid who is involved in a
-	// religious capacity.
-	MasjidRole_MASJID_IMAM MasjidRole_Role = 4
+	MasjidRole_MASJID_ADMIN     MasjidRole_Role = 3
+	MasjidRole_MASJID_IMAM      MasjidRole_Role = 4
 )
 
 // Enum value maps for MasjidRole_Role.
@@ -87,11 +78,9 @@ func (MasjidRole_Role) EnumDescriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{0, 0}
 }
 
-// Defines an enum representing the gender of the user.
 type User_Gender int32
 
 const (
-	// Default value.
 	User_GENDER_UNSPECIFIED User_Gender = 0
 	User_MALE               User_Gender = 1
 	User_FEMALE             User_Gender = 2
@@ -141,7 +130,6 @@ func (User_Gender) EnumDescriptor() ([]byte, []int) {
 type CreateUserRequest_Gender int32
 
 const (
-	// Default value.
 	CreateUserRequest_GENDER_UNSPECIFIED CreateUserRequest_Gender = 0
 	CreateUserRequest_MALE               CreateUserRequest_Gender = 1
 	CreateUserRequest_FEMALE             CreateUserRequest_Gender = 2
@@ -188,15 +176,11 @@ func (CreateUserRequest_Gender) EnumDescriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{3, 0}
 }
 
-// Defines a specific role a user might have for a specific masjid.
 type MasjidRole struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The associated role.
-	Role MasjidRole_Role `protobuf:"varint,1,opt,name=role,proto3,enum=limestone.MasjidRole_Role" json:"role,omitempty"`
-	// The ID of the masjid associated with this role.
-	MasjidId string `protobuf:"bytes,2,opt,name=masjid_id,json=masjidId,proto3" json:"masjid_id,omitempty"`
-	// The ID of the associated user.
-	UserId        string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Role          MasjidRole_Role        `protobuf:"varint,1,opt,name=role,proto3,enum=limestone.MasjidRole_Role" json:"role,omitempty"`
+	MasjidId      string                 `protobuf:"bytes,2,opt,name=masjid_id,json=masjidId,proto3" json:"masjid_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -252,30 +236,20 @@ func (x *MasjidRole) GetUserId() string {
 	return ""
 }
 
-// Defines a User.
 type User struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The ID of the user. This field is output only.
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The email of the user. This field is required and must be unique.
-	Email string `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
-	// The username of the user. This field is required and must be unique.
-	Username string `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
-	// Whether or not the email of the user was verified.
-	IsEmailVerified bool `protobuf:"varint,4,opt,name=is_email_verified,json=isEmailVerified,proto3" json:"is_email_verified,omitempty"`
-	// The first name of the user.
-	FirstName string `protobuf:"bytes,5,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
-	// The last name of the user.
-	LastName string `protobuf:"bytes,6,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
-	// The phone number associated with the user.
-	PhoneNumber string      `protobuf:"bytes,7,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
-	Gender      User_Gender `protobuf:"varint,8,opt,name=gender,proto3,enum=limestone.User_Gender" json:"gender,omitempty"`
-	// The create time of the user. This field is output only.
-	CreateTime *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	// The update time of the user. This field is output only.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email           string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Username        string                 `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	IsEmailVerified bool                   `protobuf:"varint,4,opt,name=is_email_verified,json=isEmailVerified,proto3" json:"is_email_verified,omitempty"`
+	FirstName       string                 `protobuf:"bytes,5,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName        string                 `protobuf:"bytes,6,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	PhoneNumber     string                 `protobuf:"bytes,7,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	Gender          User_Gender            `protobuf:"varint,8,opt,name=gender,proto3,enum=limestone.User_Gender" json:"gender,omitempty"`
+	CreateTime      *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime      *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *User) Reset() {
@@ -385,7 +359,9 @@ type StandardUserResponse struct {
 	Message string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 	// Types that are valid to be assigned to Data:
 	//
-	//	*StandardUserResponse_User
+	//	*StandardUserResponse_AddUserResponse
+	//	*StandardUserResponse_GetUserResponse
+	//	*StandardUserResponse_UpdateUserResponse
 	Data          isStandardUserResponse_Data `protobuf_oneof:"data"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -449,10 +425,28 @@ func (x *StandardUserResponse) GetData() isStandardUserResponse_Data {
 	return nil
 }
 
-func (x *StandardUserResponse) GetUser() *User {
+func (x *StandardUserResponse) GetAddUserResponse() *User {
 	if x != nil {
-		if x, ok := x.Data.(*StandardUserResponse_User); ok {
-			return x.User
+		if x, ok := x.Data.(*StandardUserResponse_AddUserResponse); ok {
+			return x.AddUserResponse
+		}
+	}
+	return nil
+}
+
+func (x *StandardUserResponse) GetGetUserResponse() *User {
+	if x != nil {
+		if x, ok := x.Data.(*StandardUserResponse_GetUserResponse); ok {
+			return x.GetUserResponse
+		}
+	}
+	return nil
+}
+
+func (x *StandardUserResponse) GetUpdateUserResponse() *User {
+	if x != nil {
+		if x, ok := x.Data.(*StandardUserResponse_UpdateUserResponse); ok {
+			return x.UpdateUserResponse
 		}
 	}
 	return nil
@@ -462,11 +456,23 @@ type isStandardUserResponse_Data interface {
 	isStandardUserResponse_Data()
 }
 
-type StandardUserResponse_User struct {
-	User *User `protobuf:"bytes,4,opt,name=user,proto3,oneof"`
+type StandardUserResponse_AddUserResponse struct {
+	AddUserResponse *User `protobuf:"bytes,4,opt,name=add_user_response,json=addUserResponse,proto3,oneof"`
 }
 
-func (*StandardUserResponse_User) isStandardUserResponse_Data() {}
+type StandardUserResponse_GetUserResponse struct {
+	GetUserResponse *User `protobuf:"bytes,5,opt,name=get_user_response,json=getUserResponse,proto3,oneof"`
+}
+
+type StandardUserResponse_UpdateUserResponse struct {
+	UpdateUserResponse *User `protobuf:"bytes,6,opt,name=update_user_response,json=updateUserResponse,proto3,oneof"`
+}
+
+func (*StandardUserResponse_AddUserResponse) isStandardUserResponse_Data() {}
+
+func (*StandardUserResponse_GetUserResponse) isStandardUserResponse_Data() {}
+
+func (*StandardUserResponse_UpdateUserResponse) isStandardUserResponse_Data() {}
 
 type CreateUserRequest struct {
 	state           protoimpl.MessageState   `protogen:"open.v1"`
@@ -569,9 +575,8 @@ func (x *CreateUserRequest) GetGender() CreateUserRequest_Gender {
 }
 
 type GetUserRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The id of the user to get.
-	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -614,9 +619,8 @@ func (x *GetUserRequest) GetId() string {
 }
 
 type GetUserResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The authenticated user.
-	User          *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -659,9 +663,9 @@ func (x *GetUserResponse) GetUser() *User {
 }
 
 type UpdateUserRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The updated user proto.
-	User          *User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	User          *User                  `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -696,6 +700,13 @@ func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{6}
 }
 
+func (x *UpdateUserRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 func (x *UpdateUserRequest) GetUser() *User {
 	if x != nil {
 		return x.User
@@ -704,9 +715,8 @@ func (x *UpdateUserRequest) GetUser() *User {
 }
 
 type DeleteUserRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The id of the user to delete.
-	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -748,7 +758,6 @@ func (x *DeleteUserRequest) GetId() string {
 	return ""
 }
 
-// Empty response returned for DeleteUser RPC.
 type DeleteUserResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -820,12 +829,14 @@ const file_user_service_proto_rawDesc = "" +
 	"\x12GENDER_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04MALE\x10\x01\x12\n" +
 	"\n" +
-	"\x06FEMALE\x10\x02\"\x8b\x01\n" +
+	"\x06FEMALE\x10\x02\"\xa7\x02\n" +
 	"\x14StandardUserResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\x12%\n" +
-	"\x04user\x18\x04 \x01(\v2\x0f.limestone.UserH\x00R\x04userB\x06\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\x12=\n" +
+	"\x11add_user_response\x18\x04 \x01(\v2\x0f.limestone.UserH\x00R\x0faddUserResponse\x12=\n" +
+	"\x11get_user_response\x18\x05 \x01(\v2\x0f.limestone.UserH\x00R\x0fgetUserResponse\x12C\n" +
+	"\x14update_user_response\x18\x06 \x01(\v2\x0f.limestone.UserH\x00R\x12updateUserResponseB\x06\n" +
 	"\x04data\"\xe1\x02\n" +
 	"\x11CreateUserRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
@@ -845,20 +856,21 @@ const file_user_service_proto_rawDesc = "" +
 	"\x0eGetUserRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"6\n" +
 	"\x0fGetUserResponse\x12#\n" +
-	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserR\x04user\"8\n" +
-	"\x11UpdateUserRequest\x12#\n" +
-	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserR\x04user\"(\n" +
+	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserR\x04user\"M\n" +
+	"\x11UpdateUserRequest\x12\x13\n" +
+	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\x12#\n" +
+	"\x04user\x18\x02 \x01(\v2\x0f.limestone.UserR\x04user\"(\n" +
 	"\x11DeleteUserRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x14\n" +
-	"\x12DeleteUserResponse2\xf8\x03\n" +
+	"\x12DeleteUserResponse2\x81\x04\n" +
 	"\vUserService\x12\xb6\x01\n" +
 	"\n" +
-	"CreateUser\x12\x1c.limestone.CreateUserRequest\x1a\x1f.limestone.StandardUserResponse\"i\xdaARemail,username,password,is_email_verified,first_name,last_name,phone_number,gender\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/v1/users\x12]\n" +
-	"\aGetUser\x12\x19.limestone.GetUserRequest\x1a\x1a.limestone.GetUserResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/users/{id}\x12g\n" +
+	"CreateUser\x12\x1c.limestone.CreateUserRequest\x1a\x1f.limestone.StandardUserResponse\"i\xdaARemail,username,password,is_email_verified,first_name,last_name,phone_number,gender\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/v1/users\x12b\n" +
+	"\aGetUser\x12\x19.limestone.GetUserRequest\x1a\x1f.limestone.StandardUserResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/users/{id}\x12k\n" +
 	"\n" +
-	"UpdateUser\x12\x1c.limestone.UpdateUserRequest\x1a\x0f.limestone.User\"*\xdaA\x04user\x82\xd3\xe4\x93\x02\x1d:\x04user2\x15/v1/{user.id=users/*}\x12h\n" +
+	"UpdateUser\x12\x1c.limestone.UpdateUserRequest\x1a\x1f.limestone.StandardUserResponse\"\x1e\xdaA\x04user\x82\xd3\xe4\x93\x02\x11:\x04user2\t/v1/users\x12h\n" +
 	"\n" +
-	"DeleteUser\x12\x1c.limestone.DeleteUserRequest\x1a\x1d.limestone.DeleteUserResponse\"\x1d\xdaA\x02id\x82\xd3\xe4\x93\x02\x12*\x10/v1/{id=users/*}Bh\n" +
+	"DeleteUser\x12\x1c.limestone.DeleteUserRequest\x1a\x1f.limestone.StandardUserResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10*\x0e/v1/users/{id}Bh\n" +
 	"\rcom.limestoneB\x10UserServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
 
 var (
@@ -895,23 +907,25 @@ var file_user_service_proto_depIdxs = []int32{
 	1,  // 1: limestone.User.gender:type_name -> limestone.User.Gender
 	12, // 2: limestone.User.create_time:type_name -> google.protobuf.Timestamp
 	12, // 3: limestone.User.update_time:type_name -> google.protobuf.Timestamp
-	4,  // 4: limestone.StandardUserResponse.user:type_name -> limestone.User
-	2,  // 5: limestone.CreateUserRequest.gender:type_name -> limestone.CreateUserRequest.Gender
-	4,  // 6: limestone.GetUserResponse.user:type_name -> limestone.User
-	4,  // 7: limestone.UpdateUserRequest.user:type_name -> limestone.User
-	6,  // 8: limestone.UserService.CreateUser:input_type -> limestone.CreateUserRequest
-	7,  // 9: limestone.UserService.GetUser:input_type -> limestone.GetUserRequest
-	9,  // 10: limestone.UserService.UpdateUser:input_type -> limestone.UpdateUserRequest
-	10, // 11: limestone.UserService.DeleteUser:input_type -> limestone.DeleteUserRequest
-	5,  // 12: limestone.UserService.CreateUser:output_type -> limestone.StandardUserResponse
-	8,  // 13: limestone.UserService.GetUser:output_type -> limestone.GetUserResponse
-	4,  // 14: limestone.UserService.UpdateUser:output_type -> limestone.User
-	11, // 15: limestone.UserService.DeleteUser:output_type -> limestone.DeleteUserResponse
-	12, // [12:16] is the sub-list for method output_type
-	8,  // [8:12] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	4,  // 4: limestone.StandardUserResponse.add_user_response:type_name -> limestone.User
+	4,  // 5: limestone.StandardUserResponse.get_user_response:type_name -> limestone.User
+	4,  // 6: limestone.StandardUserResponse.update_user_response:type_name -> limestone.User
+	2,  // 7: limestone.CreateUserRequest.gender:type_name -> limestone.CreateUserRequest.Gender
+	4,  // 8: limestone.GetUserResponse.user:type_name -> limestone.User
+	4,  // 9: limestone.UpdateUserRequest.user:type_name -> limestone.User
+	6,  // 10: limestone.UserService.CreateUser:input_type -> limestone.CreateUserRequest
+	7,  // 11: limestone.UserService.GetUser:input_type -> limestone.GetUserRequest
+	9,  // 12: limestone.UserService.UpdateUser:input_type -> limestone.UpdateUserRequest
+	10, // 13: limestone.UserService.DeleteUser:input_type -> limestone.DeleteUserRequest
+	5,  // 14: limestone.UserService.CreateUser:output_type -> limestone.StandardUserResponse
+	5,  // 15: limestone.UserService.GetUser:output_type -> limestone.StandardUserResponse
+	5,  // 16: limestone.UserService.UpdateUser:output_type -> limestone.StandardUserResponse
+	5,  // 17: limestone.UserService.DeleteUser:output_type -> limestone.StandardUserResponse
+	14, // [14:18] is the sub-list for method output_type
+	10, // [10:14] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_user_service_proto_init() }
@@ -920,7 +934,9 @@ func file_user_service_proto_init() {
 		return
 	}
 	file_user_service_proto_msgTypes[2].OneofWrappers = []any{
-		(*StandardUserResponse_User)(nil),
+		(*StandardUserResponse_AddUserResponse)(nil),
+		(*StandardUserResponse_GetUserResponse)(nil),
+		(*StandardUserResponse_UpdateUserResponse)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

@@ -10,7 +10,6 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service UserService {
-  // Creates the given User with the given password.
   rpc CreateUser(CreateUserRequest) returns (StandardUserResponse) {
     option (google.api.http) = {
       post: "/v1/users"
@@ -18,87 +17,59 @@ service UserService {
     };
     option (google.api.method_signature) = "email,username,password,is_email_verified,first_name,last_name,phone_number,gender";
   }
-  // Gets a User from the database and tokens provided the auth token is valid.
-  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+
+  rpc GetUser(GetUserRequest) returns (StandardUserResponse) {
     option (google.api.http) = {
       get: "/v1/users/{id}"
     };
     option (google.api.method_signature) = "id";
   }
-  // Updates a User to the given User in the request provided the auth token is valid.
-  rpc UpdateUser(UpdateUserRequest) returns (User) {
+
+  rpc UpdateUser(UpdateUserRequest) returns (StandardUserResponse) {
     option (google.api.http) = {
-      patch: "/v1/{user.id=users/*}"
+      patch: "/v1/users"
       body: "user"
     };
     option (google.api.method_signature) = "user";
   }
-  // Deletes a User from the database provided the auth token is valid.
-  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+
+  rpc DeleteUser(DeleteUserRequest) returns (StandardUserResponse) {
     option (google.api.http) = {
-      delete: "/v1/{id=users/*}"
+      delete: "/v1/users/{id}"
     };
     option (google.api.method_signature) = "id";
   }
 }
 
-// Defines a specific role a user might have for a specific masjid.
+
 message MasjidRole {
-  // Defines the different possible roles a user might have in a masjid.
   enum Role {
-    // Default value.
     ROLE_UNSPECIFIED = 0;
-    // This role specifies someone who is just a member of the masjid.
     MASJID_MEMBER = 1;
-    // This role specifies someone who has some responsibility at the masjid
-    // but is not an administrator.
     MASJID_VOLUNTEER = 2;
-    // This role specifies someone at the masjid who is involved in a
-    // high-level administrative capacity.
     MASJID_ADMIN = 3;
-    // This role specifies someone at the masjid who is involved in a
-    // religious capacity.
     MASJID_IMAM = 4;
   }
-
-  // The associated role.
   Role role = 1;
-  // The ID of the masjid associated with this role.
   string masjid_id = 2;
-  // The ID of the associated user.
   string user_id = 3;
 }
 
-// Defines a User.
 message User {
-  // The ID of the user. This field is output only.
   string id = 1;
-  // The email of the user. This field is required and must be unique.
   string email = 2;
-  // The username of the user. This field is required and must be unique.
   string username = 3;
-  // Whether or not the email of the user was verified.
   bool is_email_verified = 4;
-
-  // The first name of the user.
   string first_name = 5;
-  // The last name of the user.
   string last_name = 6;
-  // The phone number associated with the user.
   string phone_number = 7;
-
-  // Defines an enum representing the gender of the user.
   enum Gender {
-    // Default value.
     GENDER_UNSPECIFIED = 0;
     MALE = 1;
     FEMALE = 2;
   }
   Gender gender = 8;
-
-  // The create time of the user. This field is output only.
   google.protobuf.Timestamp create_time = 9;
-  // The update time of the user. This field is output only.
   google.protobuf.Timestamp update_time = 10;
 }
 
@@ -107,8 +78,9 @@ message StandardUserResponse {
   string status = 2;
   string message = 3;
   oneof data {
-    User user = 4;
-
+    User add_user_response  = 4;
+    User get_user_response = 5;
+    User update_user_response = 6;
   }
 }
 
@@ -121,7 +93,6 @@ message CreateUserRequest {
   string last_name = 6;
   string phone_number = 7;
   enum Gender {
-    // Default value.
     GENDER_UNSPECIFIED = 0;
     MALE = 1;
     FEMALE = 2;
@@ -130,24 +101,20 @@ message CreateUserRequest {
 }
 
 message GetUserRequest {
-  // The id of the user to get.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message GetUserResponse {
-  // The authenticated user.
   User user = 1;
 }
 
 message UpdateUserRequest {
-  // The updated user proto.
-  User user = 1;
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  User user = 2;
 }
 
 message DeleteUserRequest {
-  // The id of the user to delete.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-// Empty response returned for DeleteUser RPC.
 message DeleteUserResponse {}

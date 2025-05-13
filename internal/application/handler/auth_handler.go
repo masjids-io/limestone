@@ -2,11 +2,11 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	pb "github.com/mnadev/limestone/gen/go"
 	services "github.com/mnadev/limestone/internal/application/services"
-	auth2 "github.com/mnadev/limestone/internal/infrastructure/auth"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type AuthGrpcHandler struct {
@@ -25,29 +25,47 @@ func (h *AuthGrpcHandler) AuthenticateUser(ctx context.Context, req *pb.Authenti
 	} else if req.GetEmail() != "" {
 		identifier = req.GetEmail()
 	} else {
-		return &pb.StandardAuthResponse{Code: codes.Canceled.String(), Status: "error", Message: "username or email must be provided"}, nil
+		return nil, status.Errorf(codes.Canceled, "username or email must be provided")
 	}
 
 	user, err := h.Svc.AuthenticateUser(ctx, identifier, req.GetPassword())
 	if err != nil {
-		return &pb.StandardAuthResponse{Code: codes.Canceled.String(), Status: "error", Message: "invalid username/email or password"}, nil
+		return nil, status.Errorf(codes.Canceled, "invalid username/email or password")
 	}
 
 	// Generate JWT tokens
-	accessToken, refreshToken, err := auth2.GenerateJWT(user.ID.String())
+	accessToken, refreshToken, err := auth.GenerateJWT(user.ID.String())
 	if err != nil {
-		return &pb.StandardAuthResponse{Code: codes.Internal.String(), Status: "error", Message: fmt.Sprintf("failed to generate JWT tokens: %v", err)}, nil
+		return nil, status.Errorf(codes.Internal, "failed to generate JWT tokens: %v", err)
 	}
 
 	return &pb.StandardAuthResponse{
 		Code:    codes.OK.String(),
 		Status:  "success",
-		Message: "authentication successful",
-		Datas: &pb.StandardAuthResponse_Data{
-			Data: &pb.DataAuthenticateUserResponse{
+		Message: "Authentication successful",
+		Datas: &pb.StandardAuthResponse_AuthenticateUserData{
+			AuthenticateUserData: &pb.DataAuthenticateUserResponse{
 				AccessToken:  accessToken,
 				RefreshToken: refreshToken,
 				UserId:       user.ID.String(),
+			},
+		},
+	}, nil
+}
+
+func (h *AuthGrpcHandler) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.StandardAuthResponse, error) {
+	newAccessToken, newRefreshToken, err := h.Svc.RefreshToken(ctx, req.GetRefreshToken())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to refresh access token: %v", err)
+	}
+	return &pb.StandardAuthResponse{
+		Code:    codes.OK.String(),
+		Status:  "success",
+		Message: "Token refreshed",
+		Datas: &pb.StandardAuthResponse_RefreshTokenData{
+			RefreshTokenData: &pb.DataRefreshTokenResponse{
+				AccessToken:  newAccessToken,
+				RefreshToken: newRefreshToken,
 			},
 		},
 	}, nil

@@ -10,20 +10,19 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service AuthService {
-  // Authenticates a user based on their username or email and password
   rpc AuthenticateUser (AuthenticateUserRequest) returns (StandardAuthResponse) {
     option (google.api.http) = {
       post: "/v1/auth/login"
       body: "*"
     };
   }
-  // Refreshes an existing authentication token
-//  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse) {
-//    option (google.api.http) = {
-//      post: "/v1/auth/refresh_token"
-//      body: "*"
-//    };
-//  }
+
+  rpc RefreshToken (RefreshTokenRequest) returns (StandardAuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/refresh_token"
+      body: "*"
+    };
+  }
 }
 
 
@@ -32,38 +31,32 @@ message StandardAuthResponse {
   string status = 2;
   string message = 3;
   oneof datas {
-    DataAuthenticateUserResponse data = 5;
-
+    DataAuthenticateUserResponse authenticate_user_data = 5; // Unique field name
+    DataRefreshTokenResponse refresh_token_data = 6;       // Unique field name
   }
 }
 
 message AuthenticateUserRequest {
-  // Use either username or email for authentication.
   oneof identifier {
     string username = 1;
     string email = 2;
   }
-  // The password for authentication
   string password = 3;
 }
 
 
 message DataAuthenticateUserResponse {
-  // The access token for subsequent authenticated requests.
   string access_token = 1;
-  // The refresh token to obtain a new access token when it expires.
   string refresh_token = 2;
-  // The ID of the authenticated user (if successful).
+
   string user_id = 3;
 }
 
-//message RefreshTokenRequest {
-//  // The refresh JWT for the user.
-//  string refresh_token = 1;
-//}
-//
-//message RefreshTokenResponse {
-//  // The access token for subsequent authenticated requests.
-//  string access_token = 1;
-//  string refresh_token = 2;
-//}
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message DataRefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}

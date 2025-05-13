@@ -30,7 +30,8 @@ type StandardAuthResponse struct {
 	Message string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 	// Types that are valid to be assigned to Datas:
 	//
-	//	*StandardAuthResponse_Data
+	//	*StandardAuthResponse_AuthenticateUserData
+	//	*StandardAuthResponse_RefreshTokenData
 	Datas         isStandardAuthResponse_Datas `protobuf_oneof:"datas"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -94,10 +95,19 @@ func (x *StandardAuthResponse) GetDatas() isStandardAuthResponse_Datas {
 	return nil
 }
 
-func (x *StandardAuthResponse) GetData() *DataAuthenticateUserResponse {
+func (x *StandardAuthResponse) GetAuthenticateUserData() *DataAuthenticateUserResponse {
 	if x != nil {
-		if x, ok := x.Datas.(*StandardAuthResponse_Data); ok {
-			return x.Data
+		if x, ok := x.Datas.(*StandardAuthResponse_AuthenticateUserData); ok {
+			return x.AuthenticateUserData
+		}
+	}
+	return nil
+}
+
+func (x *StandardAuthResponse) GetRefreshTokenData() *DataRefreshTokenResponse {
+	if x != nil {
+		if x, ok := x.Datas.(*StandardAuthResponse_RefreshTokenData); ok {
+			return x.RefreshTokenData
 		}
 	}
 	return nil
@@ -107,23 +117,26 @@ type isStandardAuthResponse_Datas interface {
 	isStandardAuthResponse_Datas()
 }
 
-type StandardAuthResponse_Data struct {
-	Data *DataAuthenticateUserResponse `protobuf:"bytes,5,opt,name=data,proto3,oneof"`
+type StandardAuthResponse_AuthenticateUserData struct {
+	AuthenticateUserData *DataAuthenticateUserResponse `protobuf:"bytes,5,opt,name=authenticate_user_data,json=authenticateUserData,proto3,oneof"` // Unique field name
 }
 
-func (*StandardAuthResponse_Data) isStandardAuthResponse_Datas() {}
+type StandardAuthResponse_RefreshTokenData struct {
+	RefreshTokenData *DataRefreshTokenResponse `protobuf:"bytes,6,opt,name=refresh_token_data,json=refreshTokenData,proto3,oneof"` // Unique field name
+}
+
+func (*StandardAuthResponse_AuthenticateUserData) isStandardAuthResponse_Datas() {}
+
+func (*StandardAuthResponse_RefreshTokenData) isStandardAuthResponse_Datas() {}
 
 type AuthenticateUserRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Use either username or email for authentication.
-	//
 	// Types that are valid to be assigned to Identifier:
 	//
 	//	*AuthenticateUserRequest_Username
 	//	*AuthenticateUserRequest_Email
-	Identifier isAuthenticateUserRequest_Identifier `protobuf_oneof:"identifier"`
-	// The password for authentication
-	Password      string `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
+	Identifier    isAuthenticateUserRequest_Identifier `protobuf_oneof:"identifier"`
+	Password      string                               `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -207,13 +220,10 @@ func (*AuthenticateUserRequest_Username) isAuthenticateUserRequest_Identifier() 
 func (*AuthenticateUserRequest_Email) isAuthenticateUserRequest_Identifier() {}
 
 type DataAuthenticateUserResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The access token for subsequent authenticated requests.
-	AccessToken string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	// The refresh token to obtain a new access token when it expires.
-	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	// The ID of the authenticated user (if successful).
-	UserId        string `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -269,16 +279,113 @@ func (x *DataAuthenticateUserResponse) GetUserId() string {
 	return ""
 }
 
+type RefreshTokenRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RefreshToken  string                 `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RefreshTokenRequest) Reset() {
+	*x = RefreshTokenRequest{}
+	mi := &file_auth_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RefreshTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefreshTokenRequest) ProtoMessage() {}
+
+func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefreshTokenRequest.ProtoReflect.Descriptor instead.
+func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RefreshTokenRequest) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
+type DataRefreshTokenResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AccessToken   string                 `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DataRefreshTokenResponse) Reset() {
+	*x = DataRefreshTokenResponse{}
+	mi := &file_auth_service_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DataRefreshTokenResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DataRefreshTokenResponse) ProtoMessage() {}
+
+func (x *DataRefreshTokenResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_service_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DataRefreshTokenResponse.ProtoReflect.Descriptor instead.
+func (*DataRefreshTokenResponse) Descriptor() ([]byte, []int) {
+	return file_auth_service_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DataRefreshTokenResponse) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
+	}
+	return ""
+}
+
+func (x *DataRefreshTokenResponse) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
 var File_auth_service_proto protoreflect.FileDescriptor
 
 const file_auth_service_proto_rawDesc = "" +
 	"\n" +
-	"\x12auth_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xa4\x01\n" +
+	"\x12auth_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9b\x02\n" +
 	"\x14StandardAuthResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\x12=\n" +
-	"\x04data\x18\x05 \x01(\v2'.limestone.DataAuthenticateUserResponseH\x00R\x04dataB\a\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\x12_\n" +
+	"\x16authenticate_user_data\x18\x05 \x01(\v2'.limestone.DataAuthenticateUserResponseH\x00R\x14authenticateUserData\x12S\n" +
+	"\x12refresh_token_data\x18\x06 \x01(\v2#.limestone.DataRefreshTokenResponseH\x00R\x10refreshTokenDataB\a\n" +
 	"\x05datas\"y\n" +
 	"\x17AuthenticateUserRequest\x12\x1c\n" +
 	"\busername\x18\x01 \x01(\tH\x00R\busername\x12\x16\n" +
@@ -289,9 +396,15 @@ const file_auth_service_proto_rawDesc = "" +
 	"\x1cDataAuthenticateUserResponse\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
 	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\tR\x06userId2\x81\x01\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\":\n" +
+	"\x13RefreshTokenRequest\x12#\n" +
+	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\"b\n" +
+	"\x18DataRefreshTokenResponse\x12!\n" +
+	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken2\xf5\x01\n" +
 	"\vAuthService\x12r\n" +
-	"\x10AuthenticateUser\x12\".limestone.AuthenticateUserRequest\x1a\x1f.limestone.StandardAuthResponse\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/v1/auth/loginBh\n" +
+	"\x10AuthenticateUser\x12\".limestone.AuthenticateUserRequest\x1a\x1f.limestone.StandardAuthResponse\"\x19\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/v1/auth/login\x12r\n" +
+	"\fRefreshToken\x12\x1e.limestone.RefreshTokenRequest\x1a\x1f.limestone.StandardAuthResponse\"!\x82\xd3\xe4\x93\x02\x1b:\x01*\"\x16/v1/auth/refresh_tokenBh\n" +
 	"\rcom.limestoneB\x10AuthServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
 
 var (
@@ -306,21 +419,26 @@ func file_auth_service_proto_rawDescGZIP() []byte {
 	return file_auth_service_proto_rawDescData
 }
 
-var file_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_auth_service_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_auth_service_proto_goTypes = []any{
 	(*StandardAuthResponse)(nil),         // 0: limestone.StandardAuthResponse
 	(*AuthenticateUserRequest)(nil),      // 1: limestone.AuthenticateUserRequest
 	(*DataAuthenticateUserResponse)(nil), // 2: limestone.DataAuthenticateUserResponse
+	(*RefreshTokenRequest)(nil),          // 3: limestone.RefreshTokenRequest
+	(*DataRefreshTokenResponse)(nil),     // 4: limestone.DataRefreshTokenResponse
 }
 var file_auth_service_proto_depIdxs = []int32{
-	2, // 0: limestone.StandardAuthResponse.data:type_name -> limestone.DataAuthenticateUserResponse
-	1, // 1: limestone.AuthService.AuthenticateUser:input_type -> limestone.AuthenticateUserRequest
-	0, // 2: limestone.AuthService.AuthenticateUser:output_type -> limestone.StandardAuthResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	2, // 0: limestone.StandardAuthResponse.authenticate_user_data:type_name -> limestone.DataAuthenticateUserResponse
+	4, // 1: limestone.StandardAuthResponse.refresh_token_data:type_name -> limestone.DataRefreshTokenResponse
+	1, // 2: limestone.AuthService.AuthenticateUser:input_type -> limestone.AuthenticateUserRequest
+	3, // 3: limestone.AuthService.RefreshToken:input_type -> limestone.RefreshTokenRequest
+	0, // 4: limestone.AuthService.AuthenticateUser:output_type -> limestone.StandardAuthResponse
+	0, // 5: limestone.AuthService.RefreshToken:output_type -> limestone.StandardAuthResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_auth_service_proto_init() }
@@ -329,7 +447,8 @@ func file_auth_service_proto_init() {
 		return
 	}
 	file_auth_service_proto_msgTypes[0].OneofWrappers = []any{
-		(*StandardAuthResponse_Data)(nil),
+		(*StandardAuthResponse_AuthenticateUserData)(nil),
+		(*StandardAuthResponse_RefreshTokenData)(nil),
 	}
 	file_auth_service_proto_msgTypes[1].OneofWrappers = []any{
 		(*AuthenticateUserRequest_Username)(nil),
@@ -341,7 +460,7 @@ func file_auth_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_service_proto_rawDesc), len(file_auth_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

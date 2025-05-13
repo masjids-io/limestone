@@ -18,7 +18,6 @@
   "paths": {
     "/v1/users": {
       "post": {
-        "summary": "Creates the given User with the given password.",
         "operationId": "UserService_CreateUser",
         "responses": {
           "200": {
@@ -47,17 +46,14 @@
         "tags": [
           "UserService"
         ]
-      }
-    },
-    "/v1/users/{id}": {
-      "get": {
-        "summary": "Gets a User from the database and tokens provided the auth token is valid.",
-        "operationId": "UserService_GetUser",
+      },
+      "patch": {
+        "operationId": "UserService_UpdateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneGetUserResponse"
+              "$ref": "#/definitions/limestoneStandardUserResponse"
             }
           },
           "default": {
@@ -69,9 +65,16 @@
         },
         "parameters": [
           {
+            "name": "user",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/limestoneUser"
+            }
+          },
+          {
             "name": "id",
-            "description": "The id of the user to get.",
-            "in": "path",
+            "in": "query",
             "required": true,
             "type": "string"
           }
@@ -81,15 +84,14 @@
         ]
       }
     },
-    "/v1/{id}": {
-      "delete": {
-        "summary": "Deletes a User from the database provided the auth token is valid.",
-        "operationId": "UserService_DeleteUser",
+    "/v1/users/{id}": {
+      "get": {
+        "operationId": "UserService_GetUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneDeleteUserResponse"
+              "$ref": "#/definitions/limestoneStandardUserResponse"
             }
           },
           "default": {
@@ -102,27 +104,22 @@
         "parameters": [
           {
             "name": "id",
-            "description": "The id of the user to delete.",
             "in": "path",
             "required": true,
-            "type": "string",
-            "pattern": "users/[^/]+"
+            "type": "string"
           }
         ],
         "tags": [
           "UserService"
         ]
-      }
-    },
-    "/v1/{user.id}": {
-      "patch": {
-        "summary": "Updates a User to the given User in the request provided the auth token is valid.",
-        "operationId": "UserService_UpdateUser",
+      },
+      "delete": {
+        "operationId": "UserService_DeleteUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneUser"
+              "$ref": "#/definitions/limestoneStandardUserResponse"
             }
           },
           "default": {
@@ -134,61 +131,10 @@
         },
         "parameters": [
           {
-            "name": "user.id",
-            "description": "The ID of the user. This field is output only.",
+            "name": "id",
             "in": "path",
             "required": true,
-            "type": "string",
-            "pattern": "users/[^/]+"
-          },
-          {
-            "name": "user",
-            "description": "The updated user proto.",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "description": "The email of the user. This field is required and must be unique."
-                },
-                "username": {
-                  "type": "string",
-                  "description": "The username of the user. This field is required and must be unique."
-                },
-                "isEmailVerified": {
-                  "type": "boolean",
-                  "description": "Whether or not the email of the user was verified."
-                },
-                "firstName": {
-                  "type": "string",
-                  "description": "The first name of the user."
-                },
-                "lastName": {
-                  "type": "string",
-                  "description": "The last name of the user."
-                },
-                "phoneNumber": {
-                  "type": "string",
-                  "description": "The phone number associated with the user."
-                },
-                "gender": {
-                  "$ref": "#/definitions/limestoneUserGender"
-                },
-                "createTime": {
-                  "type": "string",
-                  "format": "date-time",
-                  "description": "The create time of the user. This field is output only."
-                },
-                "updateTime": {
-                  "type": "string",
-                  "format": "date-time",
-                  "description": "The update time of the user. This field is output only."
-                }
-              },
-              "title": "The updated user proto."
-            }
+            "type": "string"
           }
         ],
         "tags": [
@@ -234,21 +180,7 @@
         "MALE",
         "FEMALE"
       ],
-      "default": "GENDER_UNSPECIFIED",
-      "description": " - GENDER_UNSPECIFIED: Default value."
-    },
-    "limestoneDeleteUserResponse": {
-      "type": "object",
-      "description": "Empty response returned for DeleteUser RPC."
-    },
-    "limestoneGetUserResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/limestoneUser",
-          "description": "The authenticated user."
-        }
-      }
+      "default": "GENDER_UNSPECIFIED"
     },
     "limestoneStandardUserResponse": {
       "type": "object",
@@ -262,7 +194,13 @@
         "message": {
           "type": "string"
         },
-        "user": {
+        "addUserResponse": {
+          "$ref": "#/definitions/limestoneUser"
+        },
+        "getUserResponse": {
+          "$ref": "#/definitions/limestoneUser"
+        },
+        "updateUserResponse": {
           "$ref": "#/definitions/limestoneUser"
         }
       }
@@ -271,48 +209,38 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "description": "The ID of the user. This field is output only."
+          "type": "string"
         },
         "email": {
-          "type": "string",
-          "description": "The email of the user. This field is required and must be unique."
+          "type": "string"
         },
         "username": {
-          "type": "string",
-          "description": "The username of the user. This field is required and must be unique."
+          "type": "string"
         },
         "isEmailVerified": {
-          "type": "boolean",
-          "description": "Whether or not the email of the user was verified."
+          "type": "boolean"
         },
         "firstName": {
-          "type": "string",
-          "description": "The first name of the user."
+          "type": "string"
         },
         "lastName": {
-          "type": "string",
-          "description": "The last name of the user."
+          "type": "string"
         },
         "phoneNumber": {
-          "type": "string",
-          "description": "The phone number associated with the user."
+          "type": "string"
         },
         "gender": {
           "$ref": "#/definitions/limestoneUserGender"
         },
         "createTime": {
           "type": "string",
-          "format": "date-time",
-          "description": "The create time of the user. This field is output only."
+          "format": "date-time"
         },
         "updateTime": {
           "type": "string",
-          "format": "date-time",
-          "description": "The update time of the user. This field is output only."
+          "format": "date-time"
         }
-      },
-      "description": "Defines a User."
+      }
     },
     "limestoneUserGender": {
       "type": "string",
@@ -321,8 +249,7 @@
         "MALE",
         "FEMALE"
       ],
-      "default": "GENDER_UNSPECIFIED",
-      "description": "Defines an enum representing the gender of the user.\n\n - GENDER_UNSPECIFIED: Default value."
+      "default": "GENDER_UNSPECIFIED"
     },
     "protobufAny": {
       "type": "object",
