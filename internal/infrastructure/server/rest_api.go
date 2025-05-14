@@ -37,6 +37,14 @@ func SetupRESTGateway(ctx context.Context, db *gorm.DB, grpcEndpoint string) *ru
 		log.Fatalf("failed to register AuthService handler: %s", err)
 	}
 
+	//Masjid Service
+	masjidRepo := storage.NewGormMasjidRepository(db)
+	masjidService := services.NewMasjidService(masjidRepo)
+	masjidHandler := handler.NewMasjidGrpcHandler(masjidService)
+	if err := pb.RegisterMasjidServiceHandlerServer(ctx, mux, masjidHandler); err != nil {
+		log.Fatalf("failed to register MasjidService handler: %s", err)
+	}
+
 	return mux
 }
 

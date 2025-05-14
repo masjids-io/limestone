@@ -28,9 +28,21 @@ func SetupDatabase() *gorm.DB {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 	log.Println("Database connected successfully.")
-	//DB.AutoMigrate(storage.AdhanFile{})
-	//DB.AutoMigrate(storage.Event{})
-	//DB.AutoMigrate(storage.Masjid{})
-	DB.AutoMigrate(entity.User{})
+	err = DB.AutoMigrate(entity.Adhan{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.Event{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.Masjid{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.User{})
+	if err != nil {
+		return nil
+	}
 	return DB
 }

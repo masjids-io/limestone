@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
+
+service MasjidService {
+  rpc CreateMasjid(CreateMasjidRequest) returns (Masjid) {
+    option (google.api.http) = {
+      post: "/v1/masjid"
+      body: "masjid"
+    };
+    option (google.api.method_signature) = "masjid";
+  }
+
+  rpc UpdateMasjid(UpdateMasjidRequest) returns (Masjid) {
+    option (google.api.http) = {
+      patch: "/v1/masjid"
+      body: "masjid"
+    };
+    option (google.api.method_signature) = "masjid";
+  }
+
+  rpc GetMasjid(GetMasjidRequest) returns (Masjid) {
+    option (google.api.http) = {
+      get: "/v1/masjid/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+
+  rpc DeleteMasjid(DeleteMasjidRequest) returns (DeleteMasjidResponse) {
+    option (google.api.http) = {
+      delete: "/v1/masjid/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+
+  rpc ListMasjids(ListMasjidsRequest) returns (ListMasjidsResponse) {
+    option (google.api.http) = {
+      get: "/v1/masjids"
+    };
+  }
+}
+
+message PrayerTimesConfiguration {
+  enum CalculationMethod {
+    OTHER = 0;
+    MUSLIM_WORLD_LEAGUE = 1;
+    EGYPTIAN = 2;
+    KARACHI = 3;
+    UMM_AL_QURA = 4;
+    DUBAI = 5;
+    MOON_SIGHTING_COMMITTEE = 6;
+    NORTH_AMERICA = 7;
+    KUWAIT = 8;
+    QATAR = 9;
+    SINGAPORE = 10;
+    UOIF  = 11;
+  }
+
+  enum AsrJuristicMethod {
+    SHAFI_HANBALI_MALIKI = 0;
+    HANAFI = 1;
+  }
+
+  enum HighLatitudeRule {
+    NO_HIGH_LATITUDE_RULE = 0;
+    MIDDLE_OF_THE_NIGHT = 1;
+    SEVENTH_OF_THE_NIGHT = 2;
+    TWILIGHT_ANGLE = 3;
+  }
+
+  message PrayerAdjustments {
+    int32 fajr_adjustment = 1;
+    int32 dhuhr_adjustment = 2;
+    int32 asr_adjustment = 3;
+    int32 maghrib_adjustment = 4;
+    int32 isha_adjustment = 5;
+  }
+
+  CalculationMethod method = 1;
+  double fajr_angle = 2;
+  double isha_angle = 3;
+  int32 isha_interval = 4;
+  AsrJuristicMethod asr_method = 5;
+  HighLatitudeRule high_latitude_rule = 6;
+  PrayerAdjustments adjustments = 7;
+}
+
+
+message Masjid {
+
+  message Address {
+    string address_line_1 = 1;
+    string address_line_2 = 2;
+    string zone_code = 3;
+    string postal_code = 4;
+    string city = 5;
+    string country_code = 6;
+  }
+
+  message PhoneNumber {
+    string country_code = 1;
+    string number = 2;
+    string extension = 3;
+  }
+
+  string id = 1;
+  string name = 2;
+  bool is_verified = 3;
+  Address address = 4;
+  PhoneNumber phone_number = 5;
+  PrayerTimesConfiguration prayer_config = 6;
+  google.protobuf.Timestamp create_time = 9;
+  google.protobuf.Timestamp update_time = 10;
+}
+
+message CreateMasjidRequest {
+  Masjid masjid = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateMasjidRequest {
+  Masjid masjid = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteMasjidRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteMasjidResponse {}
+
+message GetMasjidRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ListMasjidsRequest {
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListMasjidsResponse {
+  repeated Masjid masjids = 1;
+}

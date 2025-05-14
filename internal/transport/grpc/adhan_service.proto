@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/proto";
+
+service AdhanService {
+  rpc CreateAdhanFile(CreateAdhanFileRequest) returns (AdhanFile) {
+    option (google.api.http) = {
+      post: "/v1/adhan/files"
+      body: "adhan_file"
+    };
+    option (google.api.method_signature) = "adhan_file";
+  }
+  rpc UpdateAdhanFile(UpdateAdhanFileRequest) returns (AdhanFile) {
+    option (google.api.http) = {
+      patch: "/v1/adhan/{id}"
+      body: "adhan_file"
+    };
+    option (google.api.method_signature) = "adhan_file";
+  }
+  rpc GetAdhanFile(GetAdhanFileRequest) returns (AdhanFile) {
+    option (google.api.http) = {
+      get: "/v1/adhan/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+  rpc DeleteAdhanFile(DeleteAdhanFileRequest) returns (DeleteAdhanFileResponse) {
+    option (google.api.http) = {
+      delete: "/v1/adhan/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+}
+
+message AdhanFile {
+  string id = 1;
+  string masjid_id = 2;
+  bytes file = 3;
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp update_time = 5;
+}
+
+message CreateAdhanFileRequest {
+  AdhanFile adhan_file = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateAdhanFileRequest {
+  string id = 1;
+  AdhanFile adhan_file = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetAdhanFileRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteAdhanFileRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteAdhanFileResponse {}

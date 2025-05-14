@@ -15,28 +15,33 @@ import (
 )
 
 func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listener) {
-	listener, err := net.Listen("tcp", grpcEndpoint) // Use a constant or config
+	listener, err := net.Listen("tcp", grpcEndpoint)
 	if err != nil {
 		log.Printf("failed to listen for gRPC: %s", err)
 	}
 	log.Printf("gRPC server listening on %s", grpcEndpoint)
 
 	server := grpc.NewServer(
-		grpc.UnaryInterceptor(auth.VerifyJWTInterceptor), // Apply auth globally
+		grpc.UnaryInterceptor(auth.VerifyJWTInterceptor),
 	)
 
 	// Initialize repositories and services
 	userRepo := storage.NewGormUserRepository(db)
 	userService := services.NewUserService(userRepo)
-	authService := services.NewAuthService(userRepo) // Assuming AuthService
+	authService := services.NewAuthService(userRepo)
+	//masjid service
+	masjidRepo := storage.NewGormMasjidRepository(db)
+	masjidService := services.NewMasjidService(masjidRepo)
 
 	// Initialize handlers
 	userHandler := handler.NewUserGrpcHandler(userService)
 	authHandler := handler.NewAuthGrpcHandler(authService)
+	masjidHandler := handler.NewMasjidGrpcHandler(masjidService)
 
 	// Register services with their handlers
 	pb.RegisterUserServiceServer(server, userHandler)
-	pb.RegisterAuthServiceServer(server, authHandler) // Assuming AuthService
+	pb.RegisterAuthServiceServer(server, authHandler)
+	pb.RegisterMasjidServiceServer(server, masjidHandler)
 
 	reflection.Register(server)
 
