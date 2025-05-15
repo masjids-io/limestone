@@ -2,3 +2,10 @@ bazel-*
 .env
 .idea/*
 /googleapis
+
+bin/
+*.log
+*.exe
+*.out
+*.test
+vendor/
