@@ -23,16 +23,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Specifies the gender restriction associated with the event.
 type Event_GenderRestriction int32
 
 const (
-	// No restriction on gender for event, aka co-ed.
 	Event_NO_RESTRICTION Event_GenderRestriction = 0
-	// Male only event.
-	Event_MALE_ONLY Event_GenderRestriction = 1
-	// Female only event.
-	Event_FEMALE_ONLY Event_GenderRestriction = 2
+	Event_MALE_ONLY      Event_GenderRestriction = 1
+	Event_FEMALE_ONLY    Event_GenderRestriction = 2
 )
 
 // Enum value maps for Event_GenderRestriction.
@@ -76,28 +72,18 @@ func (Event_GenderRestriction) EnumDescriptor() ([]byte, []int) {
 	return file_event_service_proto_rawDescGZIP(), []int{0, 0}
 }
 
-// Specifies the different event types an event can be specified as.
 type Event_EventType int32
 
 const (
-	// The event is a worship event such as Eid salah.
-	Event_WORSHIP Event_EventType = 0
-	// The event is an educational event such as a class or lecture.
-	Event_EDUCATIONAL Event_EventType = 1
-	// The event is a social community event.
-	Event_COMMUNITY Event_EventType = 2
-	// The event is an athletic event such as fitness class or a sports game.
-	Event_ATHLETIC Event_EventType = 3
-	// The event is related to fundraising.
-	Event_FUNDRAISING Event_EventType = 4
-	// The event is relevant to the youth.
-	Event_YOUTH Event_EventType = 5
-	// The event is specific to children.
+	Event_WORSHIP           Event_EventType = 0
+	Event_EDUCATIONAL       Event_EventType = 1
+	Event_COMMUNITY         Event_EventType = 2
+	Event_ATHLETIC          Event_EventType = 3
+	Event_FUNDRAISING       Event_EventType = 4
+	Event_YOUTH             Event_EventType = 5
 	Event_CHILDREN_SPECIFIC Event_EventType = 6
-	// The event is related to marriage.
-	Event_MATRIMONIAL Event_EventType = 7
-	// The event is a funeral.
-	Event_FUNERAL Event_EventType = 8
+	Event_MATRIMONIAL       Event_EventType = 7
+	Event_FUNERAL           Event_EventType = 8
 )
 
 // Enum value maps for Event_EventType.
@@ -154,39 +140,23 @@ func (Event_EventType) EnumDescriptor() ([]byte, []int) {
 }
 
 type Event struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The unique id associated with the event.
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The id of the organization which owns the event.
-	OrganizationId string `protobuf:"bytes,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	// The name of the event.
-	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
-	// The description of the event.
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	// The start time of the event.
-	StartTime *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
-	// The end time of the event.
-	EndTime *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
-	// The gender restriction associated with the event.
+	state             protoimpl.MessageState  `protogen:"open.v1"`
+	Id                string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	MasjidId          string                  `protobuf:"bytes,3,opt,name=masjid_id,json=masjidId,proto3" json:"masjid_id,omitempty"`
+	Name              string                  `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Description       string                  `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	StartTime         *timestamppb.Timestamp  `protobuf:"bytes,6,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	EndTime           *timestamppb.Timestamp  `protobuf:"bytes,7,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
 	GenderRestriction Event_GenderRestriction `protobuf:"varint,8,opt,name=gender_restriction,json=genderRestriction,proto3,enum=limestone.Event_GenderRestriction" json:"gender_restriction,omitempty"`
-	// The different event types associated with this event.
-	Types []Event_EventType `protobuf:"varint,9,rep,packed,name=types,proto3,enum=limestone.Event_EventType" json:"types,omitempty"`
-	// Whether or not the event is a paid event.
-	IsPaid bool `protobuf:"varint,10,opt,name=is_paid,json=isPaid,proto3" json:"is_paid,omitempty"`
-	// Whether or not the event requires RSVP.
-	RequiresRsvp bool `protobuf:"varint,11,opt,name=requires_rsvp,json=requiresRsvp,proto3" json:"requires_rsvp,omitempty"`
-	// The maximum number of participants for this event. If set to -1, then there
-	// is no limit on the number of participants.
-	MaxParticipants int32 `protobuf:"varint,12,opt,name=max_participants,json=maxParticipants,proto3" json:"max_participants,omitempty"`
-	// The livestream link for this event. If empty, then there is no livestream
-	// associated with the event.
-	LivestreamLink string `protobuf:"bytes,13,opt,name=livestream_link,json=livestreamLink,proto3" json:"livestream_link,omitempty"`
-	// The create time of the event. This field is output only.
-	CreateTime *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	// The update time of the event. This field is output only.
-	UpdateTime    *timestamppb.Timestamp `protobuf:"bytes,15,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Types             []Event_EventType       `protobuf:"varint,9,rep,packed,name=types,proto3,enum=limestone.Event_EventType" json:"types,omitempty"`
+	IsPaid            bool                    `protobuf:"varint,10,opt,name=is_paid,json=isPaid,proto3" json:"is_paid,omitempty"`
+	RequiresRsvp      bool                    `protobuf:"varint,11,opt,name=requires_rsvp,json=requiresRsvp,proto3" json:"requires_rsvp,omitempty"`
+	MaxParticipants   int32                   `protobuf:"varint,12,opt,name=max_participants,json=maxParticipants,proto3" json:"max_participants,omitempty"`
+	LivestreamLink    string                  `protobuf:"bytes,13,opt,name=livestream_link,json=livestreamLink,proto3" json:"livestream_link,omitempty"`
+	CreateTime        *timestamppb.Timestamp  `protobuf:"bytes,14,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime        *timestamppb.Timestamp  `protobuf:"bytes,15,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Event) Reset() {
@@ -226,9 +196,9 @@ func (x *Event) GetId() string {
 	return ""
 }
 
-func (x *Event) GetOrganizationId() string {
+func (x *Event) GetMasjidId() string {
 	if x != nil {
-		return x.OrganizationId
+		return x.MasjidId
 	}
 	return ""
 }
@@ -318,9 +288,8 @@ func (x *Event) GetUpdateTime() *timestamppb.Timestamp {
 }
 
 type CreateEventRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The event to create in the database.
-	Event         *Event `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Event         *Event                 `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -363,12 +332,9 @@ func (x *CreateEventRequest) GetEvent() *Event {
 }
 
 type UpdateEventRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The event to update in the database.
-	//
-	// The event's `id` field is used to identify the book to update.
-	// Format: events/{event}
-	Event         *Event `protobuf:"bytes,1,opt,name=event,proto3" json:"event,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Event         *Event                 `protobuf:"bytes,2,opt,name=event,proto3" json:"event,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -403,6 +369,13 @@ func (*UpdateEventRequest) Descriptor() ([]byte, []int) {
 	return file_event_service_proto_rawDescGZIP(), []int{2}
 }
 
+func (x *UpdateEventRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 func (x *UpdateEventRequest) GetEvent() *Event {
 	if x != nil {
 		return x.Event
@@ -411,9 +384,8 @@ func (x *UpdateEventRequest) GetEvent() *Event {
 }
 
 type DeleteEventRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The id of the event that should be deleted.
-	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -492,9 +464,8 @@ func (*DeleteEventResponse) Descriptor() ([]byte, []int) {
 }
 
 type GetEventRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The id of the event that should be returned.
-	Id            string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -537,13 +508,9 @@ func (x *GetEventRequest) GetId() string {
 }
 
 type ListEventsRequest struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The maximum number of events to return. Fewer events might be returned.
-	// Default value is 25.
-	PageSize int32 `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	// A page token from a previous `ListEvents` call. If this is provided, then the
-	// next page will be returned.
-	PageToken     string `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -593,9 +560,8 @@ func (x *ListEventsRequest) GetPageToken() string {
 }
 
 type ListEventsResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// The list of returned events.
-	Events        []*Event `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Events        []*Event               `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -641,10 +607,10 @@ var File_event_service_proto protoreflect.FileDescriptor
 
 const file_event_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13event_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xdc\x06\n" +
+	"\x13event_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd0\x06\n" +
 	"\x05Event\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12'\n" +
-	"\x0forganization_id\x18\x03 \x01(\tR\x0eorganizationId\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
+	"\tmasjid_id\x18\x03 \x01(\tR\bmasjidId\x12\x12\n" +
 	"\x04name\x18\x04 \x01(\tR\x04name\x12 \n" +
 	"\vdescription\x18\x05 \x01(\tR\vdescription\x129\n" +
 	"\n" +
@@ -676,9 +642,10 @@ const file_event_service_proto_rawDesc = "" +
 	"\vMATRIMONIAL\x10\a\x12\v\n" +
 	"\aFUNERAL\x10\b\"A\n" +
 	"\x12CreateEventRequest\x12+\n" +
-	"\x05event\x18\x01 \x01(\v2\x10.limestone.EventB\x03\xe0A\x02R\x05event\"A\n" +
-	"\x12UpdateEventRequest\x12+\n" +
-	"\x05event\x18\x01 \x01(\v2\x10.limestone.EventB\x03\xe0A\x02R\x05event\")\n" +
+	"\x05event\x18\x01 \x01(\v2\x10.limestone.EventB\x03\xe0A\x02R\x05event\"Q\n" +
+	"\x12UpdateEventRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12+\n" +
+	"\x05event\x18\x02 \x01(\v2\x10.limestone.EventB\x03\xe0A\x02R\x05event\")\n" +
 	"\x12DeleteEventRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x15\n" +
 	"\x13DeleteEventResponse\"&\n" +
@@ -689,16 +656,14 @@ const file_event_service_proto_rawDesc = "" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tR\tpageToken\">\n" +
 	"\x12ListEventsResponse\x12(\n" +
-	"\x06events\x18\x01 \x03(\v2\x10.limestone.EventR\x06events2\x88\x04\n" +
-	"\fEventService\x12a\n" +
-	"\vCreateEvent\x12\x1d.limestone.CreateEventRequest\x1a\x10.limestone.Event\"!\xdaA\x05event\x82\xd3\xe4\x93\x02\x13:\x05event\"\n" +
-	"/v1/events\x12n\n" +
-	"\vUpdateEvent\x12\x1d.limestone.UpdateEventRequest\x1a\x10.limestone.Event\".\xdaA\x05event\x82\xd3\xe4\x93\x02 :\x05event2\x17/v1/{event.id=events/*}\x12l\n" +
-	"\vDeleteEvent\x12\x1d.limestone.DeleteEventRequest\x1a\x1e.limestone.DeleteEventResponse\"\x1e\xdaA\x02id\x82\xd3\xe4\x93\x02\x13*\x11/v1/{id=events/*}\x12X\n" +
-	"\bGetEvent\x12\x1a.limestone.GetEventRequest\x1a\x10.limestone.Event\"\x1e\xdaA\x02id\x82\xd3\xe4\x93\x02\x13\x12\x11/v1/{id=events/*}\x12]\n" +
+	"\x06events\x18\x01 \x03(\v2\x10.limestone.EventR\x06events2\xf7\x03\n" +
+	"\fEventService\x12`\n" +
+	"\vCreateEvent\x12\x1d.limestone.CreateEventRequest\x1a\x10.limestone.Event\" \xdaA\x05event\x82\xd3\xe4\x93\x02\x12:\x05event\"\t/v1/event\x12e\n" +
+	"\vUpdateEvent\x12\x1d.limestone.UpdateEventRequest\x1a\x10.limestone.Event\"%\xdaA\x05event\x82\xd3\xe4\x93\x02\x17:\x05event2\x0e/v1/event/{id}\x12i\n" +
+	"\vDeleteEvent\x12\x1d.limestone.DeleteEventRequest\x1a\x1e.limestone.DeleteEventResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10*\x0e/v1/event/{id}\x12U\n" +
+	"\bGetEvent\x12\x1a.limestone.GetEventRequest\x1a\x10.limestone.Event\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/event/{id}\x12\\\n" +
 	"\n" +
-	"ListEvents\x12\x1c.limestone.ListEventsRequest\x1a\x1d.limestone.ListEventsResponse\"\x12\x82\xd3\xe4\x93\x02\f\x12\n" +
-	"/v1/eventsBi\n" +
+	"ListEvents\x12\x1c.limestone.ListEventsRequest\x1a\x1d.limestone.ListEventsResponse\"\x11\x82\xd3\xe4\x93\x02\v\x12\t/v1/eventBi\n" +
 	"\rcom.limestoneB\x11EventServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
 
 var (

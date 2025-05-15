@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_AdhanService_CreateAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AdhanService_CreateAdhan_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -43,12 +43,12 @@ func request_AdhanService_CreateAdhanFile_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateAdhanFile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.CreateAdhan(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdhanService_CreateAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AdhanService_CreateAdhan_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -60,12 +60,12 @@ func local_request_AdhanService_CreateAdhanFile_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateAdhanFile(ctx, &protoReq)
+	msg, err := server.CreateAdhan(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_AdhanService_UpdateAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AdhanService_UpdateAdhan_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -94,12 +94,12 @@ func request_AdhanService_UpdateAdhanFile_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := client.UpdateAdhanFile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.UpdateAdhan(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdhanService_UpdateAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AdhanService_UpdateAdhan_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq UpdateAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -128,12 +128,12 @@ func local_request_AdhanService_UpdateAdhanFile_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := server.UpdateAdhanFile(ctx, &protoReq)
+	msg, err := server.UpdateAdhan(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_AdhanService_GetAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AdhanService_GetAdhanById_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -154,12 +154,12 @@ func request_AdhanService_GetAdhanFile_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := client.GetAdhanFile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetAdhanById(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdhanService_GetAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AdhanService_GetAdhanById_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -180,12 +180,12 @@ func local_request_AdhanService_GetAdhanFile_0(ctx context.Context, marshaler ru
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := server.GetAdhanFile(ctx, &protoReq)
+	msg, err := server.GetAdhanById(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_AdhanService_DeleteAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_AdhanService_DeleteAdhan_0(ctx context.Context, marshaler runtime.Marshaler, client AdhanServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -206,12 +206,12 @@ func request_AdhanService_DeleteAdhanFile_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := client.DeleteAdhanFile(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DeleteAdhan(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_AdhanService_DeleteAdhanFile_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_AdhanService_DeleteAdhan_0(ctx context.Context, marshaler runtime.Marshaler, server AdhanServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteAdhanFileRequest
 	var metadata runtime.ServerMetadata
 
@@ -232,7 +232,7 @@ func local_request_AdhanService_DeleteAdhanFile_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
 	}
 
-	msg, err := server.DeleteAdhanFile(ctx, &protoReq)
+	msg, err := server.DeleteAdhan(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -243,7 +243,7 @@ func local_request_AdhanService_DeleteAdhanFile_0(ctx context.Context, marshaler
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAdhanServiceHandlerFromEndpoint instead.
 func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AdhanServiceServer) error {
 
-	mux.Handle("POST", pattern_AdhanService_CreateAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AdhanService_CreateAdhan_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -251,12 +251,12 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/CreateAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/files"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/CreateAdhan", runtime.WithHTTPPathPattern("/v1/adhan"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdhanService_CreateAdhanFile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdhanService_CreateAdhan_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -264,11 +264,11 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_AdhanService_CreateAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_CreateAdhan_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_AdhanService_UpdateAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_AdhanService_UpdateAdhan_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -276,12 +276,12 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/UpdateAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/UpdateAdhan", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdhanService_UpdateAdhanFile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdhanService_UpdateAdhan_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -289,11 +289,11 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_AdhanService_UpdateAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_UpdateAdhan_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_AdhanService_GetAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AdhanService_GetAdhanById_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -301,12 +301,12 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/GetAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/GetAdhanById", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdhanService_GetAdhanFile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdhanService_GetAdhanById_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -314,11 +314,11 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_AdhanService_GetAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_GetAdhanById_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_AdhanService_DeleteAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_AdhanService_DeleteAdhan_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -326,12 +326,12 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/DeleteAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.AdhanService/DeleteAdhan", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_AdhanService_DeleteAdhanFile_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_AdhanService_DeleteAdhan_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -339,7 +339,7 @@ func RegisterAdhanServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_AdhanService_DeleteAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_DeleteAdhan_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -384,91 +384,91 @@ func RegisterAdhanServiceHandler(ctx context.Context, mux *runtime.ServeMux, con
 // "AdhanServiceClient" to call the correct interceptors.
 func RegisterAdhanServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AdhanServiceClient) error {
 
-	mux.Handle("POST", pattern_AdhanService_CreateAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_AdhanService_CreateAdhan_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/CreateAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/files"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/CreateAdhan", runtime.WithHTTPPathPattern("/v1/adhan"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdhanService_CreateAdhanFile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdhanService_CreateAdhan_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdhanService_CreateAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_CreateAdhan_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PATCH", pattern_AdhanService_UpdateAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PATCH", pattern_AdhanService_UpdateAdhan_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/UpdateAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/UpdateAdhan", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdhanService_UpdateAdhanFile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdhanService_UpdateAdhan_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdhanService_UpdateAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_UpdateAdhan_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_AdhanService_GetAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_AdhanService_GetAdhanById_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/GetAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/GetAdhanById", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdhanService_GetAdhanFile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdhanService_GetAdhanById_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdhanService_GetAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_GetAdhanById_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("DELETE", pattern_AdhanService_DeleteAdhanFile_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_AdhanService_DeleteAdhan_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/DeleteAdhanFile", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.AdhanService/DeleteAdhan", runtime.WithHTTPPathPattern("/v1/adhan/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_AdhanService_DeleteAdhanFile_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_AdhanService_DeleteAdhan_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_AdhanService_DeleteAdhanFile_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_AdhanService_DeleteAdhan_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -476,21 +476,21 @@ func RegisterAdhanServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_AdhanService_CreateAdhanFile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "adhan", "files"}, ""))
+	pattern_AdhanService_CreateAdhan_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "adhan"}, ""))
 
-	pattern_AdhanService_UpdateAdhanFile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "adhan", "id"}, ""))
+	pattern_AdhanService_UpdateAdhan_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "adhan", "id"}, ""))
 
-	pattern_AdhanService_GetAdhanFile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "adhan", "id"}, ""))
+	pattern_AdhanService_GetAdhanById_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "adhan", "id"}, ""))
 
-	pattern_AdhanService_DeleteAdhanFile_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "adhan", "id"}, ""))
+	pattern_AdhanService_DeleteAdhan_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "adhan", "id"}, ""))
 )
 
 var (
-	forward_AdhanService_CreateAdhanFile_0 = runtime.ForwardResponseMessage
+	forward_AdhanService_CreateAdhan_0 = runtime.ForwardResponseMessage
 
-	forward_AdhanService_UpdateAdhanFile_0 = runtime.ForwardResponseMessage
+	forward_AdhanService_UpdateAdhan_0 = runtime.ForwardResponseMessage
 
-	forward_AdhanService_GetAdhanFile_0 = runtime.ForwardResponseMessage
+	forward_AdhanService_GetAdhanById_0 = runtime.ForwardResponseMessage
 
-	forward_AdhanService_DeleteAdhanFile_0 = runtime.ForwardResponseMessage
+	forward_AdhanService_DeleteAdhan_0 = runtime.ForwardResponseMessage
 )

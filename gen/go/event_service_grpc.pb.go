@@ -30,16 +30,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EventServiceClient interface {
-	// Creates a event in the database.
 	CreateEvent(ctx context.Context, in *CreateEventRequest, opts ...grpc.CallOption) (*Event, error)
-	// Updates a event in the database with the corresponding id to the given
-	// event (i.e. all fields are overwritten).
 	UpdateEvent(ctx context.Context, in *UpdateEventRequest, opts ...grpc.CallOption) (*Event, error)
-	// Deletes a event from the database with the given id.
 	DeleteEvent(ctx context.Context, in *DeleteEventRequest, opts ...grpc.CallOption) (*DeleteEventResponse, error)
-	// Gets a event from the database with the given id.
 	GetEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*Event, error)
-	// Returns a paginated list of events from the database.
 	ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
 }
 
@@ -105,16 +99,10 @@ func (c *eventServiceClient) ListEvents(ctx context.Context, in *ListEventsReque
 // All implementations must embed UnimplementedEventServiceServer
 // for forward compatibility.
 type EventServiceServer interface {
-	// Creates a event in the database.
 	CreateEvent(context.Context, *CreateEventRequest) (*Event, error)
-	// Updates a event in the database with the corresponding id to the given
-	// event (i.e. all fields are overwritten).
 	UpdateEvent(context.Context, *UpdateEventRequest) (*Event, error)
-	// Deletes a event from the database with the given id.
 	DeleteEvent(context.Context, *DeleteEventRequest) (*DeleteEventResponse, error)
-	// Gets a event from the database with the given id.
 	GetEvent(context.Context, *GetEventRequest) (*Event, error)
-	// Returns a paginated list of events from the database.
 	ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error)
 	mustEmbedUnimplementedEventServiceServer()
 }

@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/google/uuid"
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
@@ -163,7 +162,6 @@ func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequ
 }
 
 func (h *MasjidGrpcHandler) ListMasjids(ctx context.Context, req *pb.ListMasjidsRequest) (*pb.ListMasjidsResponse, error) {
-	fmt.Printf("testing: %v", req)
 	masjids, err := h.Svc.ListMasjids(ctx, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list masjids: %v", err)

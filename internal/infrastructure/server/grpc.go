@@ -2,7 +2,7 @@ package server
 
 import (
 	pb "github.com/mnadev/limestone/gen/go"
-	services "github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/application/services"
 	"log"
 	"net"
 
@@ -32,16 +32,26 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	//masjid service
 	masjidRepo := storage.NewGormMasjidRepository(db)
 	masjidService := services.NewMasjidService(masjidRepo)
+	//adhan service
+	adhanRepo := storage.NewGormAdhanRepository(db)
+	adhanService := services.NewAdhanService(adhanRepo)
+	//event service
+	eventRepo := storage.NewGormEventRepository(db)
+	eventService := services.NewEventService(eventRepo)
 
 	// Initialize handlers
 	userHandler := handler.NewUserGrpcHandler(userService)
 	authHandler := handler.NewAuthGrpcHandler(authService)
 	masjidHandler := handler.NewMasjidGrpcHandler(masjidService)
+	adhanHandler := handler.NewAdhanGrpcHandler(adhanService)
+	eventHandler := handler.NewEventGrpcHandler(eventService)
 
 	// Register services with their handlers
 	pb.RegisterUserServiceServer(server, userHandler)
 	pb.RegisterAuthServiceServer(server, authHandler)
 	pb.RegisterMasjidServiceServer(server, masjidHandler)
+	pb.RegisterAdhanServiceServer(server, adhanHandler)
+	pb.RegisterEventServiceServer(server, eventHandler)
 
 	reflection.Register(server)
 

@@ -22,7 +22,7 @@ const (
 
 type Event struct {
 	ID                uuid.UUID `gorm:"primaryKey;type:char(36)"`
-	OrganizationId    string
+	MasjidId          string
 	Name              string
 	Description       string
 	StartTime         time.Time
@@ -41,7 +41,7 @@ type Event struct {
 func NewEvent(ep *pb.Event) (*Event, error) {
 	e := Event{
 		Name:              ep.GetName(),
-		OrganizationId:    ep.GetOrganizationId(),
+		MasjidId:          ep.GetMasjidId(),
 		Description:       ep.GetDescription(),
 		StartTime:         ep.GetStartTime().AsTime(),
 		EndTime:           ep.GetEndTime().AsTime(),
@@ -66,7 +66,7 @@ func NewEvent(ep *pb.Event) (*Event, error) {
 func (e *Event) ToProto() *pb.Event {
 	ep := pb.Event{
 		Id:                e.ID.String(),
-		OrganizationId:    e.OrganizationId,
+		MasjidId:          e.MasjidId,
 		Name:              e.Name,
 		Description:       e.Description,
 		StartTime:         timestamppb.New(e.StartTime),

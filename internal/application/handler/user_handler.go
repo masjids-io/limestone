@@ -101,7 +101,7 @@ func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (
 	return &pb.StandardUserResponse{
 		Code:    codes.OK.String(),
 		Status:  "success",
-		Message: "user created successfully",
+		Message: "user retrieved successfully",
 		Data: &pb.StandardUserResponse_GetUserResponse{
 			GetUserResponse: &pb.User{
 				Id:              user.ID.String(),

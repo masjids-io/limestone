@@ -34,7 +34,7 @@ func main() {
 
 	// Start REST Gateway
 	ctx := context.Background()
-	restMux := server.SetupRESTGateway(ctx, db, *grpcEndpoint)
+	restMux := server.SetupRESTGateway(ctx, db)
 	restHandler := auth.VerifyJWTInterceptorRest(restMux)
-	server.StartRESTGateway(ctx, restHandler, *httpEndpoint)
+	server.StartRESTGateway(restHandler, *httpEndpoint)
 }

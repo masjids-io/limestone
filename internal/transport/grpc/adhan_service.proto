@@ -7,30 +7,30 @@ import "google/protobuf/timestamp.proto";
 
 package limestone;
 
-option go_package = "github.com/mnadev/limestone/proto";
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service AdhanService {
-  rpc CreateAdhanFile(CreateAdhanFileRequest) returns (AdhanFile) {
+  rpc CreateAdhan(CreateAdhanFileRequest) returns (AdhanFile) {
     option (google.api.http) = {
-      post: "/v1/adhan/files"
+      post: "/v1/adhan"
       body: "adhan_file"
     };
     option (google.api.method_signature) = "adhan_file";
   }
-  rpc UpdateAdhanFile(UpdateAdhanFileRequest) returns (AdhanFile) {
+  rpc UpdateAdhan(UpdateAdhanFileRequest) returns (AdhanFile) {
     option (google.api.http) = {
       patch: "/v1/adhan/{id}"
       body: "adhan_file"
     };
     option (google.api.method_signature) = "adhan_file";
   }
-  rpc GetAdhanFile(GetAdhanFileRequest) returns (AdhanFile) {
+  rpc GetAdhanById(GetAdhanFileRequest) returns (AdhanFile) {
     option (google.api.http) = {
       get: "/v1/adhan/{id}"
     };
     option (google.api.method_signature) = "id";
   }
-  rpc DeleteAdhanFile(DeleteAdhanFileRequest) returns (DeleteAdhanFileResponse) {
+  rpc DeleteAdhan(DeleteAdhanFileRequest) returns (StandardAdhanResponse) {
     option (google.api.http) = {
       delete: "/v1/adhan/{id}"
     };
@@ -38,6 +38,14 @@ service AdhanService {
   }
 }
 
+message StandardAdhanResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    DeleteAdhanFileResponse DeleteAdhanFileResponse = 4;
+  }
+}
 message AdhanFile {
   string id = 1;
   string masjid_id = 2;

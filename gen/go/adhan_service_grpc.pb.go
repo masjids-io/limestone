@@ -19,20 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AdhanService_CreateAdhanFile_FullMethodName = "/limestone.AdhanService/CreateAdhanFile"
-	AdhanService_UpdateAdhanFile_FullMethodName = "/limestone.AdhanService/UpdateAdhanFile"
-	AdhanService_GetAdhanFile_FullMethodName    = "/limestone.AdhanService/GetAdhanFile"
-	AdhanService_DeleteAdhanFile_FullMethodName = "/limestone.AdhanService/DeleteAdhanFile"
+	AdhanService_CreateAdhan_FullMethodName  = "/limestone.AdhanService/CreateAdhan"
+	AdhanService_UpdateAdhan_FullMethodName  = "/limestone.AdhanService/UpdateAdhan"
+	AdhanService_GetAdhanById_FullMethodName = "/limestone.AdhanService/GetAdhanById"
+	AdhanService_DeleteAdhan_FullMethodName  = "/limestone.AdhanService/DeleteAdhan"
 )
 
 // AdhanServiceClient is the client API for AdhanService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdhanServiceClient interface {
-	CreateAdhanFile(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
-	UpdateAdhanFile(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
-	GetAdhanFile(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
-	DeleteAdhanFile(ctx context.Context, in *DeleteAdhanFileRequest, opts ...grpc.CallOption) (*DeleteAdhanFileResponse, error)
+	CreateAdhan(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
+	UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
+	GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
+	DeleteAdhan(ctx context.Context, in *DeleteAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
 }
 
 type adhanServiceClient struct {
@@ -43,40 +43,40 @@ func NewAdhanServiceClient(cc grpc.ClientConnInterface) AdhanServiceClient {
 	return &adhanServiceClient{cc}
 }
 
-func (c *adhanServiceClient) CreateAdhanFile(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
+func (c *adhanServiceClient) CreateAdhan(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AdhanFile)
-	err := c.cc.Invoke(ctx, AdhanService_CreateAdhanFile_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, AdhanService_CreateAdhan_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adhanServiceClient) UpdateAdhanFile(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
+func (c *adhanServiceClient) UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AdhanFile)
-	err := c.cc.Invoke(ctx, AdhanService_UpdateAdhanFile_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, AdhanService_UpdateAdhan_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adhanServiceClient) GetAdhanFile(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
+func (c *adhanServiceClient) GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AdhanFile)
-	err := c.cc.Invoke(ctx, AdhanService_GetAdhanFile_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, AdhanService_GetAdhanById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adhanServiceClient) DeleteAdhanFile(ctx context.Context, in *DeleteAdhanFileRequest, opts ...grpc.CallOption) (*DeleteAdhanFileResponse, error) {
+func (c *adhanServiceClient) DeleteAdhan(ctx context.Context, in *DeleteAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteAdhanFileResponse)
-	err := c.cc.Invoke(ctx, AdhanService_DeleteAdhanFile_FullMethodName, in, out, cOpts...)
+	out := new(StandardAdhanResponse)
+	err := c.cc.Invoke(ctx, AdhanService_DeleteAdhan_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,10 +87,10 @@ func (c *adhanServiceClient) DeleteAdhanFile(ctx context.Context, in *DeleteAdha
 // All implementations must embed UnimplementedAdhanServiceServer
 // for forward compatibility.
 type AdhanServiceServer interface {
-	CreateAdhanFile(context.Context, *CreateAdhanFileRequest) (*AdhanFile, error)
-	UpdateAdhanFile(context.Context, *UpdateAdhanFileRequest) (*AdhanFile, error)
-	GetAdhanFile(context.Context, *GetAdhanFileRequest) (*AdhanFile, error)
-	DeleteAdhanFile(context.Context, *DeleteAdhanFileRequest) (*DeleteAdhanFileResponse, error)
+	CreateAdhan(context.Context, *CreateAdhanFileRequest) (*AdhanFile, error)
+	UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*AdhanFile, error)
+	GetAdhanById(context.Context, *GetAdhanFileRequest) (*AdhanFile, error)
+	DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error)
 	mustEmbedUnimplementedAdhanServiceServer()
 }
 
@@ -101,17 +101,17 @@ type AdhanServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAdhanServiceServer struct{}
 
-func (UnimplementedAdhanServiceServer) CreateAdhanFile(context.Context, *CreateAdhanFileRequest) (*AdhanFile, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateAdhanFile not implemented")
+func (UnimplementedAdhanServiceServer) CreateAdhan(context.Context, *CreateAdhanFileRequest) (*AdhanFile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAdhan not implemented")
 }
-func (UnimplementedAdhanServiceServer) UpdateAdhanFile(context.Context, *UpdateAdhanFileRequest) (*AdhanFile, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAdhanFile not implemented")
+func (UnimplementedAdhanServiceServer) UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*AdhanFile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAdhan not implemented")
 }
-func (UnimplementedAdhanServiceServer) GetAdhanFile(context.Context, *GetAdhanFileRequest) (*AdhanFile, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAdhanFile not implemented")
+func (UnimplementedAdhanServiceServer) GetAdhanById(context.Context, *GetAdhanFileRequest) (*AdhanFile, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAdhanById not implemented")
 }
-func (UnimplementedAdhanServiceServer) DeleteAdhanFile(context.Context, *DeleteAdhanFileRequest) (*DeleteAdhanFileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteAdhanFile not implemented")
+func (UnimplementedAdhanServiceServer) DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAdhan not implemented")
 }
 func (UnimplementedAdhanServiceServer) mustEmbedUnimplementedAdhanServiceServer() {}
 func (UnimplementedAdhanServiceServer) testEmbeddedByValue()                      {}
@@ -134,74 +134,74 @@ func RegisterAdhanServiceServer(s grpc.ServiceRegistrar, srv AdhanServiceServer)
 	s.RegisterService(&AdhanService_ServiceDesc, srv)
 }
 
-func _AdhanService_CreateAdhanFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AdhanService_CreateAdhan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateAdhanFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdhanServiceServer).CreateAdhanFile(ctx, in)
+		return srv.(AdhanServiceServer).CreateAdhan(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AdhanService_CreateAdhanFile_FullMethodName,
+		FullMethod: AdhanService_CreateAdhan_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdhanServiceServer).CreateAdhanFile(ctx, req.(*CreateAdhanFileRequest))
+		return srv.(AdhanServiceServer).CreateAdhan(ctx, req.(*CreateAdhanFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdhanService_UpdateAdhanFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AdhanService_UpdateAdhan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateAdhanFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdhanServiceServer).UpdateAdhanFile(ctx, in)
+		return srv.(AdhanServiceServer).UpdateAdhan(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AdhanService_UpdateAdhanFile_FullMethodName,
+		FullMethod: AdhanService_UpdateAdhan_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdhanServiceServer).UpdateAdhanFile(ctx, req.(*UpdateAdhanFileRequest))
+		return srv.(AdhanServiceServer).UpdateAdhan(ctx, req.(*UpdateAdhanFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdhanService_GetAdhanFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AdhanService_GetAdhanById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAdhanFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdhanServiceServer).GetAdhanFile(ctx, in)
+		return srv.(AdhanServiceServer).GetAdhanById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AdhanService_GetAdhanFile_FullMethodName,
+		FullMethod: AdhanService_GetAdhanById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdhanServiceServer).GetAdhanFile(ctx, req.(*GetAdhanFileRequest))
+		return srv.(AdhanServiceServer).GetAdhanById(ctx, req.(*GetAdhanFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdhanService_DeleteAdhanFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AdhanService_DeleteAdhan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteAdhanFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdhanServiceServer).DeleteAdhanFile(ctx, in)
+		return srv.(AdhanServiceServer).DeleteAdhan(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AdhanService_DeleteAdhanFile_FullMethodName,
+		FullMethod: AdhanService_DeleteAdhan_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdhanServiceServer).DeleteAdhanFile(ctx, req.(*DeleteAdhanFileRequest))
+		return srv.(AdhanServiceServer).DeleteAdhan(ctx, req.(*DeleteAdhanFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -214,20 +214,20 @@ var AdhanService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AdhanServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateAdhanFile",
-			Handler:    _AdhanService_CreateAdhanFile_Handler,
+			MethodName: "CreateAdhan",
+			Handler:    _AdhanService_CreateAdhan_Handler,
 		},
 		{
-			MethodName: "UpdateAdhanFile",
-			Handler:    _AdhanService_UpdateAdhanFile_Handler,
+			MethodName: "UpdateAdhan",
+			Handler:    _AdhanService_UpdateAdhan_Handler,
 		},
 		{
-			MethodName: "GetAdhanFile",
-			Handler:    _AdhanService_GetAdhanFile_Handler,
+			MethodName: "GetAdhanById",
+			Handler:    _AdhanService_GetAdhanById_Handler,
 		},
 		{
-			MethodName: "DeleteAdhanFile",
-			Handler:    _AdhanService_DeleteAdhanFile_Handler,
+			MethodName: "DeleteAdhan",
+			Handler:    _AdhanService_DeleteAdhan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

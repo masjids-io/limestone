@@ -6,8 +6,8 @@ import (
 )
 
 type AdhanRepository interface {
-	Create(ctx context.Context, adhan *entity.Adhan) (*entity.Adhan, error)
-	Update(ctx context.Context, adhan *entity.Adhan) (*entity.Adhan, error)
-	GetByID(ctx context.Context, id string) (*entity.Adhan, error)
-	Delete(ctx context.Context, id string) error
+	CreateAdhan(ctx context.Context, adhan *entity.Adhan) (*entity.Adhan, error)
+	UpdateAdhan(ctx context.Context, adhan *entity.Adhan) (*entity.Adhan, error)
+	GetByIDAdhan(ctx context.Context, id string) (*entity.Adhan, error)
+	DeleteAdhan(ctx context.Context, id string) error
 }

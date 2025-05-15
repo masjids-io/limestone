@@ -23,6 +23,96 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type StandardAdhanResponse struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Code    string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Status  string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	Message string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	// Types that are valid to be assigned to Data:
+	//
+	//	*StandardAdhanResponse_DeleteAdhanFileResponse
+	Data          isStandardAdhanResponse_Data `protobuf_oneof:"data"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StandardAdhanResponse) Reset() {
+	*x = StandardAdhanResponse{}
+	mi := &file_adhan_service_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StandardAdhanResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StandardAdhanResponse) ProtoMessage() {}
+
+func (x *StandardAdhanResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_adhan_service_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StandardAdhanResponse.ProtoReflect.Descriptor instead.
+func (*StandardAdhanResponse) Descriptor() ([]byte, []int) {
+	return file_adhan_service_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *StandardAdhanResponse) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *StandardAdhanResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *StandardAdhanResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *StandardAdhanResponse) GetData() isStandardAdhanResponse_Data {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *StandardAdhanResponse) GetDeleteAdhanFileResponse() *DeleteAdhanFileResponse {
+	if x != nil {
+		if x, ok := x.Data.(*StandardAdhanResponse_DeleteAdhanFileResponse); ok {
+			return x.DeleteAdhanFileResponse
+		}
+	}
+	return nil
+}
+
+type isStandardAdhanResponse_Data interface {
+	isStandardAdhanResponse_Data()
+}
+
+type StandardAdhanResponse_DeleteAdhanFileResponse struct {
+	DeleteAdhanFileResponse *DeleteAdhanFileResponse `protobuf:"bytes,4,opt,name=DeleteAdhanFileResponse,proto3,oneof"`
+}
+
+func (*StandardAdhanResponse_DeleteAdhanFileResponse) isStandardAdhanResponse_Data() {}
+
 type AdhanFile struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -36,7 +126,7 @@ type AdhanFile struct {
 
 func (x *AdhanFile) Reset() {
 	*x = AdhanFile{}
-	mi := &file_adhan_service_proto_msgTypes[0]
+	mi := &file_adhan_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -48,7 +138,7 @@ func (x *AdhanFile) String() string {
 func (*AdhanFile) ProtoMessage() {}
 
 func (x *AdhanFile) ProtoReflect() protoreflect.Message {
-	mi := &file_adhan_service_proto_msgTypes[0]
+	mi := &file_adhan_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -61,7 +151,7 @@ func (x *AdhanFile) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AdhanFile.ProtoReflect.Descriptor instead.
 func (*AdhanFile) Descriptor() ([]byte, []int) {
-	return file_adhan_service_proto_rawDescGZIP(), []int{0}
+	return file_adhan_service_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *AdhanFile) GetId() string {
@@ -108,7 +198,7 @@ type CreateAdhanFileRequest struct {
 
 func (x *CreateAdhanFileRequest) Reset() {
 	*x = CreateAdhanFileRequest{}
-	mi := &file_adhan_service_proto_msgTypes[1]
+	mi := &file_adhan_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -120,7 +210,7 @@ func (x *CreateAdhanFileRequest) String() string {
 func (*CreateAdhanFileRequest) ProtoMessage() {}
 
 func (x *CreateAdhanFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_adhan_service_proto_msgTypes[1]
+	mi := &file_adhan_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -133,7 +223,7 @@ func (x *CreateAdhanFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateAdhanFileRequest.ProtoReflect.Descriptor instead.
 func (*CreateAdhanFileRequest) Descriptor() ([]byte, []int) {
-	return file_adhan_service_proto_rawDescGZIP(), []int{1}
+	return file_adhan_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateAdhanFileRequest) GetAdhanFile() *AdhanFile {
@@ -153,7 +243,7 @@ type UpdateAdhanFileRequest struct {
 
 func (x *UpdateAdhanFileRequest) Reset() {
 	*x = UpdateAdhanFileRequest{}
-	mi := &file_adhan_service_proto_msgTypes[2]
+	mi := &file_adhan_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -165,7 +255,7 @@ func (x *UpdateAdhanFileRequest) String() string {
 func (*UpdateAdhanFileRequest) ProtoMessage() {}
 
 func (x *UpdateAdhanFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_adhan_service_proto_msgTypes[2]
+	mi := &file_adhan_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -178,7 +268,7 @@ func (x *UpdateAdhanFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAdhanFileRequest.ProtoReflect.Descriptor instead.
 func (*UpdateAdhanFileRequest) Descriptor() ([]byte, []int) {
-	return file_adhan_service_proto_rawDescGZIP(), []int{2}
+	return file_adhan_service_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *UpdateAdhanFileRequest) GetId() string {
@@ -204,7 +294,7 @@ type GetAdhanFileRequest struct {
 
 func (x *GetAdhanFileRequest) Reset() {
 	*x = GetAdhanFileRequest{}
-	mi := &file_adhan_service_proto_msgTypes[3]
+	mi := &file_adhan_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -216,7 +306,7 @@ func (x *GetAdhanFileRequest) String() string {
 func (*GetAdhanFileRequest) ProtoMessage() {}
 
 func (x *GetAdhanFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_adhan_service_proto_msgTypes[3]
+	mi := &file_adhan_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -229,7 +319,7 @@ func (x *GetAdhanFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAdhanFileRequest.ProtoReflect.Descriptor instead.
 func (*GetAdhanFileRequest) Descriptor() ([]byte, []int) {
-	return file_adhan_service_proto_rawDescGZIP(), []int{3}
+	return file_adhan_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetAdhanFileRequest) GetId() string {
@@ -248,7 +338,7 @@ type DeleteAdhanFileRequest struct {
 
 func (x *DeleteAdhanFileRequest) Reset() {
 	*x = DeleteAdhanFileRequest{}
-	mi := &file_adhan_service_proto_msgTypes[4]
+	mi := &file_adhan_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -260,7 +350,7 @@ func (x *DeleteAdhanFileRequest) String() string {
 func (*DeleteAdhanFileRequest) ProtoMessage() {}
 
 func (x *DeleteAdhanFileRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_adhan_service_proto_msgTypes[4]
+	mi := &file_adhan_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -273,7 +363,7 @@ func (x *DeleteAdhanFileRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAdhanFileRequest.ProtoReflect.Descriptor instead.
 func (*DeleteAdhanFileRequest) Descriptor() ([]byte, []int) {
-	return file_adhan_service_proto_rawDescGZIP(), []int{4}
+	return file_adhan_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DeleteAdhanFileRequest) GetId() string {
@@ -291,7 +381,7 @@ type DeleteAdhanFileResponse struct {
 
 func (x *DeleteAdhanFileResponse) Reset() {
 	*x = DeleteAdhanFileResponse{}
-	mi := &file_adhan_service_proto_msgTypes[5]
+	mi := &file_adhan_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -303,7 +393,7 @@ func (x *DeleteAdhanFileResponse) String() string {
 func (*DeleteAdhanFileResponse) ProtoMessage() {}
 
 func (x *DeleteAdhanFileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_adhan_service_proto_msgTypes[5]
+	mi := &file_adhan_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -316,14 +406,20 @@ func (x *DeleteAdhanFileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAdhanFileResponse.ProtoReflect.Descriptor instead.
 func (*DeleteAdhanFileResponse) Descriptor() ([]byte, []int) {
-	return file_adhan_service_proto_rawDescGZIP(), []int{5}
+	return file_adhan_service_proto_rawDescGZIP(), []int{6}
 }
 
 var File_adhan_service_proto protoreflect.FileDescriptor
 
 const file_adhan_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13adhan_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc6\x01\n" +
+	"\x13adhan_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc5\x01\n" +
+	"\x15StandardAdhanResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\x12^\n" +
+	"\x17DeleteAdhanFileResponse\x18\x04 \x01(\v2\".limestone.DeleteAdhanFileResponseH\x00R\x17DeleteAdhanFileResponseB\x06\n" +
+	"\x04data\"\xc6\x01\n" +
 	"\tAdhanFile\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
 	"\tmasjid_id\x18\x02 \x01(\tR\bmasjidId\x12\x12\n" +
@@ -343,16 +439,16 @@ const file_adhan_service_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"-\n" +
 	"\x16DeleteAdhanFileRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x19\n" +
-	"\x17DeleteAdhanFileResponse2\xe3\x03\n" +
-	"\fAdhanService\x12|\n" +
-	"\x0fCreateAdhanFile\x12!.limestone.CreateAdhanFileRequest\x1a\x14.limestone.AdhanFile\"0\xdaA\n" +
-	"adhan_file\x82\xd3\xe4\x93\x02\x1d:\n" +
-	"adhan_file\"\x0f/v1/adhan/files\x12{\n" +
-	"\x0fUpdateAdhanFile\x12!.limestone.UpdateAdhanFileRequest\x1a\x14.limestone.AdhanFile\"/\xdaA\n" +
+	"\x17DeleteAdhanFileResponse2\xcf\x03\n" +
+	"\fAdhanService\x12r\n" +
+	"\vCreateAdhan\x12!.limestone.CreateAdhanFileRequest\x1a\x14.limestone.AdhanFile\"*\xdaA\n" +
+	"adhan_file\x82\xd3\xe4\x93\x02\x17:\n" +
+	"adhan_file\"\t/v1/adhan\x12w\n" +
+	"\vUpdateAdhan\x12!.limestone.UpdateAdhanFileRequest\x1a\x14.limestone.AdhanFile\"/\xdaA\n" +
 	"adhan_file\x82\xd3\xe4\x93\x02\x1c:\n" +
 	"adhan_file2\x0e/v1/adhan/{id}\x12a\n" +
-	"\fGetAdhanFile\x12\x1e.limestone.GetAdhanFileRequest\x1a\x14.limestone.AdhanFile\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/adhan/{id}\x12u\n" +
-	"\x0fDeleteAdhanFile\x12!.limestone.DeleteAdhanFileRequest\x1a\".limestone.DeleteAdhanFileResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10*\x0e/v1/adhan/{id}Bi\n" +
+	"\fGetAdhanById\x12\x1e.limestone.GetAdhanFileRequest\x1a\x14.limestone.AdhanFile\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/adhan/{id}\x12o\n" +
+	"\vDeleteAdhan\x12!.limestone.DeleteAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10*\x0e/v1/adhan/{id}Bi\n" +
 	"\rcom.limestoneB\x11AdhanServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
 
 var (
@@ -367,34 +463,36 @@ func file_adhan_service_proto_rawDescGZIP() []byte {
 	return file_adhan_service_proto_rawDescData
 }
 
-var file_adhan_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_adhan_service_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_adhan_service_proto_goTypes = []any{
-	(*AdhanFile)(nil),               // 0: limestone.AdhanFile
-	(*CreateAdhanFileRequest)(nil),  // 1: limestone.CreateAdhanFileRequest
-	(*UpdateAdhanFileRequest)(nil),  // 2: limestone.UpdateAdhanFileRequest
-	(*GetAdhanFileRequest)(nil),     // 3: limestone.GetAdhanFileRequest
-	(*DeleteAdhanFileRequest)(nil),  // 4: limestone.DeleteAdhanFileRequest
-	(*DeleteAdhanFileResponse)(nil), // 5: limestone.DeleteAdhanFileResponse
-	(*timestamppb.Timestamp)(nil),   // 6: google.protobuf.Timestamp
+	(*StandardAdhanResponse)(nil),   // 0: limestone.StandardAdhanResponse
+	(*AdhanFile)(nil),               // 1: limestone.AdhanFile
+	(*CreateAdhanFileRequest)(nil),  // 2: limestone.CreateAdhanFileRequest
+	(*UpdateAdhanFileRequest)(nil),  // 3: limestone.UpdateAdhanFileRequest
+	(*GetAdhanFileRequest)(nil),     // 4: limestone.GetAdhanFileRequest
+	(*DeleteAdhanFileRequest)(nil),  // 5: limestone.DeleteAdhanFileRequest
+	(*DeleteAdhanFileResponse)(nil), // 6: limestone.DeleteAdhanFileResponse
+	(*timestamppb.Timestamp)(nil),   // 7: google.protobuf.Timestamp
 }
 var file_adhan_service_proto_depIdxs = []int32{
-	6, // 0: limestone.AdhanFile.create_time:type_name -> google.protobuf.Timestamp
-	6, // 1: limestone.AdhanFile.update_time:type_name -> google.protobuf.Timestamp
-	0, // 2: limestone.CreateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
-	0, // 3: limestone.UpdateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
-	1, // 4: limestone.AdhanService.CreateAdhanFile:input_type -> limestone.CreateAdhanFileRequest
-	2, // 5: limestone.AdhanService.UpdateAdhanFile:input_type -> limestone.UpdateAdhanFileRequest
-	3, // 6: limestone.AdhanService.GetAdhanFile:input_type -> limestone.GetAdhanFileRequest
-	4, // 7: limestone.AdhanService.DeleteAdhanFile:input_type -> limestone.DeleteAdhanFileRequest
-	0, // 8: limestone.AdhanService.CreateAdhanFile:output_type -> limestone.AdhanFile
-	0, // 9: limestone.AdhanService.UpdateAdhanFile:output_type -> limestone.AdhanFile
-	0, // 10: limestone.AdhanService.GetAdhanFile:output_type -> limestone.AdhanFile
-	5, // 11: limestone.AdhanService.DeleteAdhanFile:output_type -> limestone.DeleteAdhanFileResponse
-	8, // [8:12] is the sub-list for method output_type
-	4, // [4:8] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	6, // 0: limestone.StandardAdhanResponse.DeleteAdhanFileResponse:type_name -> limestone.DeleteAdhanFileResponse
+	7, // 1: limestone.AdhanFile.create_time:type_name -> google.protobuf.Timestamp
+	7, // 2: limestone.AdhanFile.update_time:type_name -> google.protobuf.Timestamp
+	1, // 3: limestone.CreateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
+	1, // 4: limestone.UpdateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
+	2, // 5: limestone.AdhanService.CreateAdhan:input_type -> limestone.CreateAdhanFileRequest
+	3, // 6: limestone.AdhanService.UpdateAdhan:input_type -> limestone.UpdateAdhanFileRequest
+	4, // 7: limestone.AdhanService.GetAdhanById:input_type -> limestone.GetAdhanFileRequest
+	5, // 8: limestone.AdhanService.DeleteAdhan:input_type -> limestone.DeleteAdhanFileRequest
+	1, // 9: limestone.AdhanService.CreateAdhan:output_type -> limestone.AdhanFile
+	1, // 10: limestone.AdhanService.UpdateAdhan:output_type -> limestone.AdhanFile
+	1, // 11: limestone.AdhanService.GetAdhanById:output_type -> limestone.AdhanFile
+	0, // 12: limestone.AdhanService.DeleteAdhan:output_type -> limestone.StandardAdhanResponse
+	9, // [9:13] is the sub-list for method output_type
+	5, // [5:9] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_adhan_service_proto_init() }
@@ -402,13 +500,16 @@ func file_adhan_service_proto_init() {
 	if File_adhan_service_proto != nil {
 		return
 	}
+	file_adhan_service_proto_msgTypes[0].OneofWrappers = []any{
+		(*StandardAdhanResponse_DeleteAdhanFileResponse)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_adhan_service_proto_rawDesc), len(file_adhan_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

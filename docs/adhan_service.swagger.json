@@ -16,9 +16,9 @@
     "application/json"
   ],
   "paths": {
-    "/v1/adhan/files": {
+    "/v1/adhan": {
       "post": {
-        "operationId": "AdhanService_CreateAdhanFile",
+        "operationId": "AdhanService_CreateAdhan",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -53,7 +53,7 @@
     },
     "/v1/adhan/{id}": {
       "get": {
-        "operationId": "AdhanService_GetAdhanFile",
+        "operationId": "AdhanService_GetAdhanById",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -81,12 +81,12 @@
         ]
       },
       "delete": {
-        "operationId": "AdhanService_DeleteAdhanFile",
+        "operationId": "AdhanService_DeleteAdhan",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneDeleteAdhanFileResponse"
+              "$ref": "#/definitions/limestoneStandardAdhanResponse"
             }
           },
           "default": {
@@ -109,7 +109,7 @@
         ]
       },
       "patch": {
-        "operationId": "AdhanService_UpdateAdhanFile",
+        "operationId": "AdhanService_UpdateAdhan",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -175,6 +175,23 @@
     },
     "limestoneDeleteAdhanFileResponse": {
       "type": "object"
+    },
+    "limestoneStandardAdhanResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "DeleteAdhanFileResponse": {
+          "$ref": "#/definitions/limestoneDeleteAdhanFileResponse"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",
