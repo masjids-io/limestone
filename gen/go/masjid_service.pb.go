@@ -96,7 +96,7 @@ func (x PrayerTimesConfiguration_CalculationMethod) Number() protoreflect.EnumNu
 
 // Deprecated: Use PrayerTimesConfiguration_CalculationMethod.Descriptor instead.
 func (PrayerTimesConfiguration_CalculationMethod) EnumDescriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{0, 0}
+	return file_masjid_service_proto_rawDescGZIP(), []int{1, 0}
 }
 
 type PrayerTimesConfiguration_AsrJuristicMethod int32
@@ -142,7 +142,7 @@ func (x PrayerTimesConfiguration_AsrJuristicMethod) Number() protoreflect.EnumNu
 
 // Deprecated: Use PrayerTimesConfiguration_AsrJuristicMethod.Descriptor instead.
 func (PrayerTimesConfiguration_AsrJuristicMethod) EnumDescriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{0, 1}
+	return file_masjid_service_proto_rawDescGZIP(), []int{1, 1}
 }
 
 type PrayerTimesConfiguration_HighLatitudeRule int32
@@ -194,8 +194,146 @@ func (x PrayerTimesConfiguration_HighLatitudeRule) Number() protoreflect.EnumNum
 
 // Deprecated: Use PrayerTimesConfiguration_HighLatitudeRule.Descriptor instead.
 func (PrayerTimesConfiguration_HighLatitudeRule) EnumDescriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{0, 2}
+	return file_masjid_service_proto_rawDescGZIP(), []int{1, 2}
 }
+
+type StandardMasjidResponse struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Code    string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Status  string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	Message string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	// Types that are valid to be assigned to Data:
+	//
+	//	*StandardMasjidResponse_Masjid
+	//	*StandardMasjidResponse_DeleteMasjidResponse
+	//	*StandardMasjidResponse_ListMasjidResponse
+	//	*StandardMasjidResponse_GetMasjidResponse
+	Data          isStandardMasjidResponse_Data `protobuf_oneof:"data"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StandardMasjidResponse) Reset() {
+	*x = StandardMasjidResponse{}
+	mi := &file_masjid_service_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StandardMasjidResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StandardMasjidResponse) ProtoMessage() {}
+
+func (x *StandardMasjidResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_masjid_service_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StandardMasjidResponse.ProtoReflect.Descriptor instead.
+func (*StandardMasjidResponse) Descriptor() ([]byte, []int) {
+	return file_masjid_service_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *StandardMasjidResponse) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *StandardMasjidResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *StandardMasjidResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *StandardMasjidResponse) GetData() isStandardMasjidResponse_Data {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *StandardMasjidResponse) GetMasjid() *Masjid {
+	if x != nil {
+		if x, ok := x.Data.(*StandardMasjidResponse_Masjid); ok {
+			return x.Masjid
+		}
+	}
+	return nil
+}
+
+func (x *StandardMasjidResponse) GetDeleteMasjidResponse() *DeleteMasjidResponse {
+	if x != nil {
+		if x, ok := x.Data.(*StandardMasjidResponse_DeleteMasjidResponse); ok {
+			return x.DeleteMasjidResponse
+		}
+	}
+	return nil
+}
+
+func (x *StandardMasjidResponse) GetListMasjidResponse() *ListMasjidsResponse {
+	if x != nil {
+		if x, ok := x.Data.(*StandardMasjidResponse_ListMasjidResponse); ok {
+			return x.ListMasjidResponse
+		}
+	}
+	return nil
+}
+
+func (x *StandardMasjidResponse) GetGetMasjidResponse() *GetMasjidRequest {
+	if x != nil {
+		if x, ok := x.Data.(*StandardMasjidResponse_GetMasjidResponse); ok {
+			return x.GetMasjidResponse
+		}
+	}
+	return nil
+}
+
+type isStandardMasjidResponse_Data interface {
+	isStandardMasjidResponse_Data()
+}
+
+type StandardMasjidResponse_Masjid struct {
+	Masjid *Masjid `protobuf:"bytes,4,opt,name=Masjid,proto3,oneof"`
+}
+
+type StandardMasjidResponse_DeleteMasjidResponse struct {
+	DeleteMasjidResponse *DeleteMasjidResponse `protobuf:"bytes,5,opt,name=delete_masjid_response,json=deleteMasjidResponse,proto3,oneof"`
+}
+
+type StandardMasjidResponse_ListMasjidResponse struct {
+	ListMasjidResponse *ListMasjidsResponse `protobuf:"bytes,6,opt,name=list_masjid_response,json=listMasjidResponse,proto3,oneof"`
+}
+
+type StandardMasjidResponse_GetMasjidResponse struct {
+	GetMasjidResponse *GetMasjidRequest `protobuf:"bytes,7,opt,name=get_masjid_response,json=getMasjidResponse,proto3,oneof"`
+}
+
+func (*StandardMasjidResponse_Masjid) isStandardMasjidResponse_Data() {}
+
+func (*StandardMasjidResponse_DeleteMasjidResponse) isStandardMasjidResponse_Data() {}
+
+func (*StandardMasjidResponse_ListMasjidResponse) isStandardMasjidResponse_Data() {}
+
+func (*StandardMasjidResponse_GetMasjidResponse) isStandardMasjidResponse_Data() {}
 
 type PrayerTimesConfiguration struct {
 	state            protoimpl.MessageState                      `protogen:"open.v1"`
@@ -212,7 +350,7 @@ type PrayerTimesConfiguration struct {
 
 func (x *PrayerTimesConfiguration) Reset() {
 	*x = PrayerTimesConfiguration{}
-	mi := &file_masjid_service_proto_msgTypes[0]
+	mi := &file_masjid_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -224,7 +362,7 @@ func (x *PrayerTimesConfiguration) String() string {
 func (*PrayerTimesConfiguration) ProtoMessage() {}
 
 func (x *PrayerTimesConfiguration) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[0]
+	mi := &file_masjid_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -237,7 +375,7 @@ func (x *PrayerTimesConfiguration) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PrayerTimesConfiguration.ProtoReflect.Descriptor instead.
 func (*PrayerTimesConfiguration) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{0}
+	return file_masjid_service_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PrayerTimesConfiguration) GetMethod() PrayerTimesConfiguration_CalculationMethod {
@@ -305,7 +443,7 @@ type Masjid struct {
 
 func (x *Masjid) Reset() {
 	*x = Masjid{}
-	mi := &file_masjid_service_proto_msgTypes[1]
+	mi := &file_masjid_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -317,7 +455,7 @@ func (x *Masjid) String() string {
 func (*Masjid) ProtoMessage() {}
 
 func (x *Masjid) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[1]
+	mi := &file_masjid_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -330,7 +468,7 @@ func (x *Masjid) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Masjid.ProtoReflect.Descriptor instead.
 func (*Masjid) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{1}
+	return file_masjid_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Masjid) GetId() string {
@@ -398,7 +536,7 @@ type CreateMasjidRequest struct {
 
 func (x *CreateMasjidRequest) Reset() {
 	*x = CreateMasjidRequest{}
-	mi := &file_masjid_service_proto_msgTypes[2]
+	mi := &file_masjid_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -410,7 +548,7 @@ func (x *CreateMasjidRequest) String() string {
 func (*CreateMasjidRequest) ProtoMessage() {}
 
 func (x *CreateMasjidRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[2]
+	mi := &file_masjid_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -423,7 +561,7 @@ func (x *CreateMasjidRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateMasjidRequest.ProtoReflect.Descriptor instead.
 func (*CreateMasjidRequest) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{2}
+	return file_masjid_service_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CreateMasjidRequest) GetMasjid() *Masjid {
@@ -442,7 +580,7 @@ type UpdateMasjidRequest struct {
 
 func (x *UpdateMasjidRequest) Reset() {
 	*x = UpdateMasjidRequest{}
-	mi := &file_masjid_service_proto_msgTypes[3]
+	mi := &file_masjid_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -454,7 +592,7 @@ func (x *UpdateMasjidRequest) String() string {
 func (*UpdateMasjidRequest) ProtoMessage() {}
 
 func (x *UpdateMasjidRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[3]
+	mi := &file_masjid_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -467,7 +605,7 @@ func (x *UpdateMasjidRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateMasjidRequest.ProtoReflect.Descriptor instead.
 func (*UpdateMasjidRequest) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{3}
+	return file_masjid_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateMasjidRequest) GetMasjid() *Masjid {
@@ -486,7 +624,7 @@ type DeleteMasjidRequest struct {
 
 func (x *DeleteMasjidRequest) Reset() {
 	*x = DeleteMasjidRequest{}
-	mi := &file_masjid_service_proto_msgTypes[4]
+	mi := &file_masjid_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -498,7 +636,7 @@ func (x *DeleteMasjidRequest) String() string {
 func (*DeleteMasjidRequest) ProtoMessage() {}
 
 func (x *DeleteMasjidRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[4]
+	mi := &file_masjid_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -511,7 +649,7 @@ func (x *DeleteMasjidRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteMasjidRequest.ProtoReflect.Descriptor instead.
 func (*DeleteMasjidRequest) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{4}
+	return file_masjid_service_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DeleteMasjidRequest) GetId() string {
@@ -529,7 +667,7 @@ type DeleteMasjidResponse struct {
 
 func (x *DeleteMasjidResponse) Reset() {
 	*x = DeleteMasjidResponse{}
-	mi := &file_masjid_service_proto_msgTypes[5]
+	mi := &file_masjid_service_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -541,7 +679,7 @@ func (x *DeleteMasjidResponse) String() string {
 func (*DeleteMasjidResponse) ProtoMessage() {}
 
 func (x *DeleteMasjidResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[5]
+	mi := &file_masjid_service_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -554,7 +692,7 @@ func (x *DeleteMasjidResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteMasjidResponse.ProtoReflect.Descriptor instead.
 func (*DeleteMasjidResponse) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{5}
+	return file_masjid_service_proto_rawDescGZIP(), []int{6}
 }
 
 type GetMasjidRequest struct {
@@ -566,7 +704,7 @@ type GetMasjidRequest struct {
 
 func (x *GetMasjidRequest) Reset() {
 	*x = GetMasjidRequest{}
-	mi := &file_masjid_service_proto_msgTypes[6]
+	mi := &file_masjid_service_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -578,7 +716,7 @@ func (x *GetMasjidRequest) String() string {
 func (*GetMasjidRequest) ProtoMessage() {}
 
 func (x *GetMasjidRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[6]
+	mi := &file_masjid_service_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -591,7 +729,7 @@ func (x *GetMasjidRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMasjidRequest.ProtoReflect.Descriptor instead.
 func (*GetMasjidRequest) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{6}
+	return file_masjid_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetMasjidRequest) GetId() string {
@@ -611,7 +749,7 @@ type ListMasjidsRequest struct {
 
 func (x *ListMasjidsRequest) Reset() {
 	*x = ListMasjidsRequest{}
-	mi := &file_masjid_service_proto_msgTypes[7]
+	mi := &file_masjid_service_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -623,7 +761,7 @@ func (x *ListMasjidsRequest) String() string {
 func (*ListMasjidsRequest) ProtoMessage() {}
 
 func (x *ListMasjidsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[7]
+	mi := &file_masjid_service_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -636,7 +774,7 @@ func (x *ListMasjidsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMasjidsRequest.ProtoReflect.Descriptor instead.
 func (*ListMasjidsRequest) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{7}
+	return file_masjid_service_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ListMasjidsRequest) GetPageSize() int32 {
@@ -662,7 +800,7 @@ type ListMasjidsResponse struct {
 
 func (x *ListMasjidsResponse) Reset() {
 	*x = ListMasjidsResponse{}
-	mi := &file_masjid_service_proto_msgTypes[8]
+	mi := &file_masjid_service_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -674,7 +812,7 @@ func (x *ListMasjidsResponse) String() string {
 func (*ListMasjidsResponse) ProtoMessage() {}
 
 func (x *ListMasjidsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[8]
+	mi := &file_masjid_service_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -687,7 +825,7 @@ func (x *ListMasjidsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListMasjidsResponse.ProtoReflect.Descriptor instead.
 func (*ListMasjidsResponse) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{8}
+	return file_masjid_service_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ListMasjidsResponse) GetMasjids() []*Masjid {
@@ -710,7 +848,7 @@ type PrayerTimesConfiguration_PrayerAdjustments struct {
 
 func (x *PrayerTimesConfiguration_PrayerAdjustments) Reset() {
 	*x = PrayerTimesConfiguration_PrayerAdjustments{}
-	mi := &file_masjid_service_proto_msgTypes[9]
+	mi := &file_masjid_service_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -722,7 +860,7 @@ func (x *PrayerTimesConfiguration_PrayerAdjustments) String() string {
 func (*PrayerTimesConfiguration_PrayerAdjustments) ProtoMessage() {}
 
 func (x *PrayerTimesConfiguration_PrayerAdjustments) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[9]
+	mi := &file_masjid_service_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -735,7 +873,7 @@ func (x *PrayerTimesConfiguration_PrayerAdjustments) ProtoReflect() protoreflect
 
 // Deprecated: Use PrayerTimesConfiguration_PrayerAdjustments.ProtoReflect.Descriptor instead.
 func (*PrayerTimesConfiguration_PrayerAdjustments) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{0, 0}
+	return file_masjid_service_proto_rawDescGZIP(), []int{1, 0}
 }
 
 func (x *PrayerTimesConfiguration_PrayerAdjustments) GetFajrAdjustment() int32 {
@@ -787,7 +925,7 @@ type Masjid_Address struct {
 
 func (x *Masjid_Address) Reset() {
 	*x = Masjid_Address{}
-	mi := &file_masjid_service_proto_msgTypes[10]
+	mi := &file_masjid_service_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -799,7 +937,7 @@ func (x *Masjid_Address) String() string {
 func (*Masjid_Address) ProtoMessage() {}
 
 func (x *Masjid_Address) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[10]
+	mi := &file_masjid_service_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -812,7 +950,7 @@ func (x *Masjid_Address) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Masjid_Address.ProtoReflect.Descriptor instead.
 func (*Masjid_Address) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{1, 0}
+	return file_masjid_service_proto_rawDescGZIP(), []int{2, 0}
 }
 
 func (x *Masjid_Address) GetAddressLine_1() string {
@@ -868,7 +1006,7 @@ type Masjid_PhoneNumber struct {
 
 func (x *Masjid_PhoneNumber) Reset() {
 	*x = Masjid_PhoneNumber{}
-	mi := &file_masjid_service_proto_msgTypes[11]
+	mi := &file_masjid_service_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -880,7 +1018,7 @@ func (x *Masjid_PhoneNumber) String() string {
 func (*Masjid_PhoneNumber) ProtoMessage() {}
 
 func (x *Masjid_PhoneNumber) ProtoReflect() protoreflect.Message {
-	mi := &file_masjid_service_proto_msgTypes[11]
+	mi := &file_masjid_service_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -893,7 +1031,7 @@ func (x *Masjid_PhoneNumber) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Masjid_PhoneNumber.ProtoReflect.Descriptor instead.
 func (*Masjid_PhoneNumber) Descriptor() ([]byte, []int) {
-	return file_masjid_service_proto_rawDescGZIP(), []int{1, 1}
+	return file_masjid_service_proto_rawDescGZIP(), []int{2, 1}
 }
 
 func (x *Masjid_PhoneNumber) GetCountryCode() string {
@@ -921,7 +1059,16 @@ var File_masjid_service_proto protoreflect.FileDescriptor
 
 const file_masjid_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14masjid_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xca\b\n" +
+	"\x14masjid_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8f\x03\n" +
+	"\x16StandardMasjidResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\x12+\n" +
+	"\x06Masjid\x18\x04 \x01(\v2\x11.limestone.MasjidH\x00R\x06Masjid\x12W\n" +
+	"\x16delete_masjid_response\x18\x05 \x01(\v2\x1f.limestone.DeleteMasjidResponseH\x00R\x14deleteMasjidResponse\x12R\n" +
+	"\x14list_masjid_response\x18\x06 \x01(\v2\x1e.limestone.ListMasjidsResponseH\x00R\x12listMasjidResponse\x12M\n" +
+	"\x13get_masjid_response\x18\a \x01(\v2\x1b.limestone.GetMasjidRequestH\x00R\x11getMasjidResponseB\x06\n" +
+	"\x04data\"\xca\b\n" +
 	"\x18PrayerTimesConfiguration\x12M\n" +
 	"\x06method\x18\x01 \x01(\x0e25.limestone.PrayerTimesConfiguration.CalculationMethodR\x06method\x12\x1d\n" +
 	"\n" +
@@ -1002,15 +1149,15 @@ const file_masjid_service_proto_rawDesc = "" +
 	"\n" +
 	"page_token\x18\x03 \x01(\tR\tpageToken\"B\n" +
 	"\x13ListMasjidsResponse\x12+\n" +
-	"\amasjids\x18\x01 \x03(\v2\x11.limestone.MasjidR\amasjids2\x8c\x04\n" +
-	"\rMasjidService\x12f\n" +
-	"\fCreateMasjid\x12\x1e.limestone.CreateMasjidRequest\x1a\x11.limestone.Masjid\"#\xdaA\x06masjid\x82\xd3\xe4\x93\x02\x14:\x06masjid\"\n" +
-	"/v1/masjid\x12f\n" +
-	"\fUpdateMasjid\x12\x1e.limestone.UpdateMasjidRequest\x1a\x11.limestone.Masjid\"#\xdaA\x06masjid\x82\xd3\xe4\x93\x02\x14:\x06masjid2\n" +
-	"/v1/masjid\x12Y\n" +
-	"\tGetMasjid\x12\x1b.limestone.GetMasjidRequest\x1a\x11.limestone.Masjid\"\x1c\xdaA\x02id\x82\xd3\xe4\x93\x02\x11\x12\x0f/v1/masjid/{id}\x12m\n" +
-	"\fDeleteMasjid\x12\x1e.limestone.DeleteMasjidRequest\x1a\x1f.limestone.DeleteMasjidResponse\"\x1c\xdaA\x02id\x82\xd3\xe4\x93\x02\x11*\x0f/v1/masjid/{id}\x12a\n" +
-	"\vListMasjids\x12\x1d.limestone.ListMasjidsRequest\x1a\x1e.limestone.ListMasjidsResponse\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/v1/masjidsBj\n" +
+	"\amasjids\x18\x01 \x03(\v2\x11.limestone.MasjidR\amasjids2\xc1\x04\n" +
+	"\rMasjidService\x12v\n" +
+	"\fCreateMasjid\x12\x1e.limestone.CreateMasjidRequest\x1a!.limestone.StandardMasjidResponse\"#\xdaA\x06masjid\x82\xd3\xe4\x93\x02\x14:\x06masjid\"\n" +
+	"/v1/masjid\x12v\n" +
+	"\fUpdateMasjid\x12\x1e.limestone.UpdateMasjidRequest\x1a!.limestone.StandardMasjidResponse\"#\xdaA\x06masjid\x82\xd3\xe4\x93\x02\x14:\x06masjid2\n" +
+	"/v1/masjid\x12i\n" +
+	"\tGetMasjid\x12\x1b.limestone.GetMasjidRequest\x1a!.limestone.StandardMasjidResponse\"\x1c\xdaA\x02id\x82\xd3\xe4\x93\x02\x11\x12\x0f/v1/masjid/{id}\x12o\n" +
+	"\fDeleteMasjid\x12\x1e.limestone.DeleteMasjidRequest\x1a!.limestone.StandardMasjidResponse\"\x1c\xdaA\x02id\x82\xd3\xe4\x93\x02\x11*\x0f/v1/masjid/{id}\x12d\n" +
+	"\vListMasjids\x12\x1d.limestone.ListMasjidsRequest\x1a!.limestone.StandardMasjidResponse\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/v1/masjidsBj\n" +
 	"\rcom.limestoneB\x12MasjidServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
 
 var (
@@ -1026,53 +1173,58 @@ func file_masjid_service_proto_rawDescGZIP() []byte {
 }
 
 var file_masjid_service_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_masjid_service_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_masjid_service_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_masjid_service_proto_goTypes = []any{
 	(PrayerTimesConfiguration_CalculationMethod)(0),    // 0: limestone.PrayerTimesConfiguration.CalculationMethod
 	(PrayerTimesConfiguration_AsrJuristicMethod)(0),    // 1: limestone.PrayerTimesConfiguration.AsrJuristicMethod
 	(PrayerTimesConfiguration_HighLatitudeRule)(0),     // 2: limestone.PrayerTimesConfiguration.HighLatitudeRule
-	(*PrayerTimesConfiguration)(nil),                   // 3: limestone.PrayerTimesConfiguration
-	(*Masjid)(nil),                                     // 4: limestone.Masjid
-	(*CreateMasjidRequest)(nil),                        // 5: limestone.CreateMasjidRequest
-	(*UpdateMasjidRequest)(nil),                        // 6: limestone.UpdateMasjidRequest
-	(*DeleteMasjidRequest)(nil),                        // 7: limestone.DeleteMasjidRequest
-	(*DeleteMasjidResponse)(nil),                       // 8: limestone.DeleteMasjidResponse
-	(*GetMasjidRequest)(nil),                           // 9: limestone.GetMasjidRequest
-	(*ListMasjidsRequest)(nil),                         // 10: limestone.ListMasjidsRequest
-	(*ListMasjidsResponse)(nil),                        // 11: limestone.ListMasjidsResponse
-	(*PrayerTimesConfiguration_PrayerAdjustments)(nil), // 12: limestone.PrayerTimesConfiguration.PrayerAdjustments
-	(*Masjid_Address)(nil),                             // 13: limestone.Masjid.Address
-	(*Masjid_PhoneNumber)(nil),                         // 14: limestone.Masjid.PhoneNumber
-	(*timestamppb.Timestamp)(nil),                      // 15: google.protobuf.Timestamp
+	(*StandardMasjidResponse)(nil),                     // 3: limestone.StandardMasjidResponse
+	(*PrayerTimesConfiguration)(nil),                   // 4: limestone.PrayerTimesConfiguration
+	(*Masjid)(nil),                                     // 5: limestone.Masjid
+	(*CreateMasjidRequest)(nil),                        // 6: limestone.CreateMasjidRequest
+	(*UpdateMasjidRequest)(nil),                        // 7: limestone.UpdateMasjidRequest
+	(*DeleteMasjidRequest)(nil),                        // 8: limestone.DeleteMasjidRequest
+	(*DeleteMasjidResponse)(nil),                       // 9: limestone.DeleteMasjidResponse
+	(*GetMasjidRequest)(nil),                           // 10: limestone.GetMasjidRequest
+	(*ListMasjidsRequest)(nil),                         // 11: limestone.ListMasjidsRequest
+	(*ListMasjidsResponse)(nil),                        // 12: limestone.ListMasjidsResponse
+	(*PrayerTimesConfiguration_PrayerAdjustments)(nil), // 13: limestone.PrayerTimesConfiguration.PrayerAdjustments
+	(*Masjid_Address)(nil),                             // 14: limestone.Masjid.Address
+	(*Masjid_PhoneNumber)(nil),                         // 15: limestone.Masjid.PhoneNumber
+	(*timestamppb.Timestamp)(nil),                      // 16: google.protobuf.Timestamp
 }
 var file_masjid_service_proto_depIdxs = []int32{
-	0,  // 0: limestone.PrayerTimesConfiguration.method:type_name -> limestone.PrayerTimesConfiguration.CalculationMethod
-	1,  // 1: limestone.PrayerTimesConfiguration.asr_method:type_name -> limestone.PrayerTimesConfiguration.AsrJuristicMethod
-	2,  // 2: limestone.PrayerTimesConfiguration.high_latitude_rule:type_name -> limestone.PrayerTimesConfiguration.HighLatitudeRule
-	12, // 3: limestone.PrayerTimesConfiguration.adjustments:type_name -> limestone.PrayerTimesConfiguration.PrayerAdjustments
-	13, // 4: limestone.Masjid.address:type_name -> limestone.Masjid.Address
-	14, // 5: limestone.Masjid.phone_number:type_name -> limestone.Masjid.PhoneNumber
-	3,  // 6: limestone.Masjid.prayer_config:type_name -> limestone.PrayerTimesConfiguration
-	15, // 7: limestone.Masjid.create_time:type_name -> google.protobuf.Timestamp
-	15, // 8: limestone.Masjid.update_time:type_name -> google.protobuf.Timestamp
-	4,  // 9: limestone.CreateMasjidRequest.masjid:type_name -> limestone.Masjid
-	4,  // 10: limestone.UpdateMasjidRequest.masjid:type_name -> limestone.Masjid
-	4,  // 11: limestone.ListMasjidsResponse.masjids:type_name -> limestone.Masjid
-	5,  // 12: limestone.MasjidService.CreateMasjid:input_type -> limestone.CreateMasjidRequest
-	6,  // 13: limestone.MasjidService.UpdateMasjid:input_type -> limestone.UpdateMasjidRequest
-	9,  // 14: limestone.MasjidService.GetMasjid:input_type -> limestone.GetMasjidRequest
-	7,  // 15: limestone.MasjidService.DeleteMasjid:input_type -> limestone.DeleteMasjidRequest
-	10, // 16: limestone.MasjidService.ListMasjids:input_type -> limestone.ListMasjidsRequest
-	4,  // 17: limestone.MasjidService.CreateMasjid:output_type -> limestone.Masjid
-	4,  // 18: limestone.MasjidService.UpdateMasjid:output_type -> limestone.Masjid
-	4,  // 19: limestone.MasjidService.GetMasjid:output_type -> limestone.Masjid
-	8,  // 20: limestone.MasjidService.DeleteMasjid:output_type -> limestone.DeleteMasjidResponse
-	11, // 21: limestone.MasjidService.ListMasjids:output_type -> limestone.ListMasjidsResponse
-	17, // [17:22] is the sub-list for method output_type
-	12, // [12:17] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	5,  // 0: limestone.StandardMasjidResponse.Masjid:type_name -> limestone.Masjid
+	9,  // 1: limestone.StandardMasjidResponse.delete_masjid_response:type_name -> limestone.DeleteMasjidResponse
+	12, // 2: limestone.StandardMasjidResponse.list_masjid_response:type_name -> limestone.ListMasjidsResponse
+	10, // 3: limestone.StandardMasjidResponse.get_masjid_response:type_name -> limestone.GetMasjidRequest
+	0,  // 4: limestone.PrayerTimesConfiguration.method:type_name -> limestone.PrayerTimesConfiguration.CalculationMethod
+	1,  // 5: limestone.PrayerTimesConfiguration.asr_method:type_name -> limestone.PrayerTimesConfiguration.AsrJuristicMethod
+	2,  // 6: limestone.PrayerTimesConfiguration.high_latitude_rule:type_name -> limestone.PrayerTimesConfiguration.HighLatitudeRule
+	13, // 7: limestone.PrayerTimesConfiguration.adjustments:type_name -> limestone.PrayerTimesConfiguration.PrayerAdjustments
+	14, // 8: limestone.Masjid.address:type_name -> limestone.Masjid.Address
+	15, // 9: limestone.Masjid.phone_number:type_name -> limestone.Masjid.PhoneNumber
+	4,  // 10: limestone.Masjid.prayer_config:type_name -> limestone.PrayerTimesConfiguration
+	16, // 11: limestone.Masjid.create_time:type_name -> google.protobuf.Timestamp
+	16, // 12: limestone.Masjid.update_time:type_name -> google.protobuf.Timestamp
+	5,  // 13: limestone.CreateMasjidRequest.masjid:type_name -> limestone.Masjid
+	5,  // 14: limestone.UpdateMasjidRequest.masjid:type_name -> limestone.Masjid
+	5,  // 15: limestone.ListMasjidsResponse.masjids:type_name -> limestone.Masjid
+	6,  // 16: limestone.MasjidService.CreateMasjid:input_type -> limestone.CreateMasjidRequest
+	7,  // 17: limestone.MasjidService.UpdateMasjid:input_type -> limestone.UpdateMasjidRequest
+	10, // 18: limestone.MasjidService.GetMasjid:input_type -> limestone.GetMasjidRequest
+	8,  // 19: limestone.MasjidService.DeleteMasjid:input_type -> limestone.DeleteMasjidRequest
+	11, // 20: limestone.MasjidService.ListMasjids:input_type -> limestone.ListMasjidsRequest
+	3,  // 21: limestone.MasjidService.CreateMasjid:output_type -> limestone.StandardMasjidResponse
+	3,  // 22: limestone.MasjidService.UpdateMasjid:output_type -> limestone.StandardMasjidResponse
+	3,  // 23: limestone.MasjidService.GetMasjid:output_type -> limestone.StandardMasjidResponse
+	3,  // 24: limestone.MasjidService.DeleteMasjid:output_type -> limestone.StandardMasjidResponse
+	3,  // 25: limestone.MasjidService.ListMasjids:output_type -> limestone.StandardMasjidResponse
+	21, // [21:26] is the sub-list for method output_type
+	16, // [16:21] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_masjid_service_proto_init() }
@@ -1080,13 +1232,19 @@ func file_masjid_service_proto_init() {
 	if File_masjid_service_proto != nil {
 		return
 	}
+	file_masjid_service_proto_msgTypes[0].OneofWrappers = []any{
+		(*StandardMasjidResponse_Masjid)(nil),
+		(*StandardMasjidResponse_DeleteMasjidResponse)(nil),
+		(*StandardMasjidResponse_ListMasjidResponse)(nil),
+		(*StandardMasjidResponse_GetMasjidResponse)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_masjid_service_proto_rawDesc), len(file_masjid_service_proto_rawDesc)),
 			NumEnums:      3,
-			NumMessages:   12,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

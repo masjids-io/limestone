@@ -7,11 +7,11 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
-	services "github.com/mnadev/limestone/internal/application/services"
-	auth2 "github.com/mnadev/limestone/internal/infrastructure/auth"
+	"github.com/mnadev/limestone/internal/application/helper"
+	"github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 	"time"
 )
@@ -49,7 +49,7 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 	if len(password) < 8 {
 		return nil, status.Errorf(codes.InvalidArgument, "password must be at least 8 characters")
 	}
-	hashPassword, err := auth2.HashPassword(password)
+	hashPassword, err := auth.HashPassword(password)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
@@ -71,25 +71,7 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 		}
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
-	return &pb.StandardUserResponse{
-		Code:    codes.OK.String(),
-		Status:  "success",
-		Message: "user created successfully",
-		Data: &pb.StandardUserResponse_AddUserResponse{
-			AddUserResponse: &pb.User{
-				Id:              responseCreatedUser.ID.String(),
-				Email:           responseCreatedUser.Email,
-				Username:        responseCreatedUser.Username,
-				IsEmailVerified: responseCreatedUser.IsVerified,
-				FirstName:       responseCreatedUser.FirstName,
-				LastName:        responseCreatedUser.LastName,
-				PhoneNumber:     responseCreatedUser.PhoneNumber,
-				Gender:          pb.User_Gender(pb.User_Gender_value[responseCreatedUser.Gender.String()]),
-				CreateTime:      timestamppb.New(responseCreatedUser.CreatedAt),
-				UpdateTime:      timestamppb.New(responseCreatedUser.UpdatedAt),
-			},
-		},
-	}, nil
+	return helper.StandardUserResponse(codes.OK, "success", "user created successfully", responseCreatedUser, nil)
 }
 
 func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.StandardUserResponse, error) {
@@ -98,30 +80,11 @@ func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (
 	if err != nil {
 		return nil, status.Errorf(codes.Canceled, err.Error())
 	}
-	return &pb.StandardUserResponse{
-		Code:    codes.OK.String(),
-		Status:  "success",
-		Message: "user retrieved successfully",
-		Data: &pb.StandardUserResponse_GetUserResponse{
-			GetUserResponse: &pb.User{
-				Id:              user.ID.String(),
-				Email:           user.Email,
-				Username:        user.Username,
-				IsEmailVerified: user.IsVerified,
-				FirstName:       user.FirstName,
-				LastName:        user.LastName,
-				PhoneNumber:     user.PhoneNumber,
-				Gender:          pb.User_Gender(pb.User_Gender_value[user.Gender.String()]),
-				CreateTime:      timestamppb.New(user.CreatedAt),
-				UpdateTime:      timestamppb.New(user.UpdatedAt),
-			},
-		},
-	}, nil
+	return helper.StandardUserResponse(codes.OK, "success", "user retrieved successfully", user, nil)
 }
 
 func (h *UserGrpcHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.StandardUserResponse, error) {
-	fmt.Println(req)
-	userIDStr := req.User.Id
+	userIDStr := req.User.GetId()
 	if userIDStr == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
 	}
@@ -152,25 +115,7 @@ func (h *UserGrpcHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequ
 		return nil, status.Errorf(codes.InvalidArgument, "failed to retrieve updated user")
 	}
 
-	return &pb.StandardUserResponse{
-		Code:    codes.OK.String(),
-		Status:  "success",
-		Message: "user updated successfully",
-		Data: &pb.StandardUserResponse_UpdateUserResponse{
-			UpdateUserResponse: &pb.User{
-				Id:              updatedUser.ID.String(),
-				Email:           updatedUser.Email,
-				Username:        updatedUser.Username,
-				IsEmailVerified: updatedUser.IsVerified,
-				FirstName:       updatedUser.FirstName,
-				LastName:        updatedUser.LastName,
-				PhoneNumber:     updatedUser.PhoneNumber,
-				Gender:          pb.User_Gender(pb.User_Gender_value[updatedUser.Gender.String()]),
-				CreateTime:      timestamppb.New(updatedUser.CreatedAt),
-				UpdateTime:      timestamppb.New(updatedUser.UpdatedAt),
-			},
-		},
-	}, nil
+	return helper.StandardUserResponse(codes.OK, "success", "user updated successfully", updatedUser, nil)
 }
 
 func (h *UserGrpcHandler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.StandardUserResponse, error) {
@@ -190,9 +135,6 @@ func (h *UserGrpcHandler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequ
 		return nil, status.Errorf(codes.InvalidArgument, "failed to retrieve Delete user")
 	}
 
-	return &pb.StandardUserResponse{
-		Code:    codes.OK.String(),
-		Status:  "success",
-		Message: "user deleted successfully",
-	}, nil
+	return helper.StandardUserResponse(codes.OK, "success", "user deleted successfully", nil, &pb.DeleteUserResponse{})
+
 }

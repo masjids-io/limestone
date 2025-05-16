@@ -30,11 +30,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MasjidServiceClient interface {
-	CreateMasjid(ctx context.Context, in *CreateMasjidRequest, opts ...grpc.CallOption) (*Masjid, error)
-	UpdateMasjid(ctx context.Context, in *UpdateMasjidRequest, opts ...grpc.CallOption) (*Masjid, error)
-	GetMasjid(ctx context.Context, in *GetMasjidRequest, opts ...grpc.CallOption) (*Masjid, error)
-	DeleteMasjid(ctx context.Context, in *DeleteMasjidRequest, opts ...grpc.CallOption) (*DeleteMasjidResponse, error)
-	ListMasjids(ctx context.Context, in *ListMasjidsRequest, opts ...grpc.CallOption) (*ListMasjidsResponse, error)
+	CreateMasjid(ctx context.Context, in *CreateMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error)
+	UpdateMasjid(ctx context.Context, in *UpdateMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error)
+	GetMasjid(ctx context.Context, in *GetMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error)
+	DeleteMasjid(ctx context.Context, in *DeleteMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error)
+	ListMasjids(ctx context.Context, in *ListMasjidsRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error)
 }
 
 type masjidServiceClient struct {
@@ -45,9 +45,9 @@ func NewMasjidServiceClient(cc grpc.ClientConnInterface) MasjidServiceClient {
 	return &masjidServiceClient{cc}
 }
 
-func (c *masjidServiceClient) CreateMasjid(ctx context.Context, in *CreateMasjidRequest, opts ...grpc.CallOption) (*Masjid, error) {
+func (c *masjidServiceClient) CreateMasjid(ctx context.Context, in *CreateMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Masjid)
+	out := new(StandardMasjidResponse)
 	err := c.cc.Invoke(ctx, MasjidService_CreateMasjid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -55,9 +55,9 @@ func (c *masjidServiceClient) CreateMasjid(ctx context.Context, in *CreateMasjid
 	return out, nil
 }
 
-func (c *masjidServiceClient) UpdateMasjid(ctx context.Context, in *UpdateMasjidRequest, opts ...grpc.CallOption) (*Masjid, error) {
+func (c *masjidServiceClient) UpdateMasjid(ctx context.Context, in *UpdateMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Masjid)
+	out := new(StandardMasjidResponse)
 	err := c.cc.Invoke(ctx, MasjidService_UpdateMasjid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -65,9 +65,9 @@ func (c *masjidServiceClient) UpdateMasjid(ctx context.Context, in *UpdateMasjid
 	return out, nil
 }
 
-func (c *masjidServiceClient) GetMasjid(ctx context.Context, in *GetMasjidRequest, opts ...grpc.CallOption) (*Masjid, error) {
+func (c *masjidServiceClient) GetMasjid(ctx context.Context, in *GetMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Masjid)
+	out := new(StandardMasjidResponse)
 	err := c.cc.Invoke(ctx, MasjidService_GetMasjid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -75,9 +75,9 @@ func (c *masjidServiceClient) GetMasjid(ctx context.Context, in *GetMasjidReques
 	return out, nil
 }
 
-func (c *masjidServiceClient) DeleteMasjid(ctx context.Context, in *DeleteMasjidRequest, opts ...grpc.CallOption) (*DeleteMasjidResponse, error) {
+func (c *masjidServiceClient) DeleteMasjid(ctx context.Context, in *DeleteMasjidRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteMasjidResponse)
+	out := new(StandardMasjidResponse)
 	err := c.cc.Invoke(ctx, MasjidService_DeleteMasjid_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -85,9 +85,9 @@ func (c *masjidServiceClient) DeleteMasjid(ctx context.Context, in *DeleteMasjid
 	return out, nil
 }
 
-func (c *masjidServiceClient) ListMasjids(ctx context.Context, in *ListMasjidsRequest, opts ...grpc.CallOption) (*ListMasjidsResponse, error) {
+func (c *masjidServiceClient) ListMasjids(ctx context.Context, in *ListMasjidsRequest, opts ...grpc.CallOption) (*StandardMasjidResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListMasjidsResponse)
+	out := new(StandardMasjidResponse)
 	err := c.cc.Invoke(ctx, MasjidService_ListMasjids_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -99,11 +99,11 @@ func (c *masjidServiceClient) ListMasjids(ctx context.Context, in *ListMasjidsRe
 // All implementations must embed UnimplementedMasjidServiceServer
 // for forward compatibility.
 type MasjidServiceServer interface {
-	CreateMasjid(context.Context, *CreateMasjidRequest) (*Masjid, error)
-	UpdateMasjid(context.Context, *UpdateMasjidRequest) (*Masjid, error)
-	GetMasjid(context.Context, *GetMasjidRequest) (*Masjid, error)
-	DeleteMasjid(context.Context, *DeleteMasjidRequest) (*DeleteMasjidResponse, error)
-	ListMasjids(context.Context, *ListMasjidsRequest) (*ListMasjidsResponse, error)
+	CreateMasjid(context.Context, *CreateMasjidRequest) (*StandardMasjidResponse, error)
+	UpdateMasjid(context.Context, *UpdateMasjidRequest) (*StandardMasjidResponse, error)
+	GetMasjid(context.Context, *GetMasjidRequest) (*StandardMasjidResponse, error)
+	DeleteMasjid(context.Context, *DeleteMasjidRequest) (*StandardMasjidResponse, error)
+	ListMasjids(context.Context, *ListMasjidsRequest) (*StandardMasjidResponse, error)
 	mustEmbedUnimplementedMasjidServiceServer()
 }
 
@@ -114,19 +114,19 @@ type MasjidServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMasjidServiceServer struct{}
 
-func (UnimplementedMasjidServiceServer) CreateMasjid(context.Context, *CreateMasjidRequest) (*Masjid, error) {
+func (UnimplementedMasjidServiceServer) CreateMasjid(context.Context, *CreateMasjidRequest) (*StandardMasjidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMasjid not implemented")
 }
-func (UnimplementedMasjidServiceServer) UpdateMasjid(context.Context, *UpdateMasjidRequest) (*Masjid, error) {
+func (UnimplementedMasjidServiceServer) UpdateMasjid(context.Context, *UpdateMasjidRequest) (*StandardMasjidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMasjid not implemented")
 }
-func (UnimplementedMasjidServiceServer) GetMasjid(context.Context, *GetMasjidRequest) (*Masjid, error) {
+func (UnimplementedMasjidServiceServer) GetMasjid(context.Context, *GetMasjidRequest) (*StandardMasjidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMasjid not implemented")
 }
-func (UnimplementedMasjidServiceServer) DeleteMasjid(context.Context, *DeleteMasjidRequest) (*DeleteMasjidResponse, error) {
+func (UnimplementedMasjidServiceServer) DeleteMasjid(context.Context, *DeleteMasjidRequest) (*StandardMasjidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteMasjid not implemented")
 }
-func (UnimplementedMasjidServiceServer) ListMasjids(context.Context, *ListMasjidsRequest) (*ListMasjidsResponse, error) {
+func (UnimplementedMasjidServiceServer) ListMasjids(context.Context, *ListMasjidsRequest) (*StandardMasjidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListMasjids not implemented")
 }
 func (UnimplementedMasjidServiceServer) mustEmbedUnimplementedMasjidServiceServer() {}

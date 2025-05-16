@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneListEventsResponse"
+              "$ref": "#/definitions/limestoneStandardEventResponse"
             }
           },
           "default": {
@@ -58,7 +58,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneEvent"
+              "$ref": "#/definitions/limestoneStandardEventResponse"
             }
           },
           "default": {
@@ -93,7 +93,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneEvent"
+              "$ref": "#/definitions/limestoneStandardEventResponse"
             }
           },
           "default": {
@@ -121,7 +121,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneDeleteEventResponse"
+              "$ref": "#/definitions/limestoneStandardEventResponse"
             }
           },
           "default": {
@@ -149,7 +149,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneEvent"
+              "$ref": "#/definitions/limestoneStandardEventResponse"
             }
           },
           "default": {
@@ -276,6 +276,29 @@
             "type": "object",
             "$ref": "#/definitions/limestoneEvent"
           }
+        }
+      }
+    },
+    "limestoneStandardEventResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "event": {
+          "$ref": "#/definitions/limestoneEvent"
+        },
+        "deleteEventResponse": {
+          "$ref": "#/definitions/limestoneDeleteEventResponse"
+        },
+        "listEventResponse": {
+          "$ref": "#/definitions/limestoneListEventsResponse"
         }
       }
     },

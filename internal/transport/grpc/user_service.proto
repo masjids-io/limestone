@@ -81,6 +81,7 @@ message StandardUserResponse {
     User add_user_response  = 4;
     User get_user_response = 5;
     User update_user_response = 6;
+    DeleteUserResponse delete_user_response = 7;
   }
 }
 
@@ -109,8 +110,7 @@ message GetUserResponse {
 }
 
 message UpdateUserRequest {
-  string id = 1 [(google.api.field_behavior) = REQUIRED];
-  User user = 2;
+  User user = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message DeleteUserRequest {

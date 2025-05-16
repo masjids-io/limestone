@@ -10,5 +10,5 @@ type EventRepository interface {
 	Update(ctx context.Context, event *entity.Event) (*entity.Event, error)
 	GetByID(ctx context.Context, id string) (*entity.Event, error)
 	Delete(ctx context.Context, id string) error
-	ListEvent(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Event, error)
+	ListEvents(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Event, error)
 }

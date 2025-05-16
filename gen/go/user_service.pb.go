@@ -362,6 +362,7 @@ type StandardUserResponse struct {
 	//	*StandardUserResponse_AddUserResponse
 	//	*StandardUserResponse_GetUserResponse
 	//	*StandardUserResponse_UpdateUserResponse
+	//	*StandardUserResponse_DeleteUserResponse
 	Data          isStandardUserResponse_Data `protobuf_oneof:"data"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -452,6 +453,15 @@ func (x *StandardUserResponse) GetUpdateUserResponse() *User {
 	return nil
 }
 
+func (x *StandardUserResponse) GetDeleteUserResponse() *DeleteUserResponse {
+	if x != nil {
+		if x, ok := x.Data.(*StandardUserResponse_DeleteUserResponse); ok {
+			return x.DeleteUserResponse
+		}
+	}
+	return nil
+}
+
 type isStandardUserResponse_Data interface {
 	isStandardUserResponse_Data()
 }
@@ -468,11 +478,17 @@ type StandardUserResponse_UpdateUserResponse struct {
 	UpdateUserResponse *User `protobuf:"bytes,6,opt,name=update_user_response,json=updateUserResponse,proto3,oneof"`
 }
 
+type StandardUserResponse_DeleteUserResponse struct {
+	DeleteUserResponse *DeleteUserResponse `protobuf:"bytes,7,opt,name=delete_user_response,json=deleteUserResponse,proto3,oneof"`
+}
+
 func (*StandardUserResponse_AddUserResponse) isStandardUserResponse_Data() {}
 
 func (*StandardUserResponse_GetUserResponse) isStandardUserResponse_Data() {}
 
 func (*StandardUserResponse_UpdateUserResponse) isStandardUserResponse_Data() {}
+
+func (*StandardUserResponse_DeleteUserResponse) isStandardUserResponse_Data() {}
 
 type CreateUserRequest struct {
 	state           protoimpl.MessageState   `protogen:"open.v1"`
@@ -664,8 +680,7 @@ func (x *GetUserResponse) GetUser() *User {
 
 type UpdateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	User          *User                  `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -698,13 +713,6 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *UpdateUserRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
 }
 
 func (x *UpdateUserRequest) GetUser() *User {
@@ -829,14 +837,15 @@ const file_user_service_proto_rawDesc = "" +
 	"\x12GENDER_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04MALE\x10\x01\x12\n" +
 	"\n" +
-	"\x06FEMALE\x10\x02\"\xa7\x02\n" +
+	"\x06FEMALE\x10\x02\"\xfa\x02\n" +
 	"\x14StandardUserResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
 	"\amessage\x18\x03 \x01(\tR\amessage\x12=\n" +
 	"\x11add_user_response\x18\x04 \x01(\v2\x0f.limestone.UserH\x00R\x0faddUserResponse\x12=\n" +
 	"\x11get_user_response\x18\x05 \x01(\v2\x0f.limestone.UserH\x00R\x0fgetUserResponse\x12C\n" +
-	"\x14update_user_response\x18\x06 \x01(\v2\x0f.limestone.UserH\x00R\x12updateUserResponseB\x06\n" +
+	"\x14update_user_response\x18\x06 \x01(\v2\x0f.limestone.UserH\x00R\x12updateUserResponse\x12Q\n" +
+	"\x14delete_user_response\x18\a \x01(\v2\x1d.limestone.DeleteUserResponseH\x00R\x12deleteUserResponseB\x06\n" +
 	"\x04data\"\xe1\x02\n" +
 	"\x11CreateUserRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
@@ -856,10 +865,9 @@ const file_user_service_proto_rawDesc = "" +
 	"\x0eGetUserRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"6\n" +
 	"\x0fGetUserResponse\x12#\n" +
-	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserR\x04user\"M\n" +
-	"\x11UpdateUserRequest\x12\x13\n" +
-	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\x12#\n" +
-	"\x04user\x18\x02 \x01(\v2\x0f.limestone.UserR\x04user\"(\n" +
+	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserR\x04user\"=\n" +
+	"\x11UpdateUserRequest\x12(\n" +
+	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserB\x03\xe0A\x02R\x04user\"(\n" +
 	"\x11DeleteUserRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x14\n" +
 	"\x12DeleteUserResponse2\x81\x04\n" +
@@ -910,22 +918,23 @@ var file_user_service_proto_depIdxs = []int32{
 	4,  // 4: limestone.StandardUserResponse.add_user_response:type_name -> limestone.User
 	4,  // 5: limestone.StandardUserResponse.get_user_response:type_name -> limestone.User
 	4,  // 6: limestone.StandardUserResponse.update_user_response:type_name -> limestone.User
-	2,  // 7: limestone.CreateUserRequest.gender:type_name -> limestone.CreateUserRequest.Gender
-	4,  // 8: limestone.GetUserResponse.user:type_name -> limestone.User
-	4,  // 9: limestone.UpdateUserRequest.user:type_name -> limestone.User
-	6,  // 10: limestone.UserService.CreateUser:input_type -> limestone.CreateUserRequest
-	7,  // 11: limestone.UserService.GetUser:input_type -> limestone.GetUserRequest
-	9,  // 12: limestone.UserService.UpdateUser:input_type -> limestone.UpdateUserRequest
-	10, // 13: limestone.UserService.DeleteUser:input_type -> limestone.DeleteUserRequest
-	5,  // 14: limestone.UserService.CreateUser:output_type -> limestone.StandardUserResponse
-	5,  // 15: limestone.UserService.GetUser:output_type -> limestone.StandardUserResponse
-	5,  // 16: limestone.UserService.UpdateUser:output_type -> limestone.StandardUserResponse
-	5,  // 17: limestone.UserService.DeleteUser:output_type -> limestone.StandardUserResponse
-	14, // [14:18] is the sub-list for method output_type
-	10, // [10:14] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	11, // 7: limestone.StandardUserResponse.delete_user_response:type_name -> limestone.DeleteUserResponse
+	2,  // 8: limestone.CreateUserRequest.gender:type_name -> limestone.CreateUserRequest.Gender
+	4,  // 9: limestone.GetUserResponse.user:type_name -> limestone.User
+	4,  // 10: limestone.UpdateUserRequest.user:type_name -> limestone.User
+	6,  // 11: limestone.UserService.CreateUser:input_type -> limestone.CreateUserRequest
+	7,  // 12: limestone.UserService.GetUser:input_type -> limestone.GetUserRequest
+	9,  // 13: limestone.UserService.UpdateUser:input_type -> limestone.UpdateUserRequest
+	10, // 14: limestone.UserService.DeleteUser:input_type -> limestone.DeleteUserRequest
+	5,  // 15: limestone.UserService.CreateUser:output_type -> limestone.StandardUserResponse
+	5,  // 16: limestone.UserService.GetUser:output_type -> limestone.StandardUserResponse
+	5,  // 17: limestone.UserService.UpdateUser:output_type -> limestone.StandardUserResponse
+	5,  // 18: limestone.UserService.DeleteUser:output_type -> limestone.StandardUserResponse
+	15, // [15:19] is the sub-list for method output_type
+	11, // [11:15] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_user_service_proto_init() }
@@ -937,6 +946,7 @@ func file_user_service_proto_init() {
 		(*StandardUserResponse_AddUserResponse)(nil),
 		(*StandardUserResponse_GetUserResponse)(nil),
 		(*StandardUserResponse_UpdateUserResponse)(nil),
+		(*StandardUserResponse_DeleteUserResponse)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

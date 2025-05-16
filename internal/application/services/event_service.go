@@ -30,6 +30,6 @@ func (r *EventService) Delete(ctx context.Context, id string) error {
 	return r.Repo.Delete(ctx, id)
 }
 
-func (s *EventService) ListEvent(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Event, error) {
-	return s.Repo.ListEvent(ctx, pageSize, pageToken)
+func (s *EventService) ListEvents(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Event, error) {
+	return s.Repo.ListEvents(ctx, pageSize, pageToken)
 }

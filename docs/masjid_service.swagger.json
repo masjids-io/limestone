@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneMasjid"
+              "$ref": "#/definitions/limestoneStandardMasjidResponse"
             }
           },
           "default": {
@@ -56,7 +56,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneMasjid"
+              "$ref": "#/definitions/limestoneStandardMasjidResponse"
             }
           },
           "default": {
@@ -91,7 +91,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneMasjid"
+              "$ref": "#/definitions/limestoneStandardMasjidResponse"
             }
           },
           "default": {
@@ -119,7 +119,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneDeleteMasjidResponse"
+              "$ref": "#/definitions/limestoneStandardMasjidResponse"
             }
           },
           "default": {
@@ -149,7 +149,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneListMasjidsResponse"
+              "$ref": "#/definitions/limestoneStandardMasjidResponse"
             }
           },
           "default": {
@@ -282,6 +282,17 @@
     "limestoneDeleteMasjidResponse": {
       "type": "object"
     },
+    "limestoneGetMasjidRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
     "limestoneListMasjidsResponse": {
       "type": "object",
       "properties": {
@@ -351,6 +362,32 @@
         },
         "adjustments": {
           "$ref": "#/definitions/PrayerTimesConfigurationPrayerAdjustments"
+        }
+      }
+    },
+    "limestoneStandardMasjidResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "Masjid": {
+          "$ref": "#/definitions/limestoneMasjid"
+        },
+        "deleteMasjidResponse": {
+          "$ref": "#/definitions/limestoneDeleteMasjidResponse"
+        },
+        "listMasjidResponse": {
+          "$ref": "#/definitions/limestoneListMasjidsResponse"
+        },
+        "getMasjidResponse": {
+          "$ref": "#/definitions/limestoneGetMasjidRequest"
         }
       }
     },

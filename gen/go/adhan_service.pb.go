@@ -30,6 +30,7 @@ type StandardAdhanResponse struct {
 	Message string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 	// Types that are valid to be assigned to Data:
 	//
+	//	*StandardAdhanResponse_AdhanFile
 	//	*StandardAdhanResponse_DeleteAdhanFileResponse
 	Data          isStandardAdhanResponse_Data `protobuf_oneof:"data"`
 	unknownFields protoimpl.UnknownFields
@@ -94,6 +95,15 @@ func (x *StandardAdhanResponse) GetData() isStandardAdhanResponse_Data {
 	return nil
 }
 
+func (x *StandardAdhanResponse) GetAdhanFile() *AdhanFile {
+	if x != nil {
+		if x, ok := x.Data.(*StandardAdhanResponse_AdhanFile); ok {
+			return x.AdhanFile
+		}
+	}
+	return nil
+}
+
 func (x *StandardAdhanResponse) GetDeleteAdhanFileResponse() *DeleteAdhanFileResponse {
 	if x != nil {
 		if x, ok := x.Data.(*StandardAdhanResponse_DeleteAdhanFileResponse); ok {
@@ -107,9 +117,15 @@ type isStandardAdhanResponse_Data interface {
 	isStandardAdhanResponse_Data()
 }
 
-type StandardAdhanResponse_DeleteAdhanFileResponse struct {
-	DeleteAdhanFileResponse *DeleteAdhanFileResponse `protobuf:"bytes,4,opt,name=DeleteAdhanFileResponse,proto3,oneof"`
+type StandardAdhanResponse_AdhanFile struct {
+	AdhanFile *AdhanFile `protobuf:"bytes,4,opt,name=adhan_file,json=adhanFile,proto3,oneof"`
 }
+
+type StandardAdhanResponse_DeleteAdhanFileResponse struct {
+	DeleteAdhanFileResponse *DeleteAdhanFileResponse `protobuf:"bytes,5,opt,name=delete_adhan_file_response,json=deleteAdhanFileResponse,proto3,oneof"`
+}
+
+func (*StandardAdhanResponse_AdhanFile) isStandardAdhanResponse_Data() {}
 
 func (*StandardAdhanResponse_DeleteAdhanFileResponse) isStandardAdhanResponse_Data() {}
 
@@ -413,12 +429,14 @@ var File_adhan_service_proto protoreflect.FileDescriptor
 
 const file_adhan_service_proto_rawDesc = "" +
 	"\n" +
-	"\x13adhan_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xc5\x01\n" +
+	"\x13adhan_service.proto\x12\tlimestone\x1a\x1cgoogle/api/annotations.proto\x1a\x17google/api/client.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xff\x01\n" +
 	"\x15StandardAdhanResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\x12^\n" +
-	"\x17DeleteAdhanFileResponse\x18\x04 \x01(\v2\".limestone.DeleteAdhanFileResponseH\x00R\x17DeleteAdhanFileResponseB\x06\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\x125\n" +
+	"\n" +
+	"adhan_file\x18\x04 \x01(\v2\x14.limestone.AdhanFileH\x00R\tadhanFile\x12a\n" +
+	"\x1adelete_adhan_file_response\x18\x05 \x01(\v2\".limestone.DeleteAdhanFileResponseH\x00R\x17deleteAdhanFileResponseB\x06\n" +
 	"\x04data\"\xc6\x01\n" +
 	"\tAdhanFile\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n" +
@@ -439,15 +457,15 @@ const file_adhan_service_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"-\n" +
 	"\x16DeleteAdhanFileRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x19\n" +
-	"\x17DeleteAdhanFileResponse2\xcf\x03\n" +
-	"\fAdhanService\x12r\n" +
-	"\vCreateAdhan\x12!.limestone.CreateAdhanFileRequest\x1a\x14.limestone.AdhanFile\"*\xdaA\n" +
+	"\x17DeleteAdhanFileResponse2\xf4\x03\n" +
+	"\fAdhanService\x12~\n" +
+	"\vCreateAdhan\x12!.limestone.CreateAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"*\xdaA\n" +
 	"adhan_file\x82\xd3\xe4\x93\x02\x17:\n" +
-	"adhan_file\"\t/v1/adhan\x12w\n" +
-	"\vUpdateAdhan\x12!.limestone.UpdateAdhanFileRequest\x1a\x14.limestone.AdhanFile\"/\xdaA\n" +
+	"adhan_file\"\t/v1/adhan\x12\x83\x01\n" +
+	"\vUpdateAdhan\x12!.limestone.UpdateAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"/\xdaA\n" +
 	"adhan_file\x82\xd3\xe4\x93\x02\x1c:\n" +
-	"adhan_file2\x0e/v1/adhan/{id}\x12a\n" +
-	"\fGetAdhanById\x12\x1e.limestone.GetAdhanFileRequest\x1a\x14.limestone.AdhanFile\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/adhan/{id}\x12o\n" +
+	"adhan_file2\x0e/v1/adhan/{id}\x12m\n" +
+	"\fGetAdhanById\x12\x1e.limestone.GetAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/adhan/{id}\x12o\n" +
 	"\vDeleteAdhan\x12!.limestone.DeleteAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10*\x0e/v1/adhan/{id}Bi\n" +
 	"\rcom.limestoneB\x11AdhanServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
 
@@ -475,24 +493,25 @@ var file_adhan_service_proto_goTypes = []any{
 	(*timestamppb.Timestamp)(nil),   // 7: google.protobuf.Timestamp
 }
 var file_adhan_service_proto_depIdxs = []int32{
-	6, // 0: limestone.StandardAdhanResponse.DeleteAdhanFileResponse:type_name -> limestone.DeleteAdhanFileResponse
-	7, // 1: limestone.AdhanFile.create_time:type_name -> google.protobuf.Timestamp
-	7, // 2: limestone.AdhanFile.update_time:type_name -> google.protobuf.Timestamp
-	1, // 3: limestone.CreateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
-	1, // 4: limestone.UpdateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
-	2, // 5: limestone.AdhanService.CreateAdhan:input_type -> limestone.CreateAdhanFileRequest
-	3, // 6: limestone.AdhanService.UpdateAdhan:input_type -> limestone.UpdateAdhanFileRequest
-	4, // 7: limestone.AdhanService.GetAdhanById:input_type -> limestone.GetAdhanFileRequest
-	5, // 8: limestone.AdhanService.DeleteAdhan:input_type -> limestone.DeleteAdhanFileRequest
-	1, // 9: limestone.AdhanService.CreateAdhan:output_type -> limestone.AdhanFile
-	1, // 10: limestone.AdhanService.UpdateAdhan:output_type -> limestone.AdhanFile
-	1, // 11: limestone.AdhanService.GetAdhanById:output_type -> limestone.AdhanFile
-	0, // 12: limestone.AdhanService.DeleteAdhan:output_type -> limestone.StandardAdhanResponse
-	9, // [9:13] is the sub-list for method output_type
-	5, // [5:9] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	1,  // 0: limestone.StandardAdhanResponse.adhan_file:type_name -> limestone.AdhanFile
+	6,  // 1: limestone.StandardAdhanResponse.delete_adhan_file_response:type_name -> limestone.DeleteAdhanFileResponse
+	7,  // 2: limestone.AdhanFile.create_time:type_name -> google.protobuf.Timestamp
+	7,  // 3: limestone.AdhanFile.update_time:type_name -> google.protobuf.Timestamp
+	1,  // 4: limestone.CreateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
+	1,  // 5: limestone.UpdateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
+	2,  // 6: limestone.AdhanService.CreateAdhan:input_type -> limestone.CreateAdhanFileRequest
+	3,  // 7: limestone.AdhanService.UpdateAdhan:input_type -> limestone.UpdateAdhanFileRequest
+	4,  // 8: limestone.AdhanService.GetAdhanById:input_type -> limestone.GetAdhanFileRequest
+	5,  // 9: limestone.AdhanService.DeleteAdhan:input_type -> limestone.DeleteAdhanFileRequest
+	0,  // 10: limestone.AdhanService.CreateAdhan:output_type -> limestone.StandardAdhanResponse
+	0,  // 11: limestone.AdhanService.UpdateAdhan:output_type -> limestone.StandardAdhanResponse
+	0,  // 12: limestone.AdhanService.GetAdhanById:output_type -> limestone.StandardAdhanResponse
+	0,  // 13: limestone.AdhanService.DeleteAdhan:output_type -> limestone.StandardAdhanResponse
+	10, // [10:14] is the sub-list for method output_type
+	6,  // [6:10] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_adhan_service_proto_init() }
@@ -501,6 +520,7 @@ func file_adhan_service_proto_init() {
 		return
 	}
 	file_adhan_service_proto_msgTypes[0].OneofWrappers = []any{
+		(*StandardAdhanResponse_AdhanFile)(nil),
 		(*StandardAdhanResponse_DeleteAdhanFileResponse)(nil),
 	}
 	type x struct{}

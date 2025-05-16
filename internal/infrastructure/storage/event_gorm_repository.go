@@ -41,7 +41,7 @@ func (r *GormEventRepository) Delete(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).Delete(&entity.Event{}, "id = ?", id).Error
 }
 
-func (r *GormEventRepository) ListEvent(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Event, error) {
+func (r *GormEventRepository) ListEvents(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Event, error) {
 	var events []*entity.Event
 	query := r.db.WithContext(ctx).Limit(int(pageSize)).Order("id")
 

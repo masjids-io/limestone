@@ -10,7 +10,7 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service EventService {
-  rpc CreateEvent(CreateEventRequest) returns (Event) {
+  rpc CreateEvent(CreateEventRequest) returns (StandardEventResponse) {
     option (google.api.http) = {
       post: "/v1/event"
       body: "event"
@@ -18,7 +18,7 @@ service EventService {
     option (google.api.method_signature) = "event";
   }
 
-  rpc UpdateEvent(UpdateEventRequest) returns (Event) {
+  rpc UpdateEvent(UpdateEventRequest) returns (StandardEventResponse) {
     option (google.api.http) = {
       patch: "/v1/event/{id}"
       body: "event"
@@ -26,24 +26,36 @@ service EventService {
     option (google.api.method_signature) = "event";
   }
 
-  rpc DeleteEvent(DeleteEventRequest) returns (DeleteEventResponse) {
+  rpc DeleteEvent(DeleteEventRequest) returns (StandardEventResponse) {
     option (google.api.http) = {
       delete: "/v1/event/{id}"
     };
     option (google.api.method_signature) = "id";
   }
 
-  rpc GetEvent(GetEventRequest) returns (Event) {
+  rpc GetEvent(GetEventRequest) returns (StandardEventResponse) {
     option (google.api.http) = {
       get: "/v1/event/{id}"
     };
     option (google.api.method_signature) = "id";
   }
 
-  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse) {
+  rpc ListEvents(ListEventsRequest) returns (StandardEventResponse) {
     option (google.api.http) = {
       get: "/v1/event"
     };
+  }
+}
+
+message StandardEventResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    Event event = 4;
+    DeleteEventResponse delete_event_response = 5;
+    ListEventsResponse list_event_response = 6;
+
   }
 }
 

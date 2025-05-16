@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
+	"github.com/mnadev/limestone/internal/application/helper"
 	services "github.com/mnadev/limestone/internal/application/services"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -23,7 +24,7 @@ func NewMasjidGrpcHandler(svc *services.MasjidService) *MasjidGrpcHandler {
 	return &MasjidGrpcHandler{Svc: svc}
 }
 
-func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasjidRequest) (*pb.Masjid, error) {
+func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasjidRequest) (*pb.StandardMasjidResponse, error) {
 	masjid := req.GetMasjid()
 
 	masjidEntity := &entity.Masjid{
@@ -62,15 +63,15 @@ func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasj
 		UpdatedAt: time.Now(),
 	}
 
-	createdMasjid, err := h.Svc.CreateMasjid(ctx, masjidEntity)
+	cm, err := h.Svc.CreateMasjid(ctx, masjidEntity)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create masjid: %v", err)
 	}
 
-	return convertMasjidEntityToProto(createdMasjid), nil
+	return helper.StandardMasjidResponse(codes.OK, "success", "masjid created successfully", cm, nil, nil)
 }
 
-func (h *MasjidGrpcHandler) UpdateMasjid(ctx context.Context, req *pb.UpdateMasjidRequest) (*pb.Masjid, error) {
+func (h *MasjidGrpcHandler) UpdateMasjid(ctx context.Context, req *pb.UpdateMasjidRequest) (*pb.StandardMasjidResponse, error) {
 	masjid := req.GetMasjid()
 	if masjid == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "masjid data is required")
@@ -133,24 +134,23 @@ func (h *MasjidGrpcHandler) UpdateMasjid(ctx context.Context, req *pb.UpdateMasj
 
 	masjidEntity.UpdatedAt = time.Now()
 
-	updatedMasjid, err := h.Svc.UpdateMasjid(ctx, masjidEntity)
+	um, err := h.Svc.UpdateMasjid(ctx, masjidEntity)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update masjid: %v", err)
 	}
 
-	return convertMasjidEntityToProto(updatedMasjid), nil
+	return helper.StandardMasjidResponse(codes.OK, "success", "masjid updated successfully", um, nil, nil)
 }
 
-func (h *MasjidGrpcHandler) DeleteMasjid(ctx context.Context, req *pb.DeleteMasjidRequest) (*pb.DeleteMasjidResponse, error) {
+func (h *MasjidGrpcHandler) DeleteMasjid(ctx context.Context, req *pb.DeleteMasjidRequest) (*pb.StandardMasjidResponse, error) {
 	err := h.Svc.DeleteMasjid(ctx, req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete masjid: %v", err)
 	}
-	// Return an empty DeleteMasjidResponse on success.
-	return &pb.DeleteMasjidResponse{}, nil
+	return helper.StandardMasjidResponse(codes.OK, "success", "masjid deleted successfully", nil, nil, &pb.DeleteMasjidResponse{})
 }
 
-func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequest) (*pb.Masjid, error) {
+func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequest) (*pb.StandardMasjidResponse, error) {
 	masjid, err := h.Svc.GetMasjid(ctx, req.GetId())
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -158,43 +158,37 @@ func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequ
 		}
 		return nil, status.Errorf(codes.Internal, "failed to get masjid: %v", err)
 	}
-	return convertMasjidEntityToProto(masjid), nil
+	return helper.StandardMasjidResponse(codes.OK, "success", "masjid retrieved successfully", masjid, nil, nil)
 }
 
-func (h *MasjidGrpcHandler) ListMasjids(ctx context.Context, req *pb.ListMasjidsRequest) (*pb.ListMasjidsResponse, error) {
+func (h *MasjidGrpcHandler) ListMasjids(ctx context.Context, req *pb.ListMasjidsRequest) (*pb.StandardMasjidResponse, error) {
 	masjids, err := h.Svc.ListMasjids(ctx, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list masjids: %v", err)
 	}
 
-	response := &pb.ListMasjidsResponse{}
+	protoMasjids := &pb.ListMasjidsResponse{}
 	for _, masjid := range masjids {
-		response.Masjids = append(response.Masjids, convertMasjidEntityToProto(masjid))
+		protoMasjids.Masjids = append(protoMasjids.Masjids, &pb.Masjid{
+			Id:         masjid.ID.String(),
+			Name:       masjid.Name,
+			IsVerified: masjid.IsVerified,
+			Address: &pb.Masjid_Address{
+				AddressLine_1: masjid.Address.AddressLine1,
+				AddressLine_2: masjid.Address.AddressLine2,
+				ZoneCode:      masjid.Address.ZoneCode,
+				PostalCode:    masjid.Address.PostalCode,
+				City:          masjid.Address.City,
+				CountryCode:   masjid.Address.CountryCode,
+			},
+			PhoneNumber: &pb.Masjid_PhoneNumber{
+				CountryCode: masjid.PhoneNumber.PhoneCountryCode,
+				Number:      masjid.PhoneNumber.Number,
+				Extension:   masjid.PhoneNumber.Extension,
+			},
+			CreateTime: timestamppb.New(masjid.CreatedAt),
+			UpdateTime: timestamppb.New(masjid.UpdatedAt),
+		})
 	}
-	return response, nil
-}
-
-// Helper function to convert between entity.Masjid and pb.Masjid
-func convertMasjidEntityToProto(masjid *entity.Masjid) *pb.Masjid {
-	return &pb.Masjid{
-		Id:         masjid.ID.String(),
-		Name:       masjid.Name,
-		IsVerified: masjid.IsVerified,
-		Address: &pb.Masjid_Address{
-			AddressLine_1: masjid.Address.AddressLine1,
-			AddressLine_2: masjid.Address.AddressLine2,
-			ZoneCode:      masjid.Address.ZoneCode,
-			PostalCode:    masjid.Address.PostalCode,
-			City:          masjid.Address.City,
-			CountryCode:   masjid.Address.CountryCode,
-		},
-		PhoneNumber: &pb.Masjid_PhoneNumber{
-			CountryCode: masjid.PhoneNumber.PhoneCountryCode,
-			Number:      masjid.PhoneNumber.Number,
-			Extension:   masjid.PhoneNumber.Extension,
-		},
-
-		CreateTime: timestamppb.New(masjid.CreatedAt),
-		UpdateTime: timestamppb.New(masjid.UpdatedAt),
-	}
+	return helper.StandardMasjidResponse(codes.OK, "success", "masjids retrieved successfully", nil, protoMasjids, nil)
 }

@@ -69,14 +69,11 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/limestoneUser"
+              "$ref": "#/definitions/limestoneUser",
+              "required": [
+                "user"
+              ]
             }
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "type": "string"
           }
         ],
         "tags": [
@@ -182,6 +179,9 @@
       ],
       "default": "GENDER_UNSPECIFIED"
     },
+    "limestoneDeleteUserResponse": {
+      "type": "object"
+    },
     "limestoneStandardUserResponse": {
       "type": "object",
       "properties": {
@@ -202,6 +202,9 @@
         },
         "updateUserResponse": {
           "$ref": "#/definitions/limestoneUser"
+        },
+        "deleteUserResponse": {
+          "$ref": "#/definitions/limestoneDeleteUserResponse"
         }
       }
     },

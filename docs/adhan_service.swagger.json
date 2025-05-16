@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneAdhanFile"
+              "$ref": "#/definitions/limestoneStandardAdhanResponse"
             }
           },
           "default": {
@@ -58,7 +58,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneAdhanFile"
+              "$ref": "#/definitions/limestoneStandardAdhanResponse"
             }
           },
           "default": {
@@ -114,7 +114,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/limestoneAdhanFile"
+              "$ref": "#/definitions/limestoneStandardAdhanResponse"
             }
           },
           "default": {
@@ -188,7 +188,10 @@
         "message": {
           "type": "string"
         },
-        "DeleteAdhanFileResponse": {
+        "adhanFile": {
+          "$ref": "#/definitions/limestoneAdhanFile"
+        },
+        "deleteAdhanFileResponse": {
           "$ref": "#/definitions/limestoneDeleteAdhanFileResponse"
         }
       }

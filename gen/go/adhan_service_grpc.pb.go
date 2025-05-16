@@ -29,9 +29,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdhanServiceClient interface {
-	CreateAdhan(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
-	UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
-	GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error)
+	CreateAdhan(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
+	UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
+	GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
 	DeleteAdhan(ctx context.Context, in *DeleteAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
 }
 
@@ -43,9 +43,9 @@ func NewAdhanServiceClient(cc grpc.ClientConnInterface) AdhanServiceClient {
 	return &adhanServiceClient{cc}
 }
 
-func (c *adhanServiceClient) CreateAdhan(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
+func (c *adhanServiceClient) CreateAdhan(ctx context.Context, in *CreateAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AdhanFile)
+	out := new(StandardAdhanResponse)
 	err := c.cc.Invoke(ctx, AdhanService_CreateAdhan_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -53,9 +53,9 @@ func (c *adhanServiceClient) CreateAdhan(ctx context.Context, in *CreateAdhanFil
 	return out, nil
 }
 
-func (c *adhanServiceClient) UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
+func (c *adhanServiceClient) UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AdhanFile)
+	out := new(StandardAdhanResponse)
 	err := c.cc.Invoke(ctx, AdhanService_UpdateAdhan_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -63,9 +63,9 @@ func (c *adhanServiceClient) UpdateAdhan(ctx context.Context, in *UpdateAdhanFil
 	return out, nil
 }
 
-func (c *adhanServiceClient) GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*AdhanFile, error) {
+func (c *adhanServiceClient) GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AdhanFile)
+	out := new(StandardAdhanResponse)
 	err := c.cc.Invoke(ctx, AdhanService_GetAdhanById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -87,9 +87,9 @@ func (c *adhanServiceClient) DeleteAdhan(ctx context.Context, in *DeleteAdhanFil
 // All implementations must embed UnimplementedAdhanServiceServer
 // for forward compatibility.
 type AdhanServiceServer interface {
-	CreateAdhan(context.Context, *CreateAdhanFileRequest) (*AdhanFile, error)
-	UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*AdhanFile, error)
-	GetAdhanById(context.Context, *GetAdhanFileRequest) (*AdhanFile, error)
+	CreateAdhan(context.Context, *CreateAdhanFileRequest) (*StandardAdhanResponse, error)
+	UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*StandardAdhanResponse, error)
+	GetAdhanById(context.Context, *GetAdhanFileRequest) (*StandardAdhanResponse, error)
 	DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error)
 	mustEmbedUnimplementedAdhanServiceServer()
 }
@@ -101,13 +101,13 @@ type AdhanServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAdhanServiceServer struct{}
 
-func (UnimplementedAdhanServiceServer) CreateAdhan(context.Context, *CreateAdhanFileRequest) (*AdhanFile, error) {
+func (UnimplementedAdhanServiceServer) CreateAdhan(context.Context, *CreateAdhanFileRequest) (*StandardAdhanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAdhan not implemented")
 }
-func (UnimplementedAdhanServiceServer) UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*AdhanFile, error) {
+func (UnimplementedAdhanServiceServer) UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*StandardAdhanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateAdhan not implemented")
 }
-func (UnimplementedAdhanServiceServer) GetAdhanById(context.Context, *GetAdhanFileRequest) (*AdhanFile, error) {
+func (UnimplementedAdhanServiceServer) GetAdhanById(context.Context, *GetAdhanFileRequest) (*StandardAdhanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAdhanById not implemented")
 }
 func (UnimplementedAdhanServiceServer) DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error) {

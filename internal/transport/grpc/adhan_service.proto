@@ -10,21 +10,21 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service AdhanService {
-  rpc CreateAdhan(CreateAdhanFileRequest) returns (AdhanFile) {
+  rpc CreateAdhan(CreateAdhanFileRequest) returns (StandardAdhanResponse) {
     option (google.api.http) = {
       post: "/v1/adhan"
       body: "adhan_file"
     };
     option (google.api.method_signature) = "adhan_file";
   }
-  rpc UpdateAdhan(UpdateAdhanFileRequest) returns (AdhanFile) {
+  rpc UpdateAdhan(UpdateAdhanFileRequest) returns (StandardAdhanResponse) {
     option (google.api.http) = {
       patch: "/v1/adhan/{id}"
       body: "adhan_file"
     };
     option (google.api.method_signature) = "adhan_file";
   }
-  rpc GetAdhanById(GetAdhanFileRequest) returns (AdhanFile) {
+  rpc GetAdhanById(GetAdhanFileRequest) returns (StandardAdhanResponse) {
     option (google.api.http) = {
       get: "/v1/adhan/{id}"
     };
@@ -43,7 +43,8 @@ message StandardAdhanResponse {
   string status = 2;
   string message = 3;
   oneof data {
-    DeleteAdhanFileResponse DeleteAdhanFileResponse = 4;
+    AdhanFile adhan_file = 4;
+    DeleteAdhanFileResponse delete_adhan_file_response = 5;
   }
 }
 message AdhanFile {

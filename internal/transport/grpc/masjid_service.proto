@@ -10,7 +10,7 @@ package limestone;
 option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
 
 service MasjidService {
-  rpc CreateMasjid(CreateMasjidRequest) returns (Masjid) {
+  rpc CreateMasjid(CreateMasjidRequest) returns (StandardMasjidResponse) {
     option (google.api.http) = {
       post: "/v1/masjid"
       body: "masjid"
@@ -18,7 +18,7 @@ service MasjidService {
     option (google.api.method_signature) = "masjid";
   }
 
-  rpc UpdateMasjid(UpdateMasjidRequest) returns (Masjid) {
+  rpc UpdateMasjid(UpdateMasjidRequest) returns (StandardMasjidResponse) {
     option (google.api.http) = {
       patch: "/v1/masjid"
       body: "masjid"
@@ -26,24 +26,36 @@ service MasjidService {
     option (google.api.method_signature) = "masjid";
   }
 
-  rpc GetMasjid(GetMasjidRequest) returns (Masjid) {
+  rpc GetMasjid(GetMasjidRequest) returns (StandardMasjidResponse) {
     option (google.api.http) = {
       get: "/v1/masjid/{id}"
     };
     option (google.api.method_signature) = "id";
   }
 
-  rpc DeleteMasjid(DeleteMasjidRequest) returns (DeleteMasjidResponse) {
+  rpc DeleteMasjid(DeleteMasjidRequest) returns (StandardMasjidResponse) {
     option (google.api.http) = {
       delete: "/v1/masjid/{id}"
     };
     option (google.api.method_signature) = "id";
   }
 
-  rpc ListMasjids(ListMasjidsRequest) returns (ListMasjidsResponse) {
+  rpc ListMasjids(ListMasjidsRequest) returns (StandardMasjidResponse) {
     option (google.api.http) = {
       get: "/v1/masjids"
     };
+  }
+}
+
+message StandardMasjidResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    Masjid Masjid  = 4;
+    DeleteMasjidResponse delete_masjid_response = 5;
+    ListMasjidsResponse list_masjid_response = 6;
+    GetMasjidRequest get_masjid_response = 7;
   }
 }
 

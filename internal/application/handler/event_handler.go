@@ -6,7 +6,8 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
-	services "github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/application/helper"
+	"github.com/mnadev/limestone/internal/application/services"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -23,7 +24,7 @@ func NewEventGrpcHandler(svc *services.EventService) *EventGrpcHandler {
 	return &EventGrpcHandler{Svc: svc}
 }
 
-func (h *EventGrpcHandler) CreateEvent(ctx context.Context, req *pb.CreateEventRequest) (*pb.Event, error) {
+func (h *EventGrpcHandler) CreateEvent(ctx context.Context, req *pb.CreateEventRequest) (*pb.StandardEventResponse, error) {
 	event := req.GetEvent()
 
 	eventEntity := &entity.Event{
@@ -47,10 +48,10 @@ func (h *EventGrpcHandler) CreateEvent(ctx context.Context, req *pb.CreateEventR
 		return nil, status.Errorf(codes.Internal, "failed to create event: %v", err)
 	}
 
-	return convertEventEntityToProto(createdEvent), nil
+	return helper.StandardEventResponse(codes.OK, "success", "event created successfully", createdEvent, nil, nil)
 }
 
-func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventRequest) (*pb.Event, error) {
+func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventRequest) (*pb.StandardEventResponse, error) {
 	event := req.GetEvent()
 	if event == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "event data is required")
@@ -107,10 +108,10 @@ func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventR
 		return nil, status.Errorf(codes.Internal, "failed to update event: %v", err)
 	}
 
-	return convertEventEntityToProto(updatedEvent), nil
+	return helper.StandardEventResponse(codes.OK, "success", "event updated successfully", updatedEvent, nil, nil)
 }
 
-func (h *EventGrpcHandler) GetEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.Event, error) {
+func (h *EventGrpcHandler) GetEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.StandardEventResponse, error) {
 	eventIDStr := req.GetId()
 	if eventIDStr == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "event ID is required")
@@ -128,10 +129,10 @@ func (h *EventGrpcHandler) GetEvent(ctx context.Context, req *pb.GetEventRequest
 		}
 		return nil, status.Errorf(codes.Internal, "failed to get event: %v", err)
 	}
-	return convertEventEntityToProto(event), nil
+	return helper.StandardEventResponse(codes.OK, "success", "event retrieved successfully", event, nil, nil)
 }
 
-func (h *EventGrpcHandler) DeleteEvent(ctx context.Context, req *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
+func (h *EventGrpcHandler) DeleteEvent(ctx context.Context, req *pb.DeleteEventRequest) (*pb.StandardEventResponse, error) {
 	eventIDStr := req.GetId()
 	if eventIDStr == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "event ID is required")
@@ -146,36 +147,32 @@ func (h *EventGrpcHandler) DeleteEvent(ctx context.Context, req *pb.DeleteEventR
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete event: %v", err)
 	}
-	return &pb.DeleteEventResponse{}, nil
+	return helper.StandardEventResponse(codes.OK, "success", "event deleted successfully", nil, nil, &pb.DeleteEventResponse{})
 }
 
-func (h *EventGrpcHandler) ListEvents(ctx context.Context, req *pb.ListEventsRequest) (*pb.ListEventsResponse, error) {
-	events, err := h.Svc.ListEvent(ctx, req.GetPageSize(), req.GetPageToken())
+func (h *EventGrpcHandler) ListEvents(ctx context.Context, req *pb.ListEventsRequest) (*pb.StandardEventResponse, error) {
+	events, err := h.Svc.ListEvents(ctx, req.GetPageSize(), req.GetPageToken())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list masjids: %v", err)
 	}
 
-	response := &pb.ListEventsResponse{}
+	protoEvents := &pb.ListEventsResponse{}
 	for _, event := range events {
-		response.Events = append(response.Events, convertEventEntityToProto(event))
+		protoEvents.Events = append(protoEvents.Events, &pb.Event{
+			Id:                event.ID.String(),
+			MasjidId:          event.MasjidId,
+			Name:              event.Name,
+			Description:       event.Description,
+			StartTime:         timestamppb.New(event.StartTime),
+			EndTime:           timestamppb.New(event.EndTime),
+			GenderRestriction: pb.Event_GenderRestriction(event.GenderRestriction),
+			IsPaid:            event.IsPaid,
+			RequiresRsvp:      event.RequiresRsvp,
+			MaxParticipants:   event.MaxParticipants,
+			LivestreamLink:    event.LivestreamLink,
+			CreateTime:        timestamppb.New(event.CreatedAt),
+			UpdateTime:        timestamppb.New(event.UpdatedAt),
+		})
 	}
-	return response, nil
-}
-
-func convertEventEntityToProto(event *entity.Event) *pb.Event {
-	return &pb.Event{
-		Id:                event.ID.String(),
-		MasjidId:          event.MasjidId,
-		Name:              event.Name,
-		Description:       event.Description,
-		StartTime:         timestamppb.New(event.StartTime),
-		EndTime:           timestamppb.New(event.EndTime),
-		GenderRestriction: pb.Event_GenderRestriction(event.GenderRestriction),
-		IsPaid:            event.IsPaid,
-		RequiresRsvp:      event.RequiresRsvp,
-		MaxParticipants:   event.MaxParticipants,
-		LivestreamLink:    event.LivestreamLink,
-		CreateTime:        timestamppb.New(event.CreatedAt),
-		UpdateTime:        timestamppb.New(event.UpdatedAt),
-	}
+	return helper.StandardEventResponse(codes.OK, "success", "events retrieved successfully", nil, protoEvents, nil)
 }
