@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	pb "github.com/mnadev/limestone/gen/go"
@@ -12,7 +11,7 @@ import (
 	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -66,7 +65,7 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 	}
 	responseCreatedUser, err := h.Svc.CreateUser(ctx, u)
 	if err != nil {
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
+		if strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "already exists") {
 			return nil, status.Errorf(codes.AlreadyExists, "email or username already exists")
 		}
 		return nil, status.Errorf(codes.Internal, err.Error())
@@ -76,7 +75,6 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 
 func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.StandardUserResponse, error) {
 	user, err := h.Svc.GetUser(ctx, req.Id)
-	fmt.Println(user)
 	if err != nil {
 		return nil, status.Errorf(codes.Canceled, err.Error())
 	}

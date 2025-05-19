@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
+	"gorm.io/gorm/logger"
 	"log"
 	"os"
 
@@ -16,6 +17,13 @@ func SetupDatabase() *gorm.DB {
 	dbName := os.Getenv("DB_NAME")
 	dbUser := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
+
+	goEnv := os.Getenv("RUN_TEST")
+	if goEnv == "true" {
+		dbName = "limestone_test"
+		log.Printf("RUN_TEST is 'true', using database: %s\n", dbName)
+	}
+
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		host,
 		port,
@@ -23,7 +31,9 @@ func SetupDatabase() *gorm.DB {
 		dbName,
 		password,
 	)
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
