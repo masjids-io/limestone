@@ -4,57 +4,19 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/status"
-	"testing"
 	"time"
 
-	"github.com/lpernett/godotenv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
 	"google.golang.org/grpc/codes"
 
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
-	"github.com/mnadev/limestone/internal/application/handler"
-	"github.com/mnadev/limestone/internal/application/services"
-	"github.com/mnadev/limestone/internal/infrastructure/database"
-	"github.com/mnadev/limestone/internal/infrastructure/storage"
 	"gorm.io/gorm"
 )
 
-type UserGrpcHandlerTestSuite struct {
-	suite.Suite
-	DB      *gorm.DB
-	Handler *handler.UserGrpcHandler
-	Service *services.UserService
-}
-
-func (suite *UserGrpcHandlerTestSuite) SetupSuite() {
-	err := godotenv.Load("../.env")
-	require.NoError(suite.T(), err, "Failed to load .env file")
-
-	suite.DB = database.SetupDatabase()
-	require.NotNil(suite.T(), suite.DB, "Failed to setup test database")
-
-	userRepo := storage.NewGormUserRepository(suite.DB)
-	suite.Service = services.NewUserService(userRepo)
-	suite.Handler = handler.NewUserGrpcHandler(suite.Service)
-}
-
-func (suite *UserGrpcHandlerTestSuite) TearDownSuite() {
-	if suite.DB != nil {
-		err := suite.DB.Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&entity.User{}).Error
-		require.NoError(suite.T(), err, "Failed to clean up users table")
-
-		db, err := suite.DB.DB()
-		require.NoError(suite.T(), err, "Failed to get underlying DB connection")
-		err = db.Close()
-		require.NoError(suite.T(), err, "Failed to close database connection")
-	}
-}
-
 // create user
-func (suite *UserGrpcHandlerTestSuite) TestCreateUser_Success() {
+func (suite *GrpcHandlerTestSuite) TestCreateUser_Success() {
 	ctx := context.Background()
 	req := &pb.CreateUserRequest{
 		Email:           "test@example.com",
@@ -67,7 +29,7 @@ func (suite *UserGrpcHandlerTestSuite) TestCreateUser_Success() {
 		IsEmailVerified: false,
 	}
 
-	resp, err := suite.Handler.CreateUser(ctx, req)
+	resp, err := suite.UserHandler.CreateUser(ctx, req)
 
 	require.NoError(suite.T(), err)
 	require.NotNil(suite.T(), resp)
@@ -84,7 +46,7 @@ func (suite *UserGrpcHandlerTestSuite) TestCreateUser_Success() {
 	assert.Equal(suite.T(), req.FirstName, createdUser.FirstName)
 }
 
-func (suite *UserGrpcHandlerTestSuite) TestCreateUser_InvalidEmail() {
+func (suite *GrpcHandlerTestSuite) TestCreateUser_InvalidEmail() {
 	ctx := context.Background()
 	req := &pb.CreateUserRequest{
 		Email:           "", // Invalid email
@@ -97,7 +59,7 @@ func (suite *UserGrpcHandlerTestSuite) TestCreateUser_InvalidEmail() {
 		IsEmailVerified: false,
 	}
 
-	resp, err := suite.Handler.CreateUser(ctx, req)
+	resp, err := suite.UserHandler.CreateUser(ctx, req)
 
 	require.Error(suite.T(), err)
 	st, ok := status.FromError(err)
@@ -109,7 +71,7 @@ func (suite *UserGrpcHandlerTestSuite) TestCreateUser_InvalidEmail() {
 	//suite.T().Logf("Error Message: %s", st)
 }
 
-func (suite *UserGrpcHandlerTestSuite) TestCreateUser_DuplicateEmail() {
+func (suite *GrpcHandlerTestSuite) TestCreateUser_DuplicateEmail() {
 	ctx := context.Background()
 	existingUser := &entity.User{
 		Email:    "existing@example.com",
@@ -129,7 +91,7 @@ func (suite *UserGrpcHandlerTestSuite) TestCreateUser_DuplicateEmail() {
 		IsEmailVerified: false,
 	}
 
-	resp, err := suite.Handler.CreateUser(ctx, req)
+	resp, err := suite.UserHandler.CreateUser(ctx, req)
 
 	require.Error(suite.T(), err)
 	st, ok := status.FromError(err)
@@ -141,7 +103,7 @@ func (suite *UserGrpcHandlerTestSuite) TestCreateUser_DuplicateEmail() {
 }
 
 // get user by id
-func (suite *UserGrpcHandlerTestSuite) TestGetUser_Success() {
+func (suite *GrpcHandlerTestSuite) TestGetUser_Success() {
 	ctx := context.Background()
 	userID := uuid.New().String()
 	req := &pb.GetUserRequest{Id: userID}
@@ -159,7 +121,7 @@ func (suite *UserGrpcHandlerTestSuite) TestGetUser_Success() {
 	err := suite.DB.Create(&expectedUser).Error
 	require.NoError(suite.T(), err, "Failed to create test user in database")
 
-	resp, err := suite.Handler.GetUser(ctx, req)
+	resp, err := suite.UserHandler.GetUser(ctx, req)
 
 	require.NoError(suite.T(), err)
 	require.NotNil(suite.T(), resp)
@@ -173,12 +135,12 @@ func (suite *UserGrpcHandlerTestSuite) TestGetUser_Success() {
 	assert.Equal(suite.T(), expectedUser.FirstName, actualUser.GetFirstName())
 }
 
-func (suite *UserGrpcHandlerTestSuite) TestGetUser_NotFound() {
+func (suite *GrpcHandlerTestSuite) TestGetUser_NotFound() {
 	ctx := context.Background()
 	userID := uuid.New().String()
 	req := &pb.GetUserRequest{Id: userID}
 
-	resp, err := suite.Handler.GetUser(ctx, req)
+	resp, err := suite.UserHandler.GetUser(ctx, req)
 
 	require.Error(suite.T(), err)
 	st, ok := status.FromError(err)
@@ -189,7 +151,7 @@ func (suite *UserGrpcHandlerTestSuite) TestGetUser_NotFound() {
 }
 
 // update user
-func (suite *UserGrpcHandlerTestSuite) TestUpdateUser_Success() {
+func (suite *GrpcHandlerTestSuite) TestUpdateUser_Success() {
 	ctx := context.Background()
 	userID := uuid.New()
 	userIDStr := userID.String()
@@ -218,7 +180,7 @@ func (suite *UserGrpcHandlerTestSuite) TestUpdateUser_Success() {
 		},
 	}
 
-	resp, err := suite.Handler.UpdateUser(ctx, updateReq)
+	resp, err := suite.UserHandler.UpdateUser(ctx, updateReq)
 
 	require.NoError(suite.T(), err)
 	require.NotNil(suite.T(), resp)
@@ -246,7 +208,7 @@ func (suite *UserGrpcHandlerTestSuite) TestUpdateUser_Success() {
 	assert.Equal(suite.T(), entity.Female, updatedUser.Gender)
 }
 
-func (suite *UserGrpcHandlerTestSuite) TestUpdateUser_IDNotFound() {
+func (suite *GrpcHandlerTestSuite) TestUpdateUser_IDNotFound() {
 	ctx := context.Background()
 	nonExistentUserID := uuid.New().String()
 	updateReq := &pb.UpdateUserRequest{
@@ -261,7 +223,7 @@ func (suite *UserGrpcHandlerTestSuite) TestUpdateUser_IDNotFound() {
 		},
 	}
 
-	resp, err := suite.Handler.UpdateUser(ctx, updateReq)
+	resp, err := suite.UserHandler.UpdateUser(ctx, updateReq)
 
 	require.Error(suite.T(), err)
 	st, ok := status.FromError(err)
@@ -276,8 +238,4 @@ func (suite *UserGrpcHandlerTestSuite) TestUpdateUser_IDNotFound() {
 	assert.Equal(suite.T(), gorm.ErrRecordNotFound, err)
 
 	//suite.T().Logf("Error Message: %s", st)
-}
-
-func TestUserGrpcHandlerTestSuite(t *testing.T) {
-	suite.Run(t, new(UserGrpcHandlerTestSuite))
 }
