@@ -30,6 +30,6 @@ func (r *MasjidService) DeleteMasjid(ctx context.Context, id string) error {
 	return r.Repo.Delete(ctx, id)
 }
 
-func (s *MasjidService) ListMasjids(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Masjid, error) {
-	return s.Repo.ListMasjids(ctx, pageSize, pageToken)
+func (s *MasjidService) ListMasjids(ctx context.Context, params *entity.ListMasjidsQueryParams) ([]entity.Masjid, int32, error) {
+	return s.Repo.ListMasjids(ctx, params)
 }

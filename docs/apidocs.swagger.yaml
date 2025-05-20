@@ -337,12 +337,26 @@ paths:
           schema:
             $ref: '#/definitions/rpcStatus'
       parameters:
-        - name: pageSize
+        - name: start
           in: query
           required: false
           type: integer
           format: int32
-        - name: pageToken
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          type: string
+        - name: location
           in: query
           required: false
           type: string
@@ -655,12 +669,23 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/limestoneMasjid'
+      totalCount:
+        type: integer
+        format: int32
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
   limestoneMasjid:
     type: object
     properties:
       id:
         type: string
       name:
+        type: string
+      location:
         type: string
       isVerified:
         type: boolean

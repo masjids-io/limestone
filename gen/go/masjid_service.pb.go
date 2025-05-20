@@ -431,12 +431,13 @@ type Masjid struct {
 	state         protoimpl.MessageState    `protogen:"open.v1"`
 	Id            string                    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	IsVerified    bool                      `protobuf:"varint,3,opt,name=is_verified,json=isVerified,proto3" json:"is_verified,omitempty"`
-	Address       *Masjid_Address           `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
-	PhoneNumber   *Masjid_PhoneNumber       `protobuf:"bytes,5,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
-	PrayerConfig  *PrayerTimesConfiguration `protobuf:"bytes,6,opt,name=prayer_config,json=prayerConfig,proto3" json:"prayer_config,omitempty"`
-	CreateTime    *timestamppb.Timestamp    `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	UpdateTime    *timestamppb.Timestamp    `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	Location      string                    `protobuf:"bytes,3,opt,name=location,proto3" json:"location,omitempty"`
+	IsVerified    bool                      `protobuf:"varint,4,opt,name=is_verified,json=isVerified,proto3" json:"is_verified,omitempty"`
+	Address       *Masjid_Address           `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"`
+	PhoneNumber   *Masjid_PhoneNumber       `protobuf:"bytes,6,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	PrayerConfig  *PrayerTimesConfiguration `protobuf:"bytes,7,opt,name=prayer_config,json=prayerConfig,proto3" json:"prayer_config,omitempty"`
+	CreateTime    *timestamppb.Timestamp    `protobuf:"bytes,8,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime    *timestamppb.Timestamp    `protobuf:"bytes,9,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -481,6 +482,13 @@ func (x *Masjid) GetId() string {
 func (x *Masjid) GetName() string {
 	if x != nil {
 		return x.Name
+	}
+	return ""
+}
+
+func (x *Masjid) GetLocation() string {
+	if x != nil {
+		return x.Location
 	}
 	return ""
 }
@@ -741,8 +749,11 @@ func (x *GetMasjidRequest) GetId() string {
 
 type ListMasjidsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	PageToken     string                 `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	Start         int32                  `protobuf:"varint,1,opt,name=start,proto3" json:"start,omitempty"`
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	Name          *string                `protobuf:"bytes,4,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Location      *string                `protobuf:"bytes,5,opt,name=location,proto3,oneof" json:"location,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -777,16 +788,37 @@ func (*ListMasjidsRequest) Descriptor() ([]byte, []int) {
 	return file_masjid_service_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *ListMasjidsRequest) GetPageSize() int32 {
+func (x *ListMasjidsRequest) GetStart() int32 {
 	if x != nil {
-		return x.PageSize
+		return x.Start
 	}
 	return 0
 }
 
-func (x *ListMasjidsRequest) GetPageToken() string {
+func (x *ListMasjidsRequest) GetLimit() int32 {
 	if x != nil {
-		return x.PageToken
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *ListMasjidsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListMasjidsRequest) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *ListMasjidsRequest) GetLocation() string {
+	if x != nil && x.Location != nil {
+		return *x.Location
 	}
 	return ""
 }
@@ -794,6 +826,9 @@ func (x *ListMasjidsRequest) GetPageToken() string {
 type ListMasjidsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Masjids       []*Masjid              `protobuf:"bytes,1,rep,name=masjids,proto3" json:"masjids,omitempty"`
+	TotalCount    int32                  `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	CurrentPage   int32                  `protobuf:"varint,3,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,4,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -833,6 +868,27 @@ func (x *ListMasjidsResponse) GetMasjids() []*Masjid {
 		return x.Masjids
 	}
 	return nil
+}
+
+func (x *ListMasjidsResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *ListMasjidsResponse) GetCurrentPage() int32 {
+	if x != nil {
+		return x.CurrentPage
+	}
+	return 0
+}
+
+func (x *ListMasjidsResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
 }
 
 type PrayerTimesConfiguration_PrayerAdjustments struct {
@@ -1109,19 +1165,19 @@ const file_masjid_service_proto_rawDesc = "" +
 	"\x15NO_HIGH_LATITUDE_RULE\x10\x00\x12\x17\n" +
 	"\x13MIDDLE_OF_THE_NIGHT\x10\x01\x12\x18\n" +
 	"\x14SEVENTH_OF_THE_NIGHT\x10\x02\x12\x12\n" +
-	"\x0eTWILIGHT_ANGLE\x10\x03\"\xbd\x05\n" +
+	"\x0eTWILIGHT_ANGLE\x10\x03\"\xd9\x05\n" +
 	"\x06Masjid\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
-	"\vis_verified\x18\x03 \x01(\bR\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
+	"\blocation\x18\x03 \x01(\tR\blocation\x12\x1f\n" +
+	"\vis_verified\x18\x04 \x01(\bR\n" +
 	"isVerified\x123\n" +
-	"\aaddress\x18\x04 \x01(\v2\x19.limestone.Masjid.AddressR\aaddress\x12@\n" +
-	"\fphone_number\x18\x05 \x01(\v2\x1d.limestone.Masjid.PhoneNumberR\vphoneNumber\x12H\n" +
-	"\rprayer_config\x18\x06 \x01(\v2#.limestone.PrayerTimesConfigurationR\fprayerConfig\x12;\n" +
-	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"\aaddress\x18\x05 \x01(\v2\x19.limestone.Masjid.AddressR\aaddress\x12@\n" +
+	"\fphone_number\x18\x06 \x01(\v2\x1d.limestone.Masjid.PhoneNumberR\vphoneNumber\x12H\n" +
+	"\rprayer_config\x18\a \x01(\v2#.limestone.PrayerTimesConfigurationR\fprayerConfig\x12;\n" +
+	"\vcreate_time\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"createTime\x12;\n" +
-	"\vupdate_time\x18\n" +
-	" \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"\vupdate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"updateTime\x1a\xca\x01\n" +
 	"\aAddress\x12$\n" +
 	"\x0eaddress_line_1\x18\x01 \x01(\tR\faddressLine1\x12$\n" +
@@ -1143,13 +1199,22 @@ const file_masjid_service_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x16\n" +
 	"\x14DeleteMasjidResponse\"'\n" +
 	"\x10GetMasjidRequest\x12\x13\n" +
-	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"P\n" +
-	"\x12ListMasjidsRequest\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1d\n" +
-	"\n" +
-	"page_token\x18\x03 \x01(\tR\tpageToken\"B\n" +
+	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\xa4\x01\n" +
+	"\x12ListMasjidsRequest\x12\x14\n" +
+	"\x05start\x18\x01 \x01(\x05R\x05start\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x17\n" +
+	"\x04name\x18\x04 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1f\n" +
+	"\blocation\x18\x05 \x01(\tH\x01R\blocation\x88\x01\x01B\a\n" +
+	"\x05_nameB\v\n" +
+	"\t_location\"\xa7\x01\n" +
 	"\x13ListMasjidsResponse\x12+\n" +
-	"\amasjids\x18\x01 \x03(\v2\x11.limestone.MasjidR\amasjids2\xc1\x04\n" +
+	"\amasjids\x18\x01 \x03(\v2\x11.limestone.MasjidR\amasjids\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x05R\n" +
+	"totalCount\x12!\n" +
+	"\fcurrent_page\x18\x03 \x01(\x05R\vcurrentPage\x12\x1f\n" +
+	"\vtotal_pages\x18\x04 \x01(\x05R\n" +
+	"totalPages2\xc1\x04\n" +
 	"\rMasjidService\x12v\n" +
 	"\fCreateMasjid\x12\x1e.limestone.CreateMasjidRequest\x1a!.limestone.StandardMasjidResponse\"#\xdaA\x06masjid\x82\xd3\xe4\x93\x02\x14:\x06masjid\"\n" +
 	"/v1/masjid\x12v\n" +
@@ -1238,6 +1303,7 @@ func file_masjid_service_proto_init() {
 		(*StandardMasjidResponse_ListMasjidResponse)(nil),
 		(*StandardMasjidResponse_GetMasjidResponse)(nil),
 	}
+	file_masjid_service_proto_msgTypes[8].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

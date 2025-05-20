@@ -124,12 +124,13 @@ message Masjid {
 
   string id = 1;
   string name = 2;
-  bool is_verified = 3;
-  Address address = 4;
-  PhoneNumber phone_number = 5;
-  PrayerTimesConfiguration prayer_config = 6;
-  google.protobuf.Timestamp create_time = 9;
-  google.protobuf.Timestamp update_time = 10;
+  string location = 3;
+  bool is_verified = 4;
+  Address address = 5;
+  PhoneNumber phone_number = 6;
+  PrayerTimesConfiguration prayer_config = 7;
+  google.protobuf.Timestamp create_time = 8;
+  google.protobuf.Timestamp update_time = 9;
 }
 
 message CreateMasjidRequest {
@@ -151,10 +152,16 @@ message GetMasjidRequest {
 }
 
 message ListMasjidsRequest {
-  int32 page_size = 2;
-  string page_token = 3;
+  int32 start = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  optional string name = 4;
+  optional string location = 5;
 }
 
 message ListMasjidsResponse {
   repeated Masjid masjids = 1;
+  int32 total_count = 2;
+  int32 current_page = 3;
+  int32 total_pages = 4;
 }

@@ -7,7 +7,7 @@ import (
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
 	"github.com/mnadev/limestone/internal/application/helper"
-	services "github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/application/services"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -30,6 +30,7 @@ func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasj
 	masjidEntity := &entity.Masjid{
 		ID:         uuid.New(), // Generate a new UUID
 		Name:       masjid.GetName(),
+		Location:   masjid.GetLocation(),
 		IsVerified: masjid.GetIsVerified(),
 		Address: entity.Address{
 			AddressLine1: masjid.GetAddress().GetAddressLine_1(),
@@ -162,16 +163,25 @@ func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequ
 }
 
 func (h *MasjidGrpcHandler) ListMasjids(ctx context.Context, req *pb.ListMasjidsRequest) (*pb.StandardMasjidResponse, error) {
-	masjids, err := h.Svc.ListMasjids(ctx, req.GetPageSize(), req.GetPageToken())
+	params := &entity.ListMasjidsQueryParams{
+		Start:    req.GetStart(),
+		Limit:    req.GetLimit(),
+		Page:     req.GetPage(),
+		Name:     req.GetName(),
+		Location: req.GetLocation(),
+	}
+
+	masjids, totalCount, err := h.Svc.ListMasjids(ctx, params)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list masjids: %v", err)
 	}
 
-	protoMasjids := &pb.ListMasjidsResponse{}
-	for _, masjid := range masjids {
-		protoMasjids.Masjids = append(protoMasjids.Masjids, &pb.Masjid{
+	protoMasjidsList := make([]*pb.Masjid, len(masjids))
+	for i, masjid := range masjids {
+		protoMasjidsList[i] = &pb.Masjid{
 			Id:         masjid.ID.String(),
 			Name:       masjid.Name,
+			Location:   masjid.Location,
 			IsVerified: masjid.IsVerified,
 			Address: &pb.Masjid_Address{
 				AddressLine_1: masjid.Address.AddressLine1,
@@ -186,9 +196,51 @@ func (h *MasjidGrpcHandler) ListMasjids(ctx context.Context, req *pb.ListMasjids
 				Number:      masjid.PhoneNumber.Number,
 				Extension:   masjid.PhoneNumber.Extension,
 			},
+			PrayerConfig: &pb.PrayerTimesConfiguration{
+				Method:           pb.PrayerTimesConfiguration_CalculationMethod(int32(masjid.PrayerConfig.CalculationMethod)),
+				FajrAngle:        masjid.PrayerConfig.FajrAngle,
+				IshaAngle:        masjid.PrayerConfig.IshaAngle,
+				IshaInterval:     masjid.PrayerConfig.IshaInterval,
+				AsrMethod:        pb.PrayerTimesConfiguration_AsrJuristicMethod(int32(masjid.PrayerConfig.AsrMethod)),
+				HighLatitudeRule: pb.PrayerTimesConfiguration_HighLatitudeRule(int32(masjid.PrayerConfig.HighLatitudeRule)),
+				Adjustments: &pb.PrayerTimesConfiguration_PrayerAdjustments{
+					FajrAdjustment:    masjid.PrayerConfig.Adjustments.FajrAdjustment,
+					DhuhrAdjustment:   masjid.PrayerConfig.Adjustments.DhuhrAdjustment,
+					AsrAdjustment:     masjid.PrayerConfig.Adjustments.AsrAdjustment,
+					MaghribAdjustment: masjid.PrayerConfig.Adjustments.MaghribAdjustment,
+					IshaAdjustment:    masjid.PrayerConfig.Adjustments.IshaAdjustment,
+				},
+			},
 			CreateTime: timestamppb.New(masjid.CreatedAt),
 			UpdateTime: timestamppb.New(masjid.UpdatedAt),
-		})
+		}
 	}
-	return helper.StandardMasjidResponse(codes.OK, "success", "masjids retrieved successfully", nil, protoMasjids, nil)
+
+	pageSize := params.Limit
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	totalPages := int32(0)
+	if pageSize > 0 {
+		totalPages = int32((totalCount + int32(pageSize) - 1) / int32(pageSize))
+	}
+
+	currentPage := params.Page
+	if currentPage == 0 {
+		if params.Start > 0 && pageSize > 0 {
+			currentPage = (params.Start / pageSize) + 1
+		} else {
+			currentPage = 1
+		}
+	}
+
+	listMasjidsResponse := &pb.ListMasjidsResponse{
+		Masjids:     protoMasjidsList,
+		TotalCount:  totalCount,
+		CurrentPage: currentPage,
+		TotalPages:  totalPages,
+	}
+
+	return helper.StandardMasjidResponse(codes.OK, "success", "masjids retrieved successfully", nil, listMasjidsResponse, nil)
 }

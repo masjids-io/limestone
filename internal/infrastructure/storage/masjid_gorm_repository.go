@@ -7,6 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
+type ListMasjidsParams struct {
+	Start    int32
+	Limit    int32
+	Page     int32
+	Name     string
+	Location string
+}
+
 type GormMasjidRepository struct {
 	db *gorm.DB
 }
@@ -41,14 +49,46 @@ func (r *GormMasjidRepository) Delete(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).Delete(&entity.Masjid{}, "id = ?", id).Error
 }
 
-func (r *GormMasjidRepository) ListMasjids(ctx context.Context, pageSize int32, pageToken string) ([]*entity.Masjid, error) {
-	var masjids []*entity.Masjid
-	query := r.db.WithContext(ctx).Limit(int(pageSize)).Order("id")
+func (r *GormMasjidRepository) ListMasjids(ctx context.Context, params *entity.ListMasjidsQueryParams) ([]entity.Masjid, int32, error) {
+	db := r.db.WithContext(ctx)
 
-	if pageToken != "" {
-		query = query.Where("id > ?", pageToken)
+	if params.Name != "" {
+		db = db.Where("name ILIKE ?", "%"+params.Name+"%")
 	}
-	
-	result := query.Find(&masjids)
-	return masjids, result.Error
+	if params.Location != "" {
+		//db = db.Where("LOWER(address->>'city') LIKE LOWER(?) OR LOWER(address->>'country_code') LIKE LOWER(?)", "%"+params.Location+"%", "%"+params.Location+"%")
+		db = db.Where("location ILIKE ?", "%"+params.Location+"%")
+	}
+
+	var totalCount int64
+	if err := db.Model(&entity.Masjid{}).Count(&totalCount).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var masjids []entity.Masjid
+	pageSize := params.Limit
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	offset := int((params.Page - 1) * pageSize)
+	if params.Start > 0 {
+		offset = int(params.Start)
+	}
+	if offset < 0 {
+		offset = 0
+	}
+
+	db = db.Offset(offset).Limit(int(pageSize)).Order("created_at DESC, id ASC")
+
+	result := db.Find(&masjids)
+	if result.Error != nil {
+		return nil, 0, result.Error
+	}
+
+	return masjids, int32(totalCount), nil
+}
+
+func (r *GormMasjidRepository) GetDB() *gorm.DB {
+	return r.db
 }

@@ -35,39 +35,60 @@ func StandardUserResponse(code codes.Code, statusMessage string, message string,
 	return resp, nil
 }
 
-func StandardMasjidResponse(code codes.Code, statusMessage string, message string, masjidEntity *entity.Masjid, listResponse *pb.ListMasjidsResponse, deleteResponse *pb.DeleteMasjidResponse) (*pb.StandardMasjidResponse, error) {
+func StandardMasjidResponse(code codes.Code, status string, message string, masjid *entity.Masjid, listMasjidsResponse *pb.ListMasjidsResponse, deleteMasjidResponse *pb.DeleteMasjidResponse) (*pb.StandardMasjidResponse, error) {
 	resp := &pb.StandardMasjidResponse{
 		Code:    code.String(),
-		Status:  statusMessage,
+		Status:  status,
 		Message: message,
 	}
 
-	if masjidEntity != nil {
-		protoMasjid := &pb.Masjid{
-			Id:         masjidEntity.ID.String(),
-			Name:       masjidEntity.Name,
-			IsVerified: masjidEntity.IsVerified,
-			Address: &pb.Masjid_Address{
-				AddressLine_1: masjidEntity.Address.AddressLine1,
-				AddressLine_2: masjidEntity.Address.AddressLine2,
-				ZoneCode:      masjidEntity.Address.ZoneCode,
-				PostalCode:    masjidEntity.Address.PostalCode,
-				City:          masjidEntity.Address.City,
-				CountryCode:   masjidEntity.Address.CountryCode,
+	if masjid != nil {
+		resp.Data = &pb.StandardMasjidResponse_Masjid{
+			Masjid: &pb.Masjid{
+				Id:         masjid.ID.String(),
+				Name:       masjid.Name,
+				IsVerified: masjid.IsVerified,
+				Location:   masjid.Location, // Pastikan field ini ada di entity.Masjid Anda
+				Address: &pb.Masjid_Address{
+					AddressLine_1: masjid.Address.AddressLine1,
+					AddressLine_2: masjid.Address.AddressLine2,
+					ZoneCode:      masjid.Address.ZoneCode,
+					PostalCode:    masjid.Address.PostalCode,
+					City:          masjid.Address.City,
+					CountryCode:   masjid.Address.CountryCode,
+				},
+				PhoneNumber: &pb.Masjid_PhoneNumber{
+					CountryCode: masjid.PhoneNumber.PhoneCountryCode,
+					Number:      masjid.PhoneNumber.Number,
+					Extension:   masjid.PhoneNumber.Extension,
+				},
+				PrayerConfig: &pb.PrayerTimesConfiguration{
+					Method:           pb.PrayerTimesConfiguration_CalculationMethod(int32(masjid.PrayerConfig.CalculationMethod)),
+					FajrAngle:        masjid.PrayerConfig.FajrAngle,
+					IshaAngle:        masjid.PrayerConfig.IshaAngle,
+					IshaInterval:     masjid.PrayerConfig.IshaInterval,
+					AsrMethod:        pb.PrayerTimesConfiguration_AsrJuristicMethod(int32(masjid.PrayerConfig.AsrMethod)),
+					HighLatitudeRule: pb.PrayerTimesConfiguration_HighLatitudeRule(int32(masjid.PrayerConfig.HighLatitudeRule)),
+					Adjustments: &pb.PrayerTimesConfiguration_PrayerAdjustments{
+						FajrAdjustment:    masjid.PrayerConfig.Adjustments.FajrAdjustment,
+						DhuhrAdjustment:   masjid.PrayerConfig.Adjustments.DhuhrAdjustment,
+						AsrAdjustment:     masjid.PrayerConfig.Adjustments.AsrAdjustment,
+						MaghribAdjustment: masjid.PrayerConfig.Adjustments.MaghribAdjustment,
+						IshaAdjustment:    masjid.PrayerConfig.Adjustments.IshaAdjustment,
+					},
+				},
+				CreateTime: timestamppb.New(masjid.CreatedAt),
+				UpdateTime: timestamppb.New(masjid.UpdatedAt),
 			},
-			PhoneNumber: &pb.Masjid_PhoneNumber{
-				CountryCode: masjidEntity.PhoneNumber.PhoneCountryCode,
-				Number:      masjidEntity.PhoneNumber.Number,
-				Extension:   masjidEntity.PhoneNumber.Extension,
-			},
-			CreateTime: timestamppb.New(masjidEntity.CreatedAt),
-			UpdateTime: timestamppb.New(masjidEntity.UpdatedAt),
 		}
-		resp.Data = &pb.StandardMasjidResponse_Masjid{Masjid: protoMasjid}
-	} else if listResponse != nil {
-		resp.Data = &pb.StandardMasjidResponse_ListMasjidResponse{ListMasjidResponse: listResponse}
-	} else if deleteResponse != nil {
-		resp.Data = &pb.StandardMasjidResponse_DeleteMasjidResponse{DeleteMasjidResponse: deleteResponse}
+	} else if listMasjidsResponse != nil {
+		resp.Data = &pb.StandardMasjidResponse_ListMasjidResponse{
+			ListMasjidResponse: listMasjidsResponse,
+		}
+	} else if deleteMasjidResponse != nil {
+		resp.Data = &pb.StandardMasjidResponse_DeleteMasjidResponse{
+			DeleteMasjidResponse: deleteMasjidResponse,
+		}
 	}
 
 	return resp, nil
