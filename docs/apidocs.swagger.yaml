@@ -1,0 +1,831 @@
+swagger: "2.0"
+info:
+  title: adhan_service.proto
+  version: version not set
+tags:
+  - name: AdhanService
+  - name: AuthService
+  - name: EventService
+  - name: MasjidService
+  - name: UserService
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/adhan:
+    post:
+      operationId: AdhanService_CreateAdhan
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: adhanFile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+            required:
+              - adhanFile
+      tags:
+        - AdhanService
+  /v1/adhan/{id}:
+    get:
+      operationId: AdhanService_GetAdhanById
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanService
+    delete:
+      operationId: AdhanService_DeleteAdhan
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanService
+    patch:
+      operationId: AdhanService_UpdateAdhan
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: adhanFile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+            required:
+              - adhanFile
+      tags:
+        - AdhanService
+  /v1/auth/login:
+    post:
+      operationId: AuthService_AuthenticateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAuthResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneAuthenticateUserRequest'
+      tags:
+        - AuthService
+  /v1/auth/refresh_token:
+    post:
+      operationId: AuthService_RefreshToken
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAuthResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneRefreshTokenRequest'
+      tags:
+        - AuthService
+  /v1/event:
+    get:
+      operationId: EventService_ListEvents
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          in: query
+          required: false
+          type: string
+      tags:
+        - EventService
+    post:
+      operationId: EventService_CreateEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: event
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneEvent'
+            required:
+              - event
+      tags:
+        - EventService
+  /v1/event/{id}:
+    get:
+      operationId: EventService_GetEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - EventService
+    delete:
+      operationId: EventService_DeleteEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - EventService
+    patch:
+      operationId: EventService_UpdateEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: event
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneEvent'
+            required:
+              - event
+      tags:
+        - EventService
+  /v1/masjid:
+    post:
+      operationId: MasjidService_CreateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjid
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+            required:
+              - masjid
+      tags:
+        - MasjidService
+    patch:
+      operationId: MasjidService_UpdateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: masjid
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+            required:
+              - masjid
+      tags:
+        - MasjidService
+  /v1/masjid/{id}:
+    get:
+      operationId: MasjidService_GetMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - MasjidService
+    delete:
+      operationId: MasjidService_DeleteMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - MasjidService
+  /v1/masjids:
+    get:
+      operationId: MasjidService_ListMasjids
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageToken
+          in: query
+          required: false
+          type: string
+      tags:
+        - MasjidService
+  /v1/users:
+    post:
+      operationId: UserService_CreateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneCreateUserRequest'
+      tags:
+        - UserService
+    patch:
+      operationId: UserService_UpdateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneUser'
+            required:
+              - user
+      tags:
+        - UserService
+  /v1/users/{id}:
+    get:
+      operationId: UserService_GetUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - UserService
+    delete:
+      operationId: UserService_DeleteUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - UserService
+definitions:
+  EventEventType:
+    type: string
+    enum:
+      - WORSHIP
+      - EDUCATIONAL
+      - COMMUNITY
+      - ATHLETIC
+      - FUNDRAISING
+      - YOUTH
+      - CHILDREN_SPECIFIC
+      - MATRIMONIAL
+      - FUNERAL
+    default: WORSHIP
+  EventGenderRestriction:
+    type: string
+    enum:
+      - NO_RESTRICTION
+      - MALE_ONLY
+      - FEMALE_ONLY
+    default: NO_RESTRICTION
+  MasjidAddress:
+    type: object
+    properties:
+      addressLine1:
+        type: string
+      addressLine2:
+        type: string
+      zoneCode:
+        type: string
+      postalCode:
+        type: string
+      city:
+        type: string
+      countryCode:
+        type: string
+  MasjidPhoneNumber:
+    type: object
+    properties:
+      countryCode:
+        type: string
+      number:
+        type: string
+      extension:
+        type: string
+  PrayerTimesConfigurationAsrJuristicMethod:
+    type: string
+    enum:
+      - SHAFI_HANBALI_MALIKI
+      - HANAFI
+    default: SHAFI_HANBALI_MALIKI
+  PrayerTimesConfigurationCalculationMethod:
+    type: string
+    enum:
+      - OTHER
+      - MUSLIM_WORLD_LEAGUE
+      - EGYPTIAN
+      - KARACHI
+      - UMM_AL_QURA
+      - DUBAI
+      - MOON_SIGHTING_COMMITTEE
+      - NORTH_AMERICA
+      - KUWAIT
+      - QATAR
+      - SINGAPORE
+      - UOIF
+    default: OTHER
+  PrayerTimesConfigurationHighLatitudeRule:
+    type: string
+    enum:
+      - NO_HIGH_LATITUDE_RULE
+      - MIDDLE_OF_THE_NIGHT
+      - SEVENTH_OF_THE_NIGHT
+      - TWILIGHT_ANGLE
+    default: NO_HIGH_LATITUDE_RULE
+  PrayerTimesConfigurationPrayerAdjustments:
+    type: object
+    properties:
+      fajrAdjustment:
+        type: integer
+        format: int32
+      dhuhrAdjustment:
+        type: integer
+        format: int32
+      asrAdjustment:
+        type: integer
+        format: int32
+      maghribAdjustment:
+        type: integer
+        format: int32
+      ishaAdjustment:
+        type: integer
+        format: int32
+  limestoneAdhanFile:
+    type: object
+    properties:
+      id:
+        type: string
+      masjidId:
+        type: string
+      file:
+        type: string
+        format: byte
+      createTime:
+        type: string
+        format: date-time
+      updateTime:
+        type: string
+        format: date-time
+  limestoneAuthenticateUserRequest:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  limestoneCreateUserRequest:
+    type: object
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      isEmailVerified:
+        type: boolean
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber:
+        type: string
+      gender:
+        $ref: '#/definitions/limestoneCreateUserRequestGender'
+  limestoneCreateUserRequestGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+  limestoneDataAuthenticateUserResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      userId:
+        type: string
+  limestoneDataRefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  limestoneDeleteAdhanFileResponse:
+    type: object
+  limestoneDeleteEventResponse:
+    type: object
+  limestoneDeleteMasjidResponse:
+    type: object
+  limestoneDeleteUserResponse:
+    type: object
+  limestoneEvent:
+    type: object
+    properties:
+      id:
+        type: string
+      masjidId:
+        type: string
+      name:
+        type: string
+      description:
+        type: string
+      startTime:
+        type: string
+        format: date-time
+      endTime:
+        type: string
+        format: date-time
+      genderRestriction:
+        $ref: '#/definitions/EventGenderRestriction'
+      types:
+        type: array
+        items:
+          $ref: '#/definitions/EventEventType'
+      isPaid:
+        type: boolean
+      requiresRsvp:
+        type: boolean
+      maxParticipants:
+        type: integer
+        format: int32
+      livestreamLink:
+        type: string
+      createTime:
+        type: string
+        format: date-time
+      updateTime:
+        type: string
+        format: date-time
+  limestoneGetMasjidRequest:
+    type: object
+    properties:
+      id:
+        type: string
+    required:
+      - id
+  limestoneListEventsResponse:
+    type: object
+    properties:
+      events:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneEvent'
+  limestoneListMasjidsResponse:
+    type: object
+    properties:
+      masjids:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneMasjid'
+  limestoneMasjid:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      isVerified:
+        type: boolean
+      address:
+        $ref: '#/definitions/MasjidAddress'
+      phoneNumber:
+        $ref: '#/definitions/MasjidPhoneNumber'
+      prayerConfig:
+        $ref: '#/definitions/limestonePrayerTimesConfiguration'
+      createTime:
+        type: string
+        format: date-time
+      updateTime:
+        type: string
+        format: date-time
+  limestonePrayerTimesConfiguration:
+    type: object
+    properties:
+      method:
+        $ref: '#/definitions/PrayerTimesConfigurationCalculationMethod'
+      fajrAngle:
+        type: number
+        format: double
+      ishaAngle:
+        type: number
+        format: double
+      ishaInterval:
+        type: integer
+        format: int32
+      asrMethod:
+        $ref: '#/definitions/PrayerTimesConfigurationAsrJuristicMethod'
+      highLatitudeRule:
+        $ref: '#/definitions/PrayerTimesConfigurationHighLatitudeRule'
+      adjustments:
+        $ref: '#/definitions/PrayerTimesConfigurationPrayerAdjustments'
+  limestoneRefreshTokenRequest:
+    type: object
+    properties:
+      refreshToken:
+        type: string
+  limestoneStandardAdhanResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      adhanFile:
+        $ref: '#/definitions/limestoneAdhanFile'
+      deleteAdhanFileResponse:
+        $ref: '#/definitions/limestoneDeleteAdhanFileResponse'
+  limestoneStandardAuthResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      authenticateUserData:
+        $ref: '#/definitions/limestoneDataAuthenticateUserResponse'
+        title: Unique field name
+      refreshTokenData:
+        $ref: '#/definitions/limestoneDataRefreshTokenResponse'
+        title: Unique field name
+  limestoneStandardEventResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      event:
+        $ref: '#/definitions/limestoneEvent'
+      deleteEventResponse:
+        $ref: '#/definitions/limestoneDeleteEventResponse'
+      listEventResponse:
+        $ref: '#/definitions/limestoneListEventsResponse'
+  limestoneStandardMasjidResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      Masjid:
+        $ref: '#/definitions/limestoneMasjid'
+      deleteMasjidResponse:
+        $ref: '#/definitions/limestoneDeleteMasjidResponse'
+      listMasjidResponse:
+        $ref: '#/definitions/limestoneListMasjidsResponse'
+      getMasjidResponse:
+        $ref: '#/definitions/limestoneGetMasjidRequest'
+  limestoneStandardUserResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      addUserResponse:
+        $ref: '#/definitions/limestoneUser'
+      getUserResponse:
+        $ref: '#/definitions/limestoneUser'
+      updateUserResponse:
+        $ref: '#/definitions/limestoneUser'
+      deleteUserResponse:
+        $ref: '#/definitions/limestoneDeleteUserResponse'
+  limestoneUser:
+    type: object
+    properties:
+      id:
+        type: string
+      email:
+        type: string
+      username:
+        type: string
+      isEmailVerified:
+        type: boolean
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber:
+        type: string
+      gender:
+        $ref: '#/definitions/limestoneUserGender'
+      createTime:
+        type: string
+        format: date-time
+      updateTime:
+        type: string
+        format: date-time
+  limestoneUserGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
