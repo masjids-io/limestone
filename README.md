@@ -20,7 +20,7 @@ In order to run the server, you will need to install and be familiar with the fo
 
 ## Regenerating protos
 
-To regenerate run `buf generate .`. This MUST be done after each proto change.
+To regenerate proto file, run `buf generate .`. This MUST be done after each proto change.
 
 ## Regenerate swagger docs
 
