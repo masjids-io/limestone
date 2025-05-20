@@ -17,11 +17,17 @@ import (
 
 type GrpcHandlerTestSuite struct {
 	suite.Suite
-	DB          *gorm.DB
-	UserHandler *handler.UserGrpcHandler
-	UserService *services.UserService
-	AuthService *services.AuthService
-	AuthHandler *handler.AuthGrpcHandler
+	DB            *gorm.DB
+	UserHandler   *handler.UserGrpcHandler
+	UserService   *services.UserService
+	AuthService   *services.AuthService
+	AuthHandler   *handler.AuthGrpcHandler
+	AdhanService  *services.AdhanService
+	AdhanHandler  *handler.AdhanGrpcHandler
+	MasjidService *services.MasjidService
+	MasjidHandler *handler.MasjidGrpcHandler
+	EventService  *services.EventService
+	EventHandler  *handler.EventGrpcHandler
 }
 
 func (suite *GrpcHandlerTestSuite) SetupSuite() {
@@ -40,6 +46,21 @@ func (suite *GrpcHandlerTestSuite) SetupSuite() {
 	authService := services.NewAuthService(userRepo)
 	suite.AuthService = authService
 	suite.AuthHandler = handler.NewAuthGrpcHandler(suite.AuthService)
+
+	//adhan service
+	adhanRepo := storage.NewGormAdhanRepository(suite.DB)
+	suite.AdhanService = services.NewAdhanService(adhanRepo)
+	suite.AdhanHandler = handler.NewAdhanGrpcHandler(suite.AdhanService)
+
+	//masjid service
+	masjidrepo := storage.NewGormMasjidRepository(suite.DB)
+	suite.MasjidService = services.NewMasjidService(masjidrepo)
+	suite.MasjidHandler = handler.NewMasjidGrpcHandler(suite.MasjidService)
+
+	//event service
+	eventRepo := storage.NewGormEventRepository(suite.DB)
+	suite.EventService = services.NewEventService(eventRepo)
+	suite.EventHandler = handler.NewEventGrpcHandler(suite.EventService)
 }
 
 func (suite *GrpcHandlerTestSuite) TearDownSuite() {

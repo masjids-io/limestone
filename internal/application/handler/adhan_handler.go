@@ -9,6 +9,7 @@ import (
 	"github.com/mnadev/limestone/internal/application/services"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"strings"
 	"time"
 )
 
@@ -137,7 +138,7 @@ func (h *AdhanGrpcHandler) GetAdhanById(ctx context.Context, req *pb.GetAdhanFil
 
 	adhan, err := h.Svc.GetAdhanByID(ctx, idStr)
 	if err != nil {
-		if status.Code(err) == codes.NotFound {
+		if strings.Contains(err.Error(), "record not found") {
 			return nil, status.Errorf(codes.NotFound, "adhan file with ID %s not found", idStr)
 		}
 		return nil, status.Errorf(codes.Internal, "failed to get adhan file: %v", err)

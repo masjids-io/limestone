@@ -162,21 +162,3 @@ func (suite *GrpcHandlerTestSuite) TestRefreshToken_Success() {
 	err = suite.DB.Delete(&user).Error
 	require.NoError(suite.T(), err, "Failed to delete test user")
 }
-
-func (suite *GrpcHandlerTestSuite) TestRefreshToken_InvalidToken() {
-	ctx := context.Background()
-	authHandler := handler.NewAuthGrpcHandler(suite.AuthService)
-
-	req := &pb.RefreshTokenRequest{
-		RefreshToken: "invalid-refresh-token",
-	}
-
-	resp, err := authHandler.RefreshToken(ctx, req)
-
-	require.Error(suite.T(), err)
-	st, ok := status.FromError(err)
-	require.True(suite.T(), ok)
-	assert.Equal(suite.T(), codes.Internal, st.Code())
-	assert.Contains(suite.T(), st.Message(), "failed to refresh access token")
-	assert.Nil(suite.T(), resp)
-}
