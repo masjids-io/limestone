@@ -33,7 +33,6 @@ func (h *AuthGrpcHandler) AuthenticateUser(ctx context.Context, req *pb.Authenti
 		return nil, status.Errorf(codes.Canceled, "invalid username/email or password")
 	}
 
-	// Generate JWT tokens
 	accessToken, refreshToken, err := auth.GenerateJWT(user.ID.String())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to generate JWT tokens: %v", err)

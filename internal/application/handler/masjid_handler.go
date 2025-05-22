@@ -28,7 +28,7 @@ func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasj
 	masjid := req.GetMasjid()
 
 	masjidEntity := &entity.Masjid{
-		ID:         uuid.New(), // Generate a new UUID
+		ID:         uuid.New(),
 		Name:       masjid.GetName(),
 		Location:   masjid.GetLocation(),
 		IsVerified: masjid.GetIsVerified(),
@@ -95,7 +95,7 @@ func (h *MasjidGrpcHandler) UpdateMasjid(ctx context.Context, req *pb.UpdateMasj
 	if masjid.GetName() != "" {
 		masjidEntity.Name = masjid.GetName()
 	}
-	// Add similar checks and assignments for other fields you want to support updating
+
 	if masjid.GetAddress() != nil {
 		masjidEntity.Address = entity.Address{
 			AddressLine1: masjid.GetAddress().GetAddressLine_1(),

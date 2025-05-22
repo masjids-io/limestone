@@ -24,11 +24,11 @@ func GenerateJWT(userID string) (string, string, error) {
 
 	accessExpMinutes, err := strconv.Atoi(accessExpiration)
 	if err != nil {
-		accessExpMinutes = 60 // Default to 30 minutes
+		accessExpMinutes = 60
 	}
 	refreshExpHours, err := strconv.Atoi(refreshExpiration)
 	if err != nil {
-		refreshExpHours = 24 * 7 // Default to 7 days
+		refreshExpHours = 24 * 7
 	}
 
 	now := time.Now()

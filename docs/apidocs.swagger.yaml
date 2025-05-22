@@ -7,6 +7,7 @@ tags:
   - name: AuthService
   - name: EventService
   - name: MasjidService
+  - name: NikkahIoService
   - name: UserService
 consumes:
   - application/json
@@ -24,7 +25,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: adhanFile
           in: body
@@ -46,7 +47,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -64,7 +65,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -82,7 +83,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -108,7 +109,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: body
           in: body
@@ -128,7 +129,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: body
           in: body
@@ -148,7 +149,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: pageSize
           in: query
@@ -171,7 +172,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: event
           in: body
@@ -193,7 +194,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -211,7 +212,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -229,7 +230,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -255,7 +256,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: masjid
           in: body
@@ -276,7 +277,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: masjid
           in: body
@@ -298,7 +299,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -316,7 +317,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -335,7 +336,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: start
           in: query
@@ -362,6 +363,272 @@ paths:
           type: string
       tags:
         - MasjidService
+  /v1/nikkah/likes:
+    post:
+      operationId: NikkahIoService_InitiateNikkahLike
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: like
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneNikkahLike'
+      tags:
+        - NikkahIoService
+  /v1/nikkah/likes/{likeId}:
+    get:
+      operationId: NikkahIoService_GetNikkahLike
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: likeId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/likes/{likeId}/cancel:
+    post:
+      operationId: NikkahIoService_CancelNikkahLike
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: likeId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/likes/{likeId}/complete:
+    post:
+      operationId: NikkahIoService_CompleteNikkahLike
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: likeId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}:
+    get:
+      operationId: NikkahIoService_GetNikkahMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneNikkahMatch'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}/accept:
+    post:
+      operationId: NikkahIoService_AcceptNikkahMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}/end:
+    post:
+      operationId: NikkahIoService_EndNikkahMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/match/{matchId}/reject:
+    post:
+      operationId: NikkahIoService_RejectNikkahMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/nikkah/profile:
+    get:
+      operationId: NikkahIoService_GetSelfNikkahProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      tags:
+        - NikkahIoService
+    post:
+      operationId: NikkahIoService_CreateNikkahProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneNikkahProfile'
+            required:
+              - profile
+      tags:
+        - NikkahIoService
+  /v1/nikkah/profile/{profileId}:
+    get:
+      operationId: NikkahIoService_GetNikkahProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          type: string
+      tags:
+        - NikkahIoService
+    put:
+      operationId: NikkahIoService_UpdateSelfNikkahProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          type: string
+        - name: profile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneNikkahProfile'
+            required:
+              - profile
+      tags:
+        - NikkahIoService
+  /v1/nikkah/profiles:
+    get:
+      operationId: NikkahIoService_ListNikkahProfiles
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: start
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          type: string
+      tags:
+        - NikkahIoService
   /v1/users:
     post:
       operationId: UserService_CreateUser
@@ -373,7 +640,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: body
           in: body
@@ -392,7 +659,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: user
           in: body
@@ -414,7 +681,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -432,7 +699,7 @@ paths:
         default:
           description: An unexpected error response.
           schema:
-            $ref: '#/definitions/rpcStatus'
+            $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
           in: path
@@ -441,6 +708,23 @@ paths:
       tags:
         - UserService
 definitions:
+  BirthDateMonth:
+    type: string
+    enum:
+      - MONTH_UNSPECIFIED
+      - JANUARY
+      - FEBRUARY
+      - MARCH
+      - APRIL
+      - MAY
+      - JUNE
+      - JULY
+      - AUGUST
+      - SEPTEMBER
+      - OCTOBER
+      - NOVEMBER
+      - DECEMBER
+    default: MONTH_UNSPECIFIED
   EventEventType:
     type: string
     enum:
@@ -485,6 +769,17 @@ definitions:
         type: string
       extension:
         type: string
+  NikkahProfileBirthDate:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int32
+      month:
+        $ref: '#/definitions/BirthDateMonth'
+      day:
+        type: integer
+        format: int32
   PrayerTimesConfigurationAsrJuristicMethod:
     type: string
     enum:
@@ -533,6 +828,19 @@ definitions:
       ishaAdjustment:
         type: integer
         format: int32
+  googlerpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
   limestoneAdhanFile:
     type: object
     properties:
@@ -558,6 +866,13 @@ definitions:
         type: string
       password:
         type: string
+  limestoneCompleteNikkahLikeResponse:
+    type: object
+    properties:
+      like:
+        $ref: '#/definitions/limestoneNikkahLike'
+      match:
+        $ref: '#/definitions/limestoneNikkahMatch'
   limestoneCreateUserRequest:
     type: object
     properties:
@@ -678,6 +993,23 @@ definitions:
       totalPages:
         type: integer
         format: int32
+  limestoneListNikkahProfilesResponse:
+    type: object
+    properties:
+      profiles:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneNikkahProfile'
+      totalCount:
+        type: integer
+        format: int32
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
   limestoneMasjid:
     type: object
     properties:
@@ -701,6 +1033,92 @@ definitions:
       updateTime:
         type: string
         format: date-time
+  limestoneNikkahLike:
+    type: object
+    properties:
+      likeId:
+        type: string
+        readOnly: true
+      likerProfileId:
+        type: string
+      likedProfileId:
+        type: string
+      status:
+        $ref: '#/definitions/limestoneNikkahLikeStatus'
+      createTime:
+        type: string
+        format: date-time
+        readOnly: true
+      updateTime:
+        type: string
+        format: date-time
+        readOnly: true
+  limestoneNikkahLikeStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - INITIATED
+      - COMPLETED
+      - CANCELLED
+    default: STATUS_UNSPECIFIED
+  limestoneNikkahMatch:
+    type: object
+    properties:
+      matchId:
+        type: string
+        readOnly: true
+      initiatorProfileId:
+        type: string
+      receiverProfileId:
+        type: string
+      status:
+        $ref: '#/definitions/limestoneNikkahMatchStatus'
+      createTime:
+        type: string
+        format: date-time
+        readOnly: true
+      updateTime:
+        type: string
+        format: date-time
+        readOnly: true
+  limestoneNikkahMatchStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - INITIATED
+      - ACCEPTED
+      - REJECTED
+      - ENDED
+    default: STATUS_UNSPECIFIED
+  limestoneNikkahProfile:
+    type: object
+    properties:
+      id:
+        type: string
+        readOnly: true
+      userId:
+        type: string
+      name:
+        type: string
+      gender:
+        $ref: '#/definitions/limestoneNikkahProfileGender'
+      birthDate:
+        $ref: '#/definitions/NikkahProfileBirthDate'
+      createTime:
+        type: string
+        format: date-time
+        readOnly: true
+      updateTime:
+        type: string
+        format: date-time
+        readOnly: true
+  limestoneNikkahProfileGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
   limestonePrayerTimesConfiguration:
     type: object
     properties:
@@ -786,6 +1204,29 @@ definitions:
         $ref: '#/definitions/limestoneListMasjidsResponse'
       getMasjidResponse:
         $ref: '#/definitions/limestoneGetMasjidRequest'
+  limestoneStandardNikkahResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      nikkahProfile:
+        $ref: '#/definitions/limestoneNikkahProfile'
+      like:
+        $ref: '#/definitions/limestoneNikkahLike'
+      match:
+        $ref: '#/definitions/limestoneNikkahMatch'
+      listProfilesResponse:
+        $ref: '#/definitions/limestoneListNikkahProfilesResponse'
+      singleLike:
+        $ref: '#/definitions/limestoneNikkahLike'
+      completeNikahLike:
+        $ref: '#/definitions/limestoneCompleteNikkahLikeResponse'
+      nikkahMatch:
+        $ref: '#/definitions/limestoneNikkahMatch'
   limestoneStandardUserResponse:
     type: object
     properties:
@@ -841,16 +1282,3 @@ definitions:
       '@type':
         type: string
     additionalProperties: {}
-  rpcStatus:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-      message:
-        type: string
-      details:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/protobufAny'

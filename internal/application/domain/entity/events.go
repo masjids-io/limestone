@@ -37,7 +37,6 @@ type Event struct {
 	UpdatedAt         time.Time
 }
 
-// NewEvent creates a new Event struct given the Event proto.
 func NewEvent(ep *pb.Event) (*Event, error) {
 	e := Event{
 		Name:              ep.GetName(),

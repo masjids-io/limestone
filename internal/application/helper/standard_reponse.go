@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"fmt"
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
 	"google.golang.org/grpc/codes"
@@ -48,7 +49,7 @@ func StandardMasjidResponse(code codes.Code, status string, message string, masj
 				Id:         masjid.ID.String(),
 				Name:       masjid.Name,
 				IsVerified: masjid.IsVerified,
-				Location:   masjid.Location, // Pastikan field ini ada di entity.Masjid Anda
+				Location:   masjid.Location,
 				Address: &pb.Masjid_Address{
 					AddressLine_1: masjid.Address.AddressLine1,
 					AddressLine_2: masjid.Address.AddressLine2,
@@ -145,6 +146,69 @@ func StandardAdhanResponse(code codes.Code, statusMessage string, message string
 		resp.Data = &pb.StandardAdhanResponse_AdhanFile{AdhanFile: protoAdhan}
 	} else if deleteResponse != nil {
 		resp.Data = &pb.StandardAdhanResponse_DeleteAdhanFileResponse{DeleteAdhanFileResponse: deleteResponse}
+	}
+
+	return resp, nil
+}
+
+func StandardNikkahResponse(code codes.Code, statusMessage string, message string, entityData interface{}) (*pb.StandardNikkahResponse, error) {
+	resp := &pb.StandardNikkahResponse{
+		Code:    code.String(),
+		Status:  statusMessage,
+		Message: message,
+	}
+
+	if entityData != nil {
+		switch data := entityData.(type) {
+		case *entity.NikkahProfile:
+			resp.Data = &pb.StandardNikkahResponse_NikkahProfile{
+				NikkahProfile: ToProtoNikkahProfile(data),
+			}
+		case *entity.NikkahLike:
+			protoLike := &pb.NikkahLike{
+				LikeId:         data.ID.String(),
+				LikerProfileId: data.LikerProfileID,
+				LikedProfileId: data.LikedProfileID,
+				CreateTime:     timestamppb.New(data.CreatedAt),
+				UpdateTime:     timestamppb.New(data.UpdatedAt),
+			}
+			switch data.Status {
+			case entity.LikeStatusInitiated:
+				protoLike.Status = pb.NikkahLike_INITIATED
+			case entity.LikeStatusCompleted:
+				protoLike.Status = pb.NikkahLike_COMPLETED
+			case entity.LikeStatusCancelled:
+				protoLike.Status = pb.NikkahLike_CANCELLED
+			default:
+				protoLike.Status = pb.NikkahLike_STATUS_UNSPECIFIED
+			}
+			resp.Data = &pb.StandardNikkahResponse_Like{Like: protoLike}
+
+		case *entity.NikkahMatch:
+			protoMatch := &pb.NikkahMatch{
+				MatchId:            data.ID.String(),
+				InitiatorProfileId: data.InitiatorProfileID.String(),
+				ReceiverProfileId:  data.ReceiverProfileID.String(),
+				CreateTime:         timestamppb.New(data.CreatedAt),
+				UpdateTime:         timestamppb.New(data.UpdatedAt),
+			}
+			switch data.Status {
+			case entity.MatchStatusInitiated:
+				protoMatch.Status = pb.NikkahMatch_INITIATED
+			case entity.MatchStatusAccepted:
+				protoMatch.Status = pb.NikkahMatch_ACCEPTED
+			case entity.MatchStatusRejected:
+				protoMatch.Status = pb.NikkahMatch_REJECTED
+			case entity.MatchStatusEnded:
+				protoMatch.Status = pb.NikkahMatch_ENDED
+			default:
+				protoMatch.Status = pb.NikkahMatch_STATUS_UNSPECIFIED
+			}
+			resp.Data = &pb.StandardNikkahResponse_Match{Match: protoMatch}
+
+		default:
+			fmt.Printf("Warning: Unknown entity type passed to StandardNikkahResponse: %T\n", data)
+		}
 	}
 
 	return resp, nil

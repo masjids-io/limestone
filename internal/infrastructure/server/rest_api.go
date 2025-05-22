@@ -63,6 +63,14 @@ func SetupRESTGateway(ctx context.Context, db *gorm.DB) *runtime.ServeMux {
 		log.Fatalf("failed to register EventService handler: %s", err)
 	}
 
+	//nikkah service
+	nikkahRepo := storage.NewGormNikkahRepository(db)
+	nikkahService := services.NewNikkahService(nikkahRepo)
+	nikkahHandler := handler.NewNikkahIoGrpcHandler(nikkahService)
+	if err := pb.RegisterNikkahIoServiceHandlerServer(ctx, mux, nikkahHandler); err != nil {
+		log.Fatalf("failed to register NikkahIoService handler: %s", err)
+	}
+
 	return mux
 }
 

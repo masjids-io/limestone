@@ -26,7 +26,7 @@ func SetupDatabase() *gorm.DB {
 		password,
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Silent),
+		//Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
@@ -48,6 +48,14 @@ func SetupDatabase() *gorm.DB {
 	if err != nil {
 		return nil
 	}
+	err = DB.AutoMigrate(entity.NikkahProfile{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.NikkahLike{})
+	if err != nil {
+	}
+	err = DB.AutoMigrate(entity.NikkahMatch{})
 	return DB
 }
 
@@ -88,5 +96,14 @@ func SetupDatabaseTesting() *gorm.DB {
 	if err != nil {
 		return nil
 	}
+	err = DB.AutoMigrate(entity.NikkahProfile{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.NikkahLike{})
+	if err != nil {
+	}
+	err = DB.AutoMigrate(entity.NikkahMatch{})
+
 	return DB
 }

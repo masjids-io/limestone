@@ -38,6 +38,9 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	//event service
 	eventRepo := storage.NewGormEventRepository(db)
 	eventService := services.NewEventService(eventRepo)
+	//nikkah service
+	nikkahRepo := storage.NewGormNikkahRepository(db)
+	nikkahService := services.NewNikkahService(nikkahRepo)
 
 	// Initialize handlers
 	userHandler := handler.NewUserGrpcHandler(userService)
@@ -45,6 +48,7 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	masjidHandler := handler.NewMasjidGrpcHandler(masjidService)
 	adhanHandler := handler.NewAdhanGrpcHandler(adhanService)
 	eventHandler := handler.NewEventGrpcHandler(eventService)
+	nikkahHandler := handler.NewNikkahIoGrpcHandler(nikkahService)
 
 	// Register services with their handlers
 	pb.RegisterUserServiceServer(server, userHandler)
@@ -52,6 +56,7 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	pb.RegisterMasjidServiceServer(server, masjidHandler)
 	pb.RegisterAdhanServiceServer(server, adhanHandler)
 	pb.RegisterEventServiceServer(server, eventHandler)
+	pb.RegisterNikkahIoServiceServer(server, nikkahHandler)
 
 	reflection.Register(server)
 

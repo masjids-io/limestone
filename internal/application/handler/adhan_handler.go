@@ -61,7 +61,7 @@ func (h *AdhanGrpcHandler) CreateAdhan(ctx context.Context, req *pb.CreateAdhanF
 		UpdatedAt: time.Now(),
 	}
 
-	createdAdhan, err := h.Svc.CreateAdhan(ctx, adhanEntity) // Asumsi nama service method CreateAdhanFile
+	createdAdhan, err := h.Svc.CreateAdhan(ctx, adhanEntity)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create adhan file: %v", err)
 	}

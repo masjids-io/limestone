@@ -1,6 +1,9 @@
 package helper
 
-import "bytes"
+import (
+	"bytes"
+	"errors"
+)
 
 var mp3MagicBytes = [][]byte{
 	{0xFF, 0xFB},
@@ -26,3 +29,6 @@ func IsAudioFile(data []byte) bool {
 	}
 	return false
 }
+
+var ErrAlreadyExists = errors.New("record already exists")
+var ErrNotFound = errors.New("record not found")
