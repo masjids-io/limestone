@@ -109,10 +109,9 @@ func (suite *GrpcHandlerTestSuite) TestCreateNikkahProfile_Unauthenticated() {
 }
 
 func (suite *GrpcHandlerTestSuite) TestGetSelfNikkahProfile_Success() {
-	// 1. Arrange: Buat user menggunakan UserHandler
 	userCtx := context.Background()
 	userReq := &pb.CreateUserRequest{
-		Email:           "getselfprofile@example.com", // Ubah email agar unik
+		Email:           "getselfprofile@example.com",
 		Username:        "getselfuser",
 		Password:        "password123",
 		FirstName:       "GetSelf",
@@ -126,7 +125,6 @@ func (suite *GrpcHandlerTestSuite) TestGetSelfNikkahProfile_Success() {
 	require.NoError(suite.T(), userErr, "Failed to create test user via handler")
 	require.NotNil(suite.T(), userResp, "User creation response was nil")
 
-	// Validasi respons pembuatan user (opsional, tapi baik untuk keandalan)
 	assert.Equal(suite.T(), codes.OK.String(), userResp.GetCode(), "Expected user creation code to be OK")
 	assert.Equal(suite.T(), "success", userResp.GetStatus(), "Expected user creation status to be 'success'")
 
@@ -135,18 +133,15 @@ func (suite *GrpcHandlerTestSuite) TestGetSelfNikkahProfile_Success() {
 	testUserID := createdUserProto.GetUserResponse.GetId()
 	require.NotEmpty(suite.T(), testUserID, "Created user ID was empty")
 
-	// 2. Sekarang, buat Nikkah profile untuk user yang baru dibuat
-	//    Kali ini, kita buat langsung di DB karena GetSelfNikkahProfile
-	//    tidak membuat profile, melainkan mengambilnya.
 	profileID := uuid.New()
 	birthDate := time.Date(1992, time.June, 10, 0, 0, 0, 0, time.UTC)
 
 	expectedProfile := &entity.NikkahProfile{
 		ID:     profileID,
-		UserID: testUserID, // Menggunakan ID user yang baru dibuat
+		UserID: testUserID,
 		Name:   "Retrieve Self Profile",
 		Gender: entity.Gender(pb.NikkahProfile_FEMALE),
-		BirthDate: entity.BirthDate{ // Pastikan `entity.BirthDateEntity` adalah tipe yang benar
+		BirthDate: entity.BirthDate{
 			Year:  int32(birthDate.Year()),
 			Month: entity.Month(birthDate.Month()),
 			Day:   int8(birthDate.Day()),
@@ -157,14 +152,11 @@ func (suite *GrpcHandlerTestSuite) TestGetSelfNikkahProfile_Success() {
 	err := suite.DB.Create(expectedProfile).Error
 	require.NoError(suite.T(), err, "Failed to create test nikkah profile directly in DB")
 
-	// 3. Set up the context dengan User ID dari user yang baru dibuat
 	ctx := context.WithValue(context.Background(), auth.UserIDContextKey, testUserID)
 	req := &pb.GetSelfNikkahProfileRequest{}
 
-	// 4. Act: Panggil handler GetSelfNikkahProfile
 	resp, err := suite.NikkahHandler.GetSelfNikkahProfile(ctx, req)
 
-	// 5. Assert: Periksa respons
 	require.NoError(suite.T(), err, "Expected no error for successful profile retrieval")
 	require.NotNil(suite.T(), resp, "Expected non-nil response for successful profile retrieval")
 
@@ -189,7 +181,7 @@ func (suite *GrpcHandlerTestSuite) TestGetSelfNikkahProfile_Success() {
 func (suite *GrpcHandlerTestSuite) TestGetSelfNikkahProfile_ProfileNotFound() {
 	userCtx := context.Background()
 	userReq := &pb.CreateUserRequest{
-		Email:           "nouserprofile@example.com", // Email unik
+		Email:           "nouserprofile@example.com",
 		Username:        "nouserprofile",
 		Password:        "password123",
 		FirstName:       "NoProfile",
@@ -207,14 +199,12 @@ func (suite *GrpcHandlerTestSuite) TestGetSelfNikkahProfile_ProfileNotFound() {
 	require.True(suite.T(), ok, "Failed to cast user response data to GetUserResponse")
 	testUserID := createdUserProto.GetUserResponse.GetId()
 	require.NotEmpty(suite.T(), testUserID, "Created user ID was empty")
-	
+
 	ctx := context.WithValue(context.Background(), auth.UserIDContextKey, testUserID)
 	req := &pb.GetSelfNikkahProfileRequest{}
 
-	// 2. Act: Panggil handler
 	resp, err := suite.NikkahHandler.GetSelfNikkahProfile(ctx, req)
 
-	// 3. Assert: Periksa error
 	require.Error(suite.T(), err, "Expected error for profile not found")
 	st, ok := status.FromError(err)
 	require.True(suite.T(), ok, "Expected gRPC status error")
