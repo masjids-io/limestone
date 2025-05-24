@@ -28,6 +28,8 @@ type GrpcHandlerTestSuite struct {
 	MasjidHandler *handler.MasjidGrpcHandler
 	EventService  *services.EventService
 	EventHandler  *handler.EventGrpcHandler
+	NikkahService *services.NikkahService
+	NikkahHandler *handler.NikkahIoGrpcHandler
 }
 
 func (suite *GrpcHandlerTestSuite) SetupSuite() {
@@ -61,6 +63,10 @@ func (suite *GrpcHandlerTestSuite) SetupSuite() {
 	eventRepo := storage.NewGormEventRepository(suite.DB)
 	suite.EventService = services.NewEventService(eventRepo)
 	suite.EventHandler = handler.NewEventGrpcHandler(suite.EventService)
+	
+	nikkahRepo := storage.NewGormNikkahRepository(suite.DB)
+	suite.NikkahService = services.NewNikkahService(nikkahRepo)
+	suite.NikkahHandler = handler.NewNikkahIoGrpcHandler(suite.NikkahService)
 }
 
 func (suite *GrpcHandlerTestSuite) TearDownSuite() {

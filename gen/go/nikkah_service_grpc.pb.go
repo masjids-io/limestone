@@ -48,7 +48,7 @@ type NikkahIoServiceClient interface {
 	CancelNikkahLike(ctx context.Context, in *CancelNikkahLikeRequest, opts ...grpc.CallOption) (*StandardNikkahResponse, error)
 	CompleteNikkahLike(ctx context.Context, in *CompleteNikkahLikeRequest, opts ...grpc.CallOption) (*StandardNikkahResponse, error)
 	AcceptNikkahMatchInvite(ctx context.Context, in *AcceptNikkahMatchInviteRequest, opts ...grpc.CallOption) (*StandardNikkahResponse, error)
-	GetNikkahMatch(ctx context.Context, in *GetNikkahMatchRequest, opts ...grpc.CallOption) (*NikkahMatch, error)
+	GetNikkahMatch(ctx context.Context, in *GetNikkahMatchRequest, opts ...grpc.CallOption) (*StandardNikkahResponse, error)
 	RejectNikkahMatchInvite(ctx context.Context, in *RejectNikkahMatchInviteRequest, opts ...grpc.CallOption) (*StandardNikkahResponse, error)
 	EndNikkahMatch(ctx context.Context, in *EndNikkahMatchRequest, opts ...grpc.CallOption) (*StandardNikkahResponse, error)
 }
@@ -161,9 +161,9 @@ func (c *nikkahIoServiceClient) AcceptNikkahMatchInvite(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *nikkahIoServiceClient) GetNikkahMatch(ctx context.Context, in *GetNikkahMatchRequest, opts ...grpc.CallOption) (*NikkahMatch, error) {
+func (c *nikkahIoServiceClient) GetNikkahMatch(ctx context.Context, in *GetNikkahMatchRequest, opts ...grpc.CallOption) (*StandardNikkahResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(NikkahMatch)
+	out := new(StandardNikkahResponse)
 	err := c.cc.Invoke(ctx, NikkahIoService_GetNikkahMatch_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -205,7 +205,7 @@ type NikkahIoServiceServer interface {
 	CancelNikkahLike(context.Context, *CancelNikkahLikeRequest) (*StandardNikkahResponse, error)
 	CompleteNikkahLike(context.Context, *CompleteNikkahLikeRequest) (*StandardNikkahResponse, error)
 	AcceptNikkahMatchInvite(context.Context, *AcceptNikkahMatchInviteRequest) (*StandardNikkahResponse, error)
-	GetNikkahMatch(context.Context, *GetNikkahMatchRequest) (*NikkahMatch, error)
+	GetNikkahMatch(context.Context, *GetNikkahMatchRequest) (*StandardNikkahResponse, error)
 	RejectNikkahMatchInvite(context.Context, *RejectNikkahMatchInviteRequest) (*StandardNikkahResponse, error)
 	EndNikkahMatch(context.Context, *EndNikkahMatchRequest) (*StandardNikkahResponse, error)
 	mustEmbedUnimplementedNikkahIoServiceServer()
@@ -248,7 +248,7 @@ func (UnimplementedNikkahIoServiceServer) CompleteNikkahLike(context.Context, *C
 func (UnimplementedNikkahIoServiceServer) AcceptNikkahMatchInvite(context.Context, *AcceptNikkahMatchInviteRequest) (*StandardNikkahResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AcceptNikkahMatchInvite not implemented")
 }
-func (UnimplementedNikkahIoServiceServer) GetNikkahMatch(context.Context, *GetNikkahMatchRequest) (*NikkahMatch, error) {
+func (UnimplementedNikkahIoServiceServer) GetNikkahMatch(context.Context, *GetNikkahMatchRequest) (*StandardNikkahResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNikkahMatch not implemented")
 }
 func (UnimplementedNikkahIoServiceServer) RejectNikkahMatchInvite(context.Context, *RejectNikkahMatchInviteRequest) (*StandardNikkahResponse, error) {

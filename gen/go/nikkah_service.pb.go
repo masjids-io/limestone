@@ -1606,7 +1606,7 @@ const file_nikkah_service_proto_rawDesc = "" +
 	"\x1eRejectNikkahMatchInviteRequest\x12\x19\n" +
 	"\bmatch_id\x18\x01 \x01(\tR\amatchId\"2\n" +
 	"\x15EndNikkahMatchRequest\x12\x19\n" +
-	"\bmatch_id\x18\x01 \x01(\tR\amatchId2\xef\r\n" +
+	"\bmatch_id\x18\x01 \x01(\tR\amatchId2\xfa\r\n" +
 	"\x0fNikkahIoService\x12\x8e\x01\n" +
 	"\x13CreateNikkahProfile\x12%.limestone.CreateNikkahProfileRequest\x1a!.limestone.StandardNikkahResponse\"-\xdaA\aprofile\x82\xd3\xe4\x93\x02\x1d:\aprofile\"\x12/v1/nikkah/profile\x12}\n" +
 	"\x14GetSelfNikkahProfile\x12&.limestone.GetSelfNikkahProfileRequest\x1a!.limestone.StandardNikkahResponse\"\x1a\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/nikkah/profile\x12\x99\x01\n" +
@@ -1617,8 +1617,8 @@ const file_nikkah_service_proto_rawDesc = "" +
 	"\rGetNikkahLike\x12\x1f.limestone.GetNikkahLikeRequest\x1a!.limestone.StandardNikkahResponse\"\"\x82\xd3\xe4\x93\x02\x1c\x12\x1a/v1/nikkah/likes/{like_id}\x12\x84\x01\n" +
 	"\x10CancelNikkahLike\x12\".limestone.CancelNikkahLikeRequest\x1a!.limestone.StandardNikkahResponse\")\x82\xd3\xe4\x93\x02#\"!/v1/nikkah/likes/{like_id}/cancel\x12\x8a\x01\n" +
 	"\x12CompleteNikkahLike\x12$.limestone.CompleteNikkahLikeRequest\x1a!.limestone.StandardNikkahResponse\"+\x82\xd3\xe4\x93\x02%\"#/v1/nikkah/likes/{like_id}/complete\x12\x93\x01\n" +
-	"\x17AcceptNikkahMatchInvite\x12).limestone.AcceptNikkahMatchInviteRequest\x1a!.limestone.StandardNikkahResponse\"*\x82\xd3\xe4\x93\x02$\"\"/v1/nikkah/match/{match_id}/accept\x12o\n" +
-	"\x0eGetNikkahMatch\x12 .limestone.GetNikkahMatchRequest\x1a\x16.limestone.NikkahMatch\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/nikkah/match/{match_id}\x12\x93\x01\n" +
+	"\x17AcceptNikkahMatchInvite\x12).limestone.AcceptNikkahMatchInviteRequest\x1a!.limestone.StandardNikkahResponse\"*\x82\xd3\xe4\x93\x02$\"\"/v1/nikkah/match/{match_id}/accept\x12z\n" +
+	"\x0eGetNikkahMatch\x12 .limestone.GetNikkahMatchRequest\x1a!.limestone.StandardNikkahResponse\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/nikkah/match/{match_id}\x12\x93\x01\n" +
 	"\x17RejectNikkahMatchInvite\x12).limestone.RejectNikkahMatchInviteRequest\x1a!.limestone.StandardNikkahResponse\"*\x82\xd3\xe4\x93\x02$\"\"/v1/nikkah/match/{match_id}/reject\x12~\n" +
 	"\x0eEndNikkahMatch\x12 .limestone.EndNikkahMatchRequest\x1a!.limestone.StandardNikkahResponse\"'\x82\xd3\xe4\x93\x02!\"\x1f/v1/nikkah/match/{match_id}/endBj\n" +
 	"\rcom.limestoneB\x12NikkahServiceProtoP\x01Z\x01.\xa2\x02\x03LXX\xaa\x02\tLimestone\xca\x02\tLimestone\xe2\x02\x15Limestone\\GPBMetadata\xea\x02\tLimestoneb\x06proto3"
@@ -1712,7 +1712,7 @@ var file_nikkah_service_proto_depIdxs = []int32{
 	4,  // 44: limestone.NikkahIoService.CancelNikkahLike:output_type -> limestone.StandardNikkahResponse
 	4,  // 45: limestone.NikkahIoService.CompleteNikkahLike:output_type -> limestone.StandardNikkahResponse
 	4,  // 46: limestone.NikkahIoService.AcceptNikkahMatchInvite:output_type -> limestone.StandardNikkahResponse
-	7,  // 47: limestone.NikkahIoService.GetNikkahMatch:output_type -> limestone.NikkahMatch
+	4,  // 47: limestone.NikkahIoService.GetNikkahMatch:output_type -> limestone.StandardNikkahResponse
 	4,  // 48: limestone.NikkahIoService.RejectNikkahMatchInvite:output_type -> limestone.StandardNikkahResponse
 	4,  // 49: limestone.NikkahIoService.EndNikkahMatch:output_type -> limestone.StandardNikkahResponse
 	37, // [37:50] is the sub-list for method output_type

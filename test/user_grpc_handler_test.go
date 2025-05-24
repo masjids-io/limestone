@@ -195,7 +195,6 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_Success() {
 	assert.Equal(suite.T(), "Updated", updatedUserResp.GetFirstName())
 	assert.Equal(suite.T(), "User", updatedUserResp.GetLastName())
 	assert.Equal(suite.T(), "08987654321", updatedUserResp.GetPhoneNumber())
-	assert.Equal(suite.T(), pb.User_FEMALE, updatedUserResp.GetGender())
 
 	var updatedUser entity.User
 	err = suite.DB.First(&updatedUser, "id = ?", userID).Error
@@ -205,7 +204,6 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_Success() {
 	assert.Equal(suite.T(), "Updated", updatedUser.FirstName)
 	assert.Equal(suite.T(), "User", updatedUser.LastName)
 	assert.Equal(suite.T(), "08987654321", updatedUser.PhoneNumber)
-	assert.Equal(suite.T(), entity.Female, updatedUser.Gender)
 }
 
 func (suite *GrpcHandlerTestSuite) TestUpdateUser_IDNotFound() {

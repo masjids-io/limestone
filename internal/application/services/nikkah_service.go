@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/mnadev/limestone/internal/application/helper"
+	"gorm.io/gorm"
 	"math"
 	"time"
 
@@ -40,6 +41,9 @@ func (s *NikkahService) CreateNikkahProfile(ctx context.Context, nikkahProfile *
 func (s *NikkahService) GetNikkahProfileByUserID(ctx context.Context, userID string) (*entity.NikkahProfile, error) {
 	profile, err := s.RepoNikkah.GetProfileByUserID(ctx, userID)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, helper.ErrNotFound
+		}
 		return nil, errors.New("failed to retrieve nikkah profile by user ID: " + err.Error())
 	}
 	return profile, nil
@@ -144,78 +148,23 @@ func (s *NikkahService) CreateNikkahLike(ctx context.Context, likerUserID string
 		}
 		return nil, fmt.Errorf("service: failed to get liker's profile: %w", err)
 	}
-	fmt.Println(likerProfile.ID.String())
-	fmt.Println(likedProfileID.String())
 
 	existingLike, err := s.RepoNikkah.GetLikeByLikerAndLikedProfileID(ctx, likerProfile.ID.String(), likedProfileID.String())
-	if err == nil && existingLike.Status == entity.LikeStatusInitiated {
-		return nil, errors.New("service: you have already sent a like to this profile")
-	}
-	if err == nil && existingLike.Status == entity.LikeStatusCompleted {
-		return nil, errors.New("service: you have already matched with this profile")
-	}
 
-	reverseLike, err := s.RepoNikkah.GetLikeByLikerAndLikedProfileID(ctx, likedProfileID.String(), likerProfile.ID.String())
-
-	if err == nil && reverseLike.Status == entity.LikeStatusInitiated {
-		like := &entity.NikkahLike{
-			ID:             uuid.New(),
-			LikerProfileID: likerProfile.ID.String(),
-			LikedProfileID: likedProfileID.String(),
-			Status:         entity.LikeStatusCompleted,
-			CreatedAt:      time.Now(),
-			UpdatedAt:      time.Now(),
+	if err == nil {
+		switch existingLike.Status {
+		case entity.LikeStatusInitiated:
+			return nil, errors.New("service: you have already sent a like to this profile and it's pending response")
+		case entity.LikeStatusCompleted:
+			return nil, errors.New("service: you have already matched with this profile")
+		default:
+			return nil, fmt.Errorf("service: existing like has an unhandled status: %s", existingLike.Status)
 		}
-		_, err = s.RepoNikkah.CreateLike(ctx, like)
-		if err != nil {
-			return nil, fmt.Errorf("service: failed to create liker's completed like: %w", err)
-		}
-
-		reverseLike.Status = entity.LikeStatusCompleted
-		reverseLike.UpdatedAt = time.Now()
-		_, err = s.RepoNikkah.UpdateLike(ctx, reverseLike)
-		if err != nil {
-			return nil, fmt.Errorf("service: failed to update reverse like to completed: %w", err)
-		}
-
-		profileID1Str := likerProfile.ID.String()
-		profileID2Str := likedProfileID.String()
-
-		matchProfileID1UUID, err := uuid.Parse(profileID1Str)
-		if err != nil {
-			return nil, fmt.Errorf("service: failed to parse profileID1 to UUID: %w", err)
-		}
-		matchProfileID2UUID, err := uuid.Parse(profileID2Str)
-		if err != nil {
-			return nil, fmt.Errorf("service: failed to parse profileID2 to UUID: %w", err)
-		}
-
-		var finalMatchProfileID1, finalMatchProfileID2 uuid.UUID
-		if matchProfileID1UUID.String() < matchProfileID2UUID.String() {
-			finalMatchProfileID1 = matchProfileID1UUID
-			finalMatchProfileID2 = matchProfileID2UUID
-		} else {
-			finalMatchProfileID1 = matchProfileID2UUID
-			finalMatchProfileID2 = matchProfileID1UUID
-		}
-
-		match := &entity.NikkahMatch{
-			ID:                 uuid.New(),
-			InitiatorProfileID: finalMatchProfileID1,
-			ReceiverProfileID:  finalMatchProfileID2,
-			Status:             entity.MatchStatusInitiated,
-			CreatedAt:          time.Now(),
-			UpdatedAt:          time.Now(),
-		}
-		_, err = s.RepoNikkah.CreateMatch(ctx, match)
-		if err != nil {
-			return nil, fmt.Errorf("service: failed to create match after mutual like: %w", err)
-		}
-
-		return like, nil
+	} else if !errors.Is(err, helper.ErrNotFound) {
+		return nil, fmt.Errorf("service: failed to check for existing like: %w", err)
 	}
 
-	like := &entity.NikkahLike{
+	newLike := &entity.NikkahLike{
 		ID:             uuid.New(),
 		LikerProfileID: likerProfile.ID.String(),
 		LikedProfileID: likedProfileID.String(),
@@ -223,7 +172,13 @@ func (s *NikkahService) CreateNikkahLike(ctx context.Context, likerUserID string
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 	}
-	return s.RepoNikkah.CreateLike(ctx, like)
+
+	createdLike, err := s.RepoNikkah.CreateLike(ctx, newLike)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to create new like: %w", err)
+	}
+
+	return createdLike, nil
 }
 
 func (s *NikkahService) GetNikkahLikeByID(ctx context.Context, likeID uuid.UUID) (*entity.NikkahLike, error) {
@@ -283,7 +238,7 @@ func (s *NikkahService) CompleteNikkahLike(ctx context.Context, likeID uuid.UUID
 	initiatingLike, err := s.RepoNikkah.GetLikeByID(ctx, likeID)
 	if err != nil {
 		if errors.Is(err, helper.ErrNotFound) {
-			return nil, nil, fmt.Errorf("service: nikkah like with ID %s not found: %w", likeID.String(), err)
+			return nil, nil, fmt.Errorf("service: nikkah like with ID %s not found. Please check the ID or if it has been deleted: %w", likeID.String(), err)
 		}
 		return nil, nil, fmt.Errorf("service: failed to retrieve nikkah like %s: %w", likeID.String(), err)
 	}
@@ -291,17 +246,17 @@ func (s *NikkahService) CompleteNikkahLike(ctx context.Context, likeID uuid.UUID
 	requestingUserProfile, err := s.RepoNikkah.GetProfileByUserID(ctx, requestingUserID)
 	if err != nil {
 		if errors.Is(err, helper.ErrNotFound) {
-			return nil, nil, errors.New("service: requesting user's profile not found. Cannot complete like.")
+			return nil, nil, errors.New("service: requesting user's profile not found. Cannot complete like without a valid profile.")
 		}
 		return nil, nil, fmt.Errorf("service: failed to get requesting user's profile: %w", err)
 	}
 
-	if initiatingLike.LikedProfileID != requestingUserProfile.UserID {
-		return nil, nil, errors.New("service: unauthorized to complete this nikkah like. Only the liked profile can complete it.")
+	if initiatingLike.LikedProfileID != requestingUserProfile.ID.String() {
+		return nil, nil, errors.New("service: unauthorized to complete this nikkah like. Only the liked profile (receiver of the like) can complete it.")
 	}
 
 	if initiatingLike.Status != entity.LikeStatusInitiated {
-		return nil, nil, fmt.Errorf("service: nikkah like with ID %s cannot be completed as its current status is %s", likeID.String(), initiatingLike.Status)
+		return nil, nil, fmt.Errorf("service: nikkah like with ID %s cannot be completed as its current status is %s. Only likes with 'Initiated' status can be completed.", likeID.String(), initiatingLike.Status)
 	}
 
 	reverseLike, err := s.RepoNikkah.GetLikeByLikerAndLikedProfileID(
@@ -311,13 +266,13 @@ func (s *NikkahService) CompleteNikkahLike(ctx context.Context, likeID uuid.UUID
 	)
 	if err != nil {
 		if errors.Is(err, helper.ErrNotFound) {
-			return nil, nil, errors.New("service: no mutual like found from the other profile to complete this match")
+			return nil, nil, errors.New("service: no pending mutual like found from the other profile to complete this match. Ensure the other profile has sent a like that is still pending.")
 		}
 		return nil, nil, fmt.Errorf("service: failed to check for reverse like: %w", err)
 	}
 
 	if reverseLike.Status != entity.LikeStatusInitiated {
-		return nil, nil, fmt.Errorf("service: reverse nikkah like from %s to %s cannot be completed as its current status is %s",
+		return nil, nil, fmt.Errorf("service: reverse nikkah like from %s to %s cannot be completed as its current status is %s. It must be 'Initiated' to form a match.",
 			reverseLike.LikerProfileID, reverseLike.LikedProfileID, reverseLike.Status)
 	}
 
@@ -337,8 +292,15 @@ func (s *NikkahService) CompleteNikkahLike(ctx context.Context, likeID uuid.UUID
 		return nil, nil, fmt.Errorf("service: failed to update reverse nikkah like to COMPLETED for ID %s: %w", reverseLike.ID.String(), err)
 	}
 
-	profileA := uuid.MustParse(initiatingLike.LikerProfileID)
-	profileB, _ := uuid.Parse(initiatingLike.LikedProfileID)
+	profileA, err := uuid.Parse(initiatingLike.LikerProfileID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("service: failed to parse LikerProfileID ('%s') to UUID for match creation: %w", initiatingLike.LikerProfileID, err)
+	}
+
+	profileB, err := uuid.Parse(initiatingLike.LikedProfileID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("service: failed to parse LikedProfileID ('%s') to UUID for match creation: %w", initiatingLike.LikedProfileID, err)
+	}
 
 	var matchProfileID1, matchProfileID2 uuid.UUID
 	if profileA.String() < profileB.String() {
@@ -360,7 +322,16 @@ func (s *NikkahService) CompleteNikkahLike(ctx context.Context, likeID uuid.UUID
 
 	createdMatch, err := s.RepoNikkah.CreateMatch(ctx, match)
 	if err != nil {
-		return updatedInitiatingLike, nil, fmt.Errorf("service: failed to create nikkah match: %w", err)
+		return updatedInitiatingLike, nil, fmt.Errorf("service: failed to create nikkah match after successful like completion: %w", err)
+	}
+
+	likerProfileData, getLikerProfileErr := s.RepoNikkah.GetProfileByID(ctx, profileA)
+	likedProfileData, getLikedProfileErr := s.RepoNikkah.GetProfileByID(ctx, profileB)
+
+	if getLikerProfileErr == nil && getLikedProfileErr == nil {
+		fmt.Printf("Notifikasi Match: Selamat! %s dan %s sekarang cocok!\n", likerProfileData.Name, likedProfileData.Name)
+	} else {
+		fmt.Printf("Notifikasi Match: Selamat! Dua profil telah cocok. (Tidak dapat mengambil nama profil)\n")
 	}
 
 	return updatedInitiatingLike, createdMatch, nil
@@ -383,8 +354,7 @@ func (s *NikkahService) AcceptNikkahMatchInvite(ctx context.Context, matchID uui
 		return nil, fmt.Errorf("service: failed to get requesting user's profile: %w", err)
 	}
 
-	requestingUserProfileTemp, _ := uuid.Parse(requestingUserProfile.UserID)
-	if nikkahMatch.ReceiverProfileID != requestingUserProfileTemp {
+	if nikkahMatch.ReceiverProfileID != requestingUserProfile.ID {
 		return nil, errors.New("service: unauthorized to accept this nikkah match. Only the receiver of the match invite can accept it.")
 	}
 
@@ -400,5 +370,116 @@ func (s *NikkahService) AcceptNikkahMatchInvite(ctx context.Context, matchID uui
 		return nil, fmt.Errorf("service: failed to update nikkah match status to ACCEPTED for ID %s: %w", matchID.String(), err)
 	}
 
+	return updatedMatch, nil
+}
+
+func (s *NikkahService) GetNikkahMatch(ctx context.Context, matchID uuid.UUID, requestingUserID string) (*entity.NikkahMatch, error) {
+	if matchID == uuid.Nil {
+		return nil, errors.New("service: match ID cannot be empty")
+	}
+
+	nikkahMatch, err := s.RepoNikkah.GetMatchByID(ctx, matchID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, fmt.Errorf("service: nikkah match with ID %s not found: %w", matchID.String(), err)
+		}
+		return nil, fmt.Errorf("service: failed to retrieve nikkah match %s: %w", matchID.String(), err)
+	}
+
+	requestingUserProfile, err := s.RepoNikkah.GetProfileByUserID(ctx, requestingUserID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, errors.New("service: requesting user's profile not found. Cannot retrieve match.")
+		}
+		return nil, fmt.Errorf("service: failed to get requesting user's profile: %w", err)
+	}
+
+	requestingProfileID := requestingUserProfile.ID
+	if nikkahMatch.InitiatorProfileID != requestingProfileID && nikkahMatch.ReceiverProfileID != requestingProfileID {
+		return nil, errors.New("service: unauthorized to view this nikkah match. You are not a participant in this match.")
+	}
+
+	return nikkahMatch, nil
+}
+
+func (s *NikkahService) RejectNikkahMatchInvite(ctx context.Context, matchID uuid.UUID, requestingUserID string) (*entity.NikkahMatch, error) {
+	if matchID == uuid.Nil {
+		return nil, errors.New("service: match ID cannot be empty for rejection")
+	}
+
+	nikkahMatch, err := s.RepoNikkah.GetMatchByID(ctx, matchID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, fmt.Errorf("service: nikkah match with ID %s not found: %w", matchID.String(), err)
+		}
+		return nil, fmt.Errorf("service: failed to retrieve nikkah match %s for rejection: %w", matchID.String(), err)
+	}
+
+	requestingUserProfile, err := s.RepoNikkah.GetProfileByUserID(ctx, requestingUserID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, errors.New("service: requesting user's profile not found. Cannot reject match.")
+		}
+		return nil, fmt.Errorf("service: failed to get requesting user's profile for rejection: %w", err)
+	}
+
+	requestingProfileID := requestingUserProfile.ID
+	if nikkahMatch.ReceiverProfileID != requestingProfileID {
+		return nil, errors.New("service: unauthorized to reject this nikkah match. Only the receiver of the match invite can reject it.")
+	}
+
+	if nikkahMatch.Status != entity.MatchStatusInitiated {
+		return nil, fmt.Errorf("service: nikkah match with ID %s cannot be rejected as its current status is %s. Only 'Initiated' matches can be rejected.", matchID.String(), nikkahMatch.Status)
+	}
+
+	nikkahMatch.Status = entity.MatchStatusRejected
+	nikkahMatch.UpdatedAt = time.Now()
+
+	updatedMatch, err := s.RepoNikkah.UpdateMatch(ctx, nikkahMatch)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to update nikkah match status to ENDED for ID %s: %w", matchID.String(), err)
+	}
+
+	return updatedMatch, nil
+}
+
+func (s *NikkahService) EndNikkahMatch(ctx context.Context, matchID uuid.UUID, requestingUserID string) (*entity.NikkahMatch, error) {
+	if matchID == uuid.Nil {
+		return nil, errors.New("service: match ID cannot be empty for ending")
+	}
+	nikkahMatch, err := s.RepoNikkah.GetMatchByID(ctx, matchID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, fmt.Errorf("service: nikkah match with ID %s not found: %w", matchID.String(), err)
+		}
+		return nil, fmt.Errorf("service: failed to retrieve nikkah match %s for ending: %w", matchID.String(), err)
+	}
+
+	requestingUserProfile, err := s.RepoNikkah.GetProfileByUserID(ctx, requestingUserID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, errors.New("service: requesting user's profile not found. Cannot end match.")
+		}
+		return nil, fmt.Errorf("service: failed to get requesting user's profile for ending: %w", err)
+	}
+
+	initiatorProfileID := nikkahMatch.InitiatorProfileID
+	receiverProfileID := nikkahMatch.ReceiverProfileID
+	requestingProfileID := requestingUserProfile.ID
+	if requestingProfileID != initiatorProfileID && requestingProfileID != receiverProfileID {
+		return nil, errors.New("service: unauthorized to end this nikkah match. Only participants can end it.")
+	}
+
+	if nikkahMatch.Status == entity.MatchStatusEnded {
+		return nil, fmt.Errorf("service: nikkah match with ID %s is already ended.", matchID.String())
+	}
+
+	nikkahMatch.Status = entity.MatchStatusEnded
+	nikkahMatch.UpdatedAt = time.Now()
+
+	updatedMatch, err := s.RepoNikkah.UpdateMatch(ctx, nikkahMatch)
+	if err != nil {
+		return nil, fmt.Errorf("service: failed to update nikkah match status to ENDED for ID %s: %w", matchID.String(), err)
+	}
 	return updatedMatch, nil
 }

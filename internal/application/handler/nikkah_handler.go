@@ -83,7 +83,7 @@ func (h *NikkahIoGrpcHandler) GetSelfNikkahProfile(ctx context.Context, req *pb.
 
 	profile, err := h.NikkahSvc.GetNikkahProfileByUserID(ctx, userID)
 	if err != nil {
-		if status.Code(err) == codes.NotFound {
+		if errors.Is(err, helper.ErrNotFound) {
 			return nil, status.Errorf(codes.NotFound, "Nikkah profile not found for this user")
 		}
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Failed to get self nikkah profile: %v", err))
@@ -261,7 +261,7 @@ func (h *NikkahIoGrpcHandler) InitiateNikkahLike(ctx context.Context, req *pb.In
 		if errors.Is(err, errors.New("service: cannot like your own profile")) {
 			return nil, status.Errorf(codes.InvalidArgument, err.Error())
 		}
-		if errors.Is(err, errors.New("service: liker's profile not found. Cannot create like.")) {
+		if errors.Is(err, errors.New("service: liker's profile not found. Cannot create like")) {
 			return nil, status.Errorf(codes.NotFound, err.Error())
 		}
 
@@ -342,13 +342,13 @@ func (h *NikkahIoGrpcHandler) CancelNikkahLike(ctx context.Context, req *pb.Canc
 		if errors.Is(err, errors.New("service: nikkah like with ID "+likeID.String()+" not found")) {
 			return nil, status.Errorf(codes.NotFound, err.Error())
 		}
-		if errors.Is(err, errors.New("service: unauthorized to cancel this nikkah like. Only the liker can cancel it.")) {
+		if errors.Is(err, errors.New("service: unauthorized to cancel this nikkah like. Only the liker can cancel it")) {
 			return nil, status.Errorf(codes.PermissionDenied, err.Error())
 		}
 		if strings.Contains(err.Error(), "cannot be cancelled as its current status is") {
 			return nil, status.Errorf(codes.FailedPrecondition, err.Error())
 		}
-		if errors.Is(err, errors.New("service: requesting user's profile not found. Cannot cancel like.")) {
+		if errors.Is(err, errors.New("service: requesting user's profile not found. Cannot cancel like")) {
 			return nil, status.Errorf(codes.NotFound, err.Error())
 		}
 		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Failed to cancel nikkah like: %v", err))
@@ -389,10 +389,10 @@ func (h *NikkahIoGrpcHandler) CompleteNikkahLike(ctx context.Context, req *pb.Co
 		if errors.Is(err, errors.New("service: nikkah like with ID "+likeID.String()+" not found")) {
 			return nil, status.Errorf(codes.NotFound, err.Error())
 		}
-		if errors.Is(err, errors.New("service: requesting user's profile not found. Cannot complete like.")) {
+		if errors.Is(err, errors.New("service: requesting user's profile not found. Cannot complete like")) {
 			return nil, status.Errorf(codes.NotFound, err.Error())
 		}
-		if errors.Is(err, errors.New("service: unauthorized to complete this nikkah like. Only the liked profile can complete it.")) {
+		if errors.Is(err, errors.New("service: unauthorized to complete this nikkah like. Only the liked profile can complete it")) {
 			return nil, status.Errorf(codes.PermissionDenied, err.Error())
 		}
 		if strings.Contains(err.Error(), "cannot be completed as its current status is") {
@@ -433,7 +433,7 @@ func (h *NikkahIoGrpcHandler) CompleteNikkahLike(ctx context.Context, req *pb.Co
 func (h *NikkahIoGrpcHandler) AcceptNikkahMatchInvite(ctx context.Context, req *pb.AcceptNikkahMatchInviteRequest) (*pb.StandardNikkahResponse, error) {
 	requestingUserID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || requestingUserID == "" {
-		return nil, status.Errorf(codes.Unauthenticated, "Unauthenticated: user ID not found in context")
+		return nil, status.Errorf(codes.Unauthenticated, "Authentication required: user ID not found in context.")
 	}
 
 	if req.GetMatchId() == "" {
@@ -441,24 +441,21 @@ func (h *NikkahIoGrpcHandler) AcceptNikkahMatchInvite(ctx context.Context, req *
 	}
 	matchID, err := uuid.Parse(req.GetMatchId())
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "Invalid Match ID format for acceptance: %v", err)
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid Match ID format: %v", err)
 	}
 
 	updatedMatch, err := h.NikkahSvc.AcceptNikkahMatchInvite(ctx, matchID, requestingUserID)
 	if err != nil {
-		if errors.Is(err, errors.New("service: nikkah match with ID "+matchID.String()+" not found")) {
-			return nil, status.Errorf(codes.NotFound, err.Error())
-		}
-		if errors.Is(err, errors.New("service: requesting user's profile not found. Cannot accept match.")) {
-			return nil, status.Errorf(codes.NotFound, err.Error())
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, status.Errorf(codes.NotFound, "Match or requesting user's profile not found: %v", err)
 		}
 		if errors.Is(err, errors.New("service: unauthorized to accept this nikkah match. Only the receiver of the match invite can accept it.")) {
-			return nil, status.Errorf(codes.PermissionDenied, err.Error())
+			return nil, status.Errorf(codes.PermissionDenied, "Unauthorized: You do not have permission to accept this match.")
 		}
 		if strings.Contains(err.Error(), "cannot be accepted as its current status is") {
-			return nil, status.Errorf(codes.FailedPrecondition, err.Error())
+			return nil, status.Errorf(codes.FailedPrecondition, "Cannot accept match: %v", err)
 		}
-		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Failed to accept nikkah match invite: %v", err))
+		return nil, status.Errorf(codes.Internal, "Failed to accept nikkah match invite due to internal service error: %v", err)
 	}
 
 	protoMatch := helper.ToProtoNikkahMatch(updatedMatch)
@@ -467,6 +464,136 @@ func (h *NikkahIoGrpcHandler) AcceptNikkahMatchInvite(ctx context.Context, req *
 		codes.OK,
 		"success",
 		"Nikkah match invite accepted successfully",
+		nil,
+	)
+	if helperErr != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Failed to construct response: %v", helperErr))
+	}
+	resp.Data = &pb.StandardNikkahResponse_Match{Match: protoMatch}
+
+	return resp, nil
+}
+
+func (h *NikkahIoGrpcHandler) GetNikkahMatch(ctx context.Context, req *pb.GetNikkahMatchRequest) (*pb.StandardNikkahResponse, error) {
+	requestingUserID, ok := ctx.Value(auth.UserIDContextKey).(string)
+	if !ok || requestingUserID == "" {
+		return nil, status.Errorf(codes.Unauthenticated, "Authentication required: user ID not found in context.")
+	}
+
+	if req.GetMatchId() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "Match ID is required to retrieve match details.")
+	}
+	matchID, err := uuid.Parse(req.GetMatchId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid Match ID format: %v", err)
+	}
+
+	nikkahMatch, err := h.NikkahSvc.GetNikkahMatch(ctx, matchID, requestingUserID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, status.Errorf(codes.NotFound, "Nikkah match or requesting user's profile not found: %v", err)
+		}
+		if errors.Is(err, errors.New("service: unauthorized to view this nikkah match. You are not a participant in this match.")) {
+			return nil, status.Errorf(codes.PermissionDenied, "Unauthorized: You do not have permission to view this match.")
+		}
+		return nil, status.Errorf(codes.Internal, "Failed to retrieve nikkah match due to internal service error: %v", err)
+	}
+
+	protoMatch := helper.ToProtoNikkahMatch(nikkahMatch)
+
+	resp, helperErr := helper.StandardNikkahResponse(
+		codes.OK,
+		"success",
+		"Nikkah match retrieved successfully.",
+		nil,
+	)
+	if helperErr != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Failed to construct response: %v", helperErr))
+	}
+	resp.Data = &pb.StandardNikkahResponse_Match{Match: protoMatch}
+
+	return resp, nil
+}
+
+func (h *NikkahIoGrpcHandler) RejectNikkahMatchInvite(ctx context.Context, req *pb.RejectNikkahMatchInviteRequest) (*pb.StandardNikkahResponse, error) {
+	requestingUserID, ok := ctx.Value(auth.UserIDContextKey).(string)
+	if !ok || requestingUserID == "" {
+		return nil, status.Errorf(codes.Unauthenticated, "Authentication required: user ID not found in context.")
+	}
+
+	if req.GetMatchId() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "Match ID is required to reject the invite.")
+	}
+	matchID, err := uuid.Parse(req.GetMatchId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid Match ID format for rejection: %v", err)
+	}
+
+	updatedMatch, err := h.NikkahSvc.RejectNikkahMatchInvite(ctx, matchID, requestingUserID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, status.Errorf(codes.NotFound, "Match or requesting user's profile not found: %v", err)
+		}
+		if errors.Is(err, errors.New("service: unauthorized to reject this nikkah match. Only the receiver of the match invite can reject it.")) {
+			return nil, status.Errorf(codes.PermissionDenied, "Unauthorized: You do not have permission to reject this match.")
+		}
+		if strings.Contains(err.Error(), "cannot be rejected as its current status is") {
+			return nil, status.Errorf(codes.FailedPrecondition, "Cannot reject match: %v", err)
+		}
+		return nil, status.Errorf(codes.Internal, "Failed to reject nikkah match invite due to internal service error: %v", err)
+	}
+
+	protoMatch := helper.ToProtoNikkahMatch(updatedMatch)
+
+	resp, helperErr := helper.StandardNikkahResponse(
+		codes.OK,
+		"success",
+		"Nikkah match invite rejected successfully.",
+		nil,
+	)
+	if helperErr != nil {
+		return nil, status.Errorf(codes.Internal, fmt.Sprintf("Failed to construct response: %v", helperErr))
+	}
+	resp.Data = &pb.StandardNikkahResponse_Match{Match: protoMatch}
+
+	return resp, nil
+
+}
+
+func (h *NikkahIoGrpcHandler) EndNikkahMatch(ctx context.Context, req *pb.EndNikkahMatchRequest) (*pb.StandardNikkahResponse, error) {
+	requestingUserID, ok := ctx.Value(auth.UserIDContextKey).(string)
+	if !ok || requestingUserID == "" {
+		return nil, status.Errorf(codes.Unauthenticated, "Authentication required: user ID not found in context.")
+	}
+
+	if req.GetMatchId() == "" {
+		return nil, status.Errorf(codes.InvalidArgument, "Match ID is required to end the match.")
+	}
+	matchID, err := uuid.Parse(req.GetMatchId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "Invalid Match ID format for ending: %v", err)
+	}
+
+	updatedMatch, err := h.NikkahSvc.EndNikkahMatch(ctx, matchID, requestingUserID)
+	if err != nil {
+		if errors.Is(err, helper.ErrNotFound) {
+			return nil, status.Errorf(codes.NotFound, "Match or requesting user's profile not found: %v", err)
+		}
+		if strings.Contains(err.Error(), "unauthorized to end this nikkah match") {
+			return nil, status.Errorf(codes.PermissionDenied, "Unauthorized: You do not have permission to end this match.")
+		}
+		if strings.Contains(err.Error(), "is already ended") {
+			return nil, status.Errorf(codes.FailedPrecondition, "Cannot end match: %v", err)
+		}
+		return nil, status.Errorf(codes.Internal, "Failed to end nikkah match due to internal service error: %v", err)
+	}
+
+	protoMatch := helper.ToProtoNikkahMatch(updatedMatch)
+
+	resp, helperErr := helper.StandardNikkahResponse(
+		codes.OK,
+		"success",
+		"Nikkah match ended successfully.",
 		nil,
 	)
 	if helperErr != nil {

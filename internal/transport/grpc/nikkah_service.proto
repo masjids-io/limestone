@@ -78,7 +78,7 @@ service NikkahIoService {
     };
   }
 
-  rpc GetNikkahMatch (GetNikkahMatchRequest) returns (NikkahMatch) {
+  rpc GetNikkahMatch (GetNikkahMatchRequest) returns (StandardNikkahResponse) {
     option (google.api.http) = {
       get: "/v1/nikkah/match/{match_id}"
     };

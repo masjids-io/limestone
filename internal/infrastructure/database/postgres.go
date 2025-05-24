@@ -104,6 +104,5 @@ func SetupDatabaseTesting() *gorm.DB {
 	if err != nil {
 	}
 	err = DB.AutoMigrate(entity.NikkahMatch{})
-
 	return DB
 }
