@@ -54,8 +54,20 @@ func SetupDatabase() *gorm.DB {
 	}
 	err = DB.AutoMigrate(entity.NikkahLike{})
 	if err != nil {
+		return nil
 	}
 	err = DB.AutoMigrate(entity.NikkahMatch{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.RevertProfile{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.RevertMatch{})
+	if err != nil {
+		return nil
+	}
 	return DB
 }
 
@@ -104,5 +116,16 @@ func SetupDatabaseTesting() *gorm.DB {
 	if err != nil {
 	}
 	err = DB.AutoMigrate(entity.NikkahMatch{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.RevertProfile{})
+	if err != nil {
+		return nil
+	}
+	err = DB.AutoMigrate(entity.RevertMatch{})
+	if err != nil {
+		return nil
+	}
 	return DB
 }

@@ -1,3 +1,6 @@
+// Package server Copyright (c) 2024 Coding-AF Limestone Dev
+// Licensed under the MIT License.
+// file COPYING or http://www.opensource.org/licenses/mit-license.php
 package server
 
 import (
@@ -69,6 +72,14 @@ func SetupRESTGateway(ctx context.Context, db *gorm.DB) *runtime.ServeMux {
 	nikkahHandler := handler.NewNikkahIoGrpcHandler(nikkahService)
 	if err := pb.RegisterNikkahIoServiceHandlerServer(ctx, mux, nikkahHandler); err != nil {
 		log.Fatalf("failed to register NikkahIoService handler: %s", err)
+	}
+
+	//rever service
+	revertRepo := storage.NewGormRevertRepository(db)
+	revertService := services.NewRevertService(revertRepo)
+	revertHandler := handler.NewRevertGrpcHandler(revertService)
+	if err := pb.RegisterRevertsIoServiceHandlerServer(ctx, mux, revertHandler); err != nil {
+		log.Fatalf("failed to register RevertsIoService handler: %s", err)
 	}
 
 	return mux

@@ -1,3 +1,6 @@
+// Package server Copyright (c) 2024 Coding-AF Limestone Dev
+// Licensed under the MIT License.
+// file COPYING or http://www.opensource.org/licenses/mit-license.php
 package server
 
 import (
@@ -41,6 +44,9 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	//nikkah service
 	nikkahRepo := storage.NewGormNikkahRepository(db)
 	nikkahService := services.NewNikkahService(nikkahRepo)
+	//revert service
+	revertRepo := storage.NewGormRevertRepository(db)
+	revertService := services.NewRevertService(revertRepo)
 
 	// Initialize handlers
 	userHandler := handler.NewUserGrpcHandler(userService)
@@ -49,6 +55,7 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	adhanHandler := handler.NewAdhanGrpcHandler(adhanService)
 	eventHandler := handler.NewEventGrpcHandler(eventService)
 	nikkahHandler := handler.NewNikkahIoGrpcHandler(nikkahService)
+	revertHandler := handler.NewRevertGrpcHandler(revertService)
 
 	// Register services with their handlers
 	pb.RegisterUserServiceServer(server, userHandler)
@@ -57,6 +64,7 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	pb.RegisterAdhanServiceServer(server, adhanHandler)
 	pb.RegisterEventServiceServer(server, eventHandler)
 	pb.RegisterNikkahIoServiceServer(server, nikkahHandler)
+	pb.RegisterRevertsIoServiceServer(server, revertHandler)
 
 	reflection.Register(server)
 

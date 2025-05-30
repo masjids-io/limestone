@@ -30,5 +30,19 @@ func IsAudioFile(data []byte) bool {
 	return false
 }
 
-var ErrAlreadyExists = errors.New("record already exists")
-var ErrNotFound = errors.New("record not found")
+var (
+	ErrAlreadyExists              = errors.New("record already exists")
+	ErrNotFound                   = errors.New("record not found")
+	ErrRevertProfileNotFound      = errors.New("revert profile not found")
+	ErrRevertProfileAlreadyExists = errors.New("revert profile already exists for this user")
+	ErrInvalidMatchData           = errors.New("invalid revert match data provided")
+	ErrInvalidRevertProfileData   = errors.New("invalid revert profile data")
+	ErrSelfInvitation             = errors.New("cannot create a match invite to yourself")
+	ErrMatchAlreadyExists         = errors.New("an active match or invite already exists between these profiles")
+	ErrInvalidMatchID             = errors.New("invalid revert match ID format")
+	ErrMatchNotFound              = errors.New("revert match not found")
+	ErrMatchStatusInvalid         = errors.New("revert match cannot be transitioned from its current status")
+	ErrMatchNotInitiated          = errors.New("revert match is not in initiated status")
+	ErrMatchNotAccepted           = errors.New("revert match is not in accepted status")
+	ErrProfileNotFound            = errors.New("profile not found")
+)

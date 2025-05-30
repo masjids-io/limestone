@@ -213,3 +213,31 @@ func StandardNikkahResponse(code codes.Code, statusMessage string, message strin
 
 	return resp, nil
 }
+
+func StandardRevertResponse(code codes.Code, statusStr string, message string, data interface{}) (*pb.StandardRevertResponse, error) {
+	resp := &pb.StandardRevertResponse{
+		Code:    code.String(),
+		Status:  statusStr,
+		Message: message,
+	}
+
+	if data != nil {
+		switch d := data.(type) {
+		case *entity.RevertProfile:
+			resp.Data = &pb.StandardRevertResponse_RevertProfile{
+				RevertProfile: ToProtoRevertProfile(d),
+			}
+		case *entity.RevertMatch:
+			resp.Data = &pb.StandardRevertResponse_RevertMatch{
+				RevertMatch: ToProtoRevertMatch(d),
+			}
+		case *pb.ListRevertProfilesResponse:
+			resp.Data = &pb.StandardRevertResponse_ListRevertProfilesResponse{
+				ListRevertProfilesResponse: d,
+			}
+		default:
+			return nil, fmt.Errorf("unsupported data type for StandardRevertResponse: %T", d)
+		}
+	}
+	return resp, nil
+}

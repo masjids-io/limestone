@@ -8,6 +8,7 @@ tags:
   - name: EventService
   - name: MasjidService
   - name: NikkahIoService
+  - name: RevertsIoService
   - name: UserService
 consumes:
   - application/json
@@ -629,6 +630,214 @@ paths:
           type: string
       tags:
         - NikkahIoService
+  /v1/revert/match/{matchId}:
+    get:
+      operationId: RevertsIoService_GetRevertMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
+  /v1/revert/match/{matchId}/accept:
+    post:
+      operationId: RevertsIoService_AcceptRevertMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
+  /v1/revert/match/{matchId}/end:
+    post:
+      operationId: RevertsIoService_EndRevertMatch
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
+  /v1/revert/match/{matchId}/reject:
+    post:
+      operationId: RevertsIoService_RejectRevertMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: matchId
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
+  /v1/revert/match/{receiverProfileId}:
+    post:
+      operationId: RevertsIoService_CreateRevertMatchInvite
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: receiverProfileId
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
+  /v1/revert/profile:
+    get:
+      operationId: RevertsIoService_GetSelfRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      tags:
+        - RevertsIoService
+    post:
+      operationId: RevertsIoService_CreateRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+            required:
+              - profile
+      tags:
+        - RevertsIoService
+  /v1/revert/profile/{profileId}:
+    get:
+      operationId: RevertsIoService_GetRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
+    put:
+      operationId: RevertsIoService_UpdateSelfRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          type: string
+        - name: profile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+            required:
+              - profile
+      tags:
+        - RevertsIoService
+  /v1/revert/profiles:
+    get:
+      operationId: RevertsIoService_ListRevertProfiles
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: start
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          type: string
+      tags:
+        - RevertsIoService
   /v1/users:
     post:
       operationId: UserService_CreateUser
@@ -708,23 +917,6 @@ paths:
       tags:
         - UserService
 definitions:
-  BirthDateMonth:
-    type: string
-    enum:
-      - MONTH_UNSPECIFIED
-      - JANUARY
-      - FEBRUARY
-      - MARCH
-      - APRIL
-      - MAY
-      - JUNE
-      - JULY
-      - AUGUST
-      - SEPTEMBER
-      - OCTOBER
-      - NOVEMBER
-      - DECEMBER
-    default: MONTH_UNSPECIFIED
   EventEventType:
     type: string
     enum:
@@ -769,17 +961,6 @@ definitions:
         type: string
       extension:
         type: string
-  NikkahProfileBirthDate:
-    type: object
-    properties:
-      year:
-        type: integer
-        format: int32
-      month:
-        $ref: '#/definitions/BirthDateMonth'
-      day:
-        type: integer
-        format: int32
   PrayerTimesConfigurationAsrJuristicMethod:
     type: string
     enum:
@@ -1010,6 +1191,23 @@ definitions:
       totalPages:
         type: integer
         format: int32
+  limestoneListRevertProfilesResponse:
+    type: object
+    properties:
+      profiles:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneRevertProfile'
+      totalCount:
+        type: integer
+        format: int32
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
   limestoneMasjid:
     type: object
     properties:
@@ -1103,7 +1301,7 @@ definitions:
       gender:
         $ref: '#/definitions/limestoneNikkahProfileGender'
       birthDate:
-        $ref: '#/definitions/NikkahProfileBirthDate'
+        $ref: '#/definitions/limestoneNikkahProfileBirthDate'
       createTime:
         type: string
         format: date-time
@@ -1112,6 +1310,34 @@ definitions:
         type: string
         format: date-time
         readOnly: true
+  limestoneNikkahProfileBirthDate:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int32
+      month:
+        $ref: '#/definitions/limestoneNikkahProfileBirthDateMonth'
+      day:
+        type: integer
+        format: int32
+  limestoneNikkahProfileBirthDateMonth:
+    type: string
+    enum:
+      - MONTH_UNSPECIFIED
+      - JANUARY
+      - FEBRUARY
+      - MARCH
+      - APRIL
+      - MAY
+      - JUNE
+      - JULY
+      - AUGUST
+      - SEPTEMBER
+      - OCTOBER
+      - NOVEMBER
+      - DECEMBER
+    default: MONTH_UNSPECIFIED
   limestoneNikkahProfileGender:
     type: string
     enum:
@@ -1144,6 +1370,92 @@ definitions:
     properties:
       refreshToken:
         type: string
+  limestoneRevertMatch:
+    type: object
+    properties:
+      matchId:
+        type: string
+        readOnly: true
+      initiatorProfileId:
+        type: string
+      receiverProfileId:
+        type: string
+      status:
+        $ref: '#/definitions/limestoneRevertMatchStatus'
+      createTime:
+        type: string
+        format: date-time
+        readOnly: true
+      updateTime:
+        type: string
+        format: date-time
+        readOnly: true
+  limestoneRevertMatchStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - INITIATED
+      - ACCEPTED
+      - REJECTED
+      - ENDED
+    default: STATUS_UNSPECIFIED
+  limestoneRevertProfile:
+    type: object
+    properties:
+      id:
+        type: string
+        readOnly: true
+      userId:
+        type: string
+      name:
+        type: string
+      gender:
+        $ref: '#/definitions/limestoneRevertProfileGender'
+      birthDate:
+        $ref: '#/definitions/limestoneRevertProfileBirthDate'
+      createTime:
+        type: string
+        format: date-time
+        readOnly: true
+      updateTime:
+        type: string
+        format: date-time
+        readOnly: true
+  limestoneRevertProfileBirthDate:
+    type: object
+    properties:
+      year:
+        type: integer
+        format: int32
+      month:
+        $ref: '#/definitions/limestoneRevertProfileBirthDateMonth'
+      day:
+        type: integer
+        format: int32
+  limestoneRevertProfileBirthDateMonth:
+    type: string
+    enum:
+      - MONTH_UNSPECIFIED
+      - JANUARY
+      - FEBRUARY
+      - MARCH
+      - APRIL
+      - MAY
+      - JUNE
+      - JULY
+      - AUGUST
+      - SEPTEMBER
+      - OCTOBER
+      - NOVEMBER
+      - DECEMBER
+    default: MONTH_UNSPECIFIED
+  limestoneRevertProfileGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
   limestoneStandardAdhanResponse:
     type: object
     properties:
@@ -1227,6 +1539,21 @@ definitions:
         $ref: '#/definitions/limestoneCompleteNikkahLikeResponse'
       nikkahMatch:
         $ref: '#/definitions/limestoneNikkahMatch'
+  limestoneStandardRevertResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      revertProfile:
+        $ref: '#/definitions/limestoneRevertProfile'
+      listRevertProfilesResponse:
+        $ref: '#/definitions/limestoneListRevertProfilesResponse'
+      revertMatch:
+        $ref: '#/definitions/limestoneRevertMatch'
   limestoneStandardUserResponse:
     type: object
     properties:
