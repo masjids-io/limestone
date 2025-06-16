@@ -199,10 +199,11 @@ func (h *NikkahIoGrpcHandler) GetNikkahProfile(ctx context.Context, req *pb.GetN
 func (h *NikkahIoGrpcHandler) ListNikkahProfiles(ctx context.Context, req *pb.ListNikkahProfilesRequest) (*pb.StandardNikkahResponse, error) {
 
 	params := &entity.NikkahProfileQueryParams{
-		Start: req.GetStart(),
-		Limit: req.GetLimit(),
-		Page:  req.GetPage(),
-		Name:  req.GetName(),
+		Start:  req.GetStart(),
+		Limit:  req.GetLimit(),
+		Page:   req.GetPage(),
+		Name:   req.GetName(),
+		Gender: req.GetGender(),
 	}
 
 	queryResult, err := h.NikkahSvc.ListNikkahProfiles(ctx, params)

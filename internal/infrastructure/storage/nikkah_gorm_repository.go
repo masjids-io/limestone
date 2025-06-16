@@ -68,8 +68,14 @@ func (r *GormNikkahRepository) UpdateProfile(ctx context.Context, profile *entit
 func (r *GormNikkahRepository) ListProfiles(ctx context.Context, params *entity.NikkahProfileQueryParams) ([]*entity.NikkahProfile, int64, error) {
 	db := r.db.WithContext(ctx).Model(&entity.NikkahProfile{})
 
+	fmt.Println(params)
+
 	if params.Name != "" {
-		db = db.Where("gender = ?", params.Name)
+		db = db.Where("name ILIKE ?", "%"+params.Name+"%")
+	}
+
+	if params.Gender != "" {
+		db = db.Where("gender = ?", params.Gender)
 	}
 
 	var totalCount int64

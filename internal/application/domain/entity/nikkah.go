@@ -34,10 +34,11 @@ type NikkahLike struct {
 }
 
 type NikkahProfileQueryParams struct {
-	Start int32
-	Limit int32
-	Page  int32
-	Name  string
+	Start  int32
+	Limit  int32
+	Page   int32
+	Name   string
+	Gender string
 }
 
 type NikkahProfileQueryResult struct {

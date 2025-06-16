@@ -628,6 +628,10 @@ paths:
           in: query
           required: false
           type: string
+        - name: gender
+          in: query
+          required: false
+          type: string
       tags:
         - NikkahIoService
   /v1/revert/match/{matchId}:

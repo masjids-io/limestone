@@ -197,6 +197,7 @@ message ListNikkahProfilesRequest {
   int32 limit = 2;
   int32 page = 3;
   optional string name = 4;
+  optional string gender = 5;
 }
 
 message ListNikkahProfilesResponse {
