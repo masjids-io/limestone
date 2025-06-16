@@ -646,6 +646,7 @@ type ListRevertProfilesRequest struct {
 	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
 	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
 	Name          *string                `protobuf:"bytes,4,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	Gender        *string                `protobuf:"bytes,5,opt,name=gender,proto3,oneof" json:"gender,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -704,6 +705,13 @@ func (x *ListRevertProfilesRequest) GetPage() int32 {
 func (x *ListRevertProfilesRequest) GetName() string {
 	if x != nil && x.Name != nil {
 		return *x.Name
+	}
+	return ""
+}
+
+func (x *ListRevertProfilesRequest) GetGender() string {
+	if x != nil && x.Gender != nil {
+		return *x.Gender
 	}
 	return ""
 }
@@ -1170,13 +1178,15 @@ const file_revert_service_proto_rawDesc = "" +
 	"\x1eUpdateSelfRevertProfileRequest\x12\x1d\n" +
 	"\n" +
 	"profile_id\x18\x01 \x01(\tR\tprofileId\x127\n" +
-	"\aprofile\x18\x02 \x01(\v2\x18.limestone.RevertProfileB\x03\xe0A\x02R\aprofile\"}\n" +
+	"\aprofile\x18\x02 \x01(\v2\x18.limestone.RevertProfileB\x03\xe0A\x02R\aprofile\"\xa5\x01\n" +
 	"\x19ListRevertProfilesRequest\x12\x14\n" +
 	"\x05start\x18\x01 \x01(\x05R\x05start\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x12\n" +
 	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x17\n" +
-	"\x04name\x18\x04 \x01(\tH\x00R\x04name\x88\x01\x01B\a\n" +
-	"\x05_name\"\xb7\x01\n" +
+	"\x04name\x18\x04 \x01(\tH\x00R\x04name\x88\x01\x01\x12\x1b\n" +
+	"\x06gender\x18\x05 \x01(\tH\x01R\x06gender\x88\x01\x01B\a\n" +
+	"\x05_nameB\t\n" +
+	"\a_gender\"\xb7\x01\n" +
 	"\x1aListRevertProfilesResponse\x124\n" +
 	"\bprofiles\x18\x01 \x03(\v2\x18.limestone.RevertProfileR\bprofiles\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +

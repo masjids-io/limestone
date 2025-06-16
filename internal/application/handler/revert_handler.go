@@ -209,10 +209,11 @@ func (h *RevertsIoGrpcHandler) UpdateSelfRevertProfile(ctx context.Context, req 
 */
 func (h *RevertsIoGrpcHandler) ListRevertProfiles(ctx context.Context, req *pb.ListRevertProfilesRequest) (*pb.StandardRevertResponse, error) {
 	params := &entity.RevertProfileQueryParams{
-		Start: req.GetStart(),
-		Limit: req.GetLimit(),
-		Page:  req.GetPage(),
-		Name:  req.GetName(),
+		Start:  req.GetStart(),
+		Limit:  req.GetLimit(),
+		Page:   req.GetPage(),
+		Name:   req.GetName(),
+		Gender: req.GetGender(),
 	}
 
 	queryResult, err := h.RevertSvc.ListRevertProfiles(ctx, params)

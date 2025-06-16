@@ -125,7 +125,11 @@ func (r *GormRevertRepository) ListRevertProfiles(ctx context.Context, params *e
 	db := r.db.WithContext(ctx).Model(&entity.RevertProfile{})
 
 	if params.Name != "" {
-		db = db.Where("name = ?", params.Name)
+		db = db.Where("name ILIKE ?", "%"+params.Name+"%")
+	}
+
+	if params.Gender != "" {
+		db = db.Where("gender = ?", params.Gender)
 	}
 
 	var totalCount int64
