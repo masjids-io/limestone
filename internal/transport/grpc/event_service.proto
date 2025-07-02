@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
+
+service EventService {
+  rpc CreateEvent(CreateEventRequest) returns (StandardEventResponse) {
+    option (google.api.http) = {
+      post: "/v1/event"
+      body: "event"
+    };
+    option (google.api.method_signature) = "event";
+  }
+
+  rpc UpdateEvent(UpdateEventRequest) returns (StandardEventResponse) {
+    option (google.api.http) = {
+      patch: "/v1/event/{id}"
+      body: "event"
+    };
+    option (google.api.method_signature) = "event";
+  }
+
+  rpc DeleteEvent(DeleteEventRequest) returns (StandardEventResponse) {
+    option (google.api.http) = {
+      delete: "/v1/event/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+
+  rpc GetEvent(GetEventRequest) returns (StandardEventResponse) {
+    option (google.api.http) = {
+      get: "/v1/event/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+
+  rpc ListEvents(ListEventsRequest) returns (StandardEventResponse) {
+    option (google.api.http) = {
+      get: "/v1/event"
+    };
+  }
+}
+
+message StandardEventResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    Event event = 4;
+    DeleteEventResponse delete_event_response = 5;
+    ListEventsResponse list_event_response = 6;
+
+  }
+}
+
+message Event {
+  string id = 1;
+  string masjid_id = 3;
+  string name = 4;
+  string description = 5;
+  google.protobuf.Timestamp start_time = 6;
+  google.protobuf.Timestamp end_time = 7;
+
+  enum GenderRestriction {
+    NO_RESTRICTION = 0;
+    MALE_ONLY = 1;
+    FEMALE_ONLY = 2;
+  }
+  GenderRestriction gender_restriction = 8;
+
+  enum EventType {
+    WORSHIP = 0;
+    EDUCATIONAL = 1;
+    COMMUNITY = 2;
+    ATHLETIC = 3;
+    FUNDRAISING = 4;
+    YOUTH = 5;
+    CHILDREN_SPECIFIC = 6;
+    MATRIMONIAL = 7;
+    FUNERAL = 8;
+  }
+  repeated EventType types = 9;
+  bool is_paid = 10;
+  bool requires_rsvp = 11;
+  int32 max_participants = 12;
+  string livestream_link = 13;
+  google.protobuf.Timestamp create_time = 14;
+  google.protobuf.Timestamp update_time = 15;
+}
+
+message CreateEventRequest {
+  Event event = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateEventRequest {
+  string id = 1;
+  Event event = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteEventRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteEventResponse {}
+
+message GetEventRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ListEventsRequest {
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListEventsResponse {
+  repeated Event events = 1;
+}

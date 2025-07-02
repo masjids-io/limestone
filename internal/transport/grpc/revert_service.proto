@@ -1,0 +1,193 @@
+// Copyright (c) 2024 Coding-af Limestone Dev
+// Licensed under the MIT License.
+// file COPYING or http://www.opensource.org/licenses/mit-license.php
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
+
+service RevertsIoService {
+  rpc CreateRevertProfile (CreateRevertProfileRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      post: "/v1/revert/profile"
+      body: "profile"
+    };
+    option (google.api.method_signature) = "profile";
+  }
+
+  rpc GetSelfRevertProfile (GetSelfRevertProfileRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      get: "/v1/revert/profile"
+    };
+  }
+
+  rpc UpdateSelfRevertProfile (UpdateSelfRevertProfileRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      put: "/v1/revert/profile/{profile_id}"
+      body: "profile"
+    };
+  }
+
+  rpc ListRevertProfiles (ListRevertProfilesRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      get: "/v1/revert/profiles"
+    };
+  }
+
+  rpc GetRevertProfile (GetRevertProfileRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      get: "/v1/revert/profile/{profile_id}"
+    };
+  }
+
+  rpc CreateRevertMatchInvite (CreateRevertMatchInviteRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      post: "/v1/revert/match/{receiver_profile_id}"
+    };
+  }
+
+  rpc GetRevertMatch (GetRevertMatchRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      get: "/v1/revert/match/{match_id}"
+    };
+  }
+
+  rpc AcceptRevertMatchInvite (AcceptRevertMatchInviteRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      post: "/v1/revert/match/{match_id}/accept"
+    };
+  }
+
+  rpc RejectRevertMatchInvite (RejectRevertMatchInviteRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      post: "/v1/revert/match/{match_id}/reject"
+    };
+  }
+
+  rpc EndRevertMatch (EndRevertMatchRequest) returns (StandardRevertResponse) {
+    option (google.api.http) = {
+      post: "/v1/revert/match/{match_id}/end"
+    };
+  }
+}
+
+message StandardRevertResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    RevertProfile revert_profile  = 4;
+    ListRevertProfilesResponse list_revert_profiles_response = 5;
+    RevertMatch revert_match = 6;
+  }
+}
+
+
+message RevertProfile {
+  string id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string user_id = 2;
+  string name = 3;
+  enum Gender {
+    GENDER_UNSPECIFIED = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+  Gender gender = 4;
+
+
+  message BirthDate {
+    int32 year = 1;
+    enum Month {
+      MONTH_UNSPECIFIED = 0;
+      JANUARY = 1;
+      FEBRUARY = 2;
+      MARCH = 3;
+      APRIL = 4;
+      MAY = 5;
+      JUNE = 6;
+      JULY = 7;
+      AUGUST = 8;
+      SEPTEMBER = 9;
+      OCTOBER = 10;
+      NOVEMBER = 11;
+      DECEMBER = 12;
+    }
+    Month month = 2;
+    int32 day = 3;
+  }
+  BirthDate birth_date = 5;
+  google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.protobuf.Timestamp update_time = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+message RevertMatch {
+  string match_id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string initiator_profile_id = 2;
+  string receiver_profile_id = 3;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    INITIATED = 1;
+    ACCEPTED = 2;
+    REJECTED = 3;
+    ENDED = 4;
+  }
+  Status status = 4;
+  google.protobuf.Timestamp create_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.protobuf.Timestamp update_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+message CreateRevertProfileRequest {
+  RevertProfile profile = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetSelfRevertProfileRequest {}
+
+message UpdateSelfRevertProfileRequest {
+  string profile_id = 1 ;
+  RevertProfile profile = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ListRevertProfilesRequest {
+  int32 start = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  optional string name = 4;
+  optional string gender = 5;
+}
+
+message ListRevertProfilesResponse {
+  repeated RevertProfile profiles = 1;
+  int32 total_count = 2;
+  int32 current_page = 3;
+  int32 total_pages = 4;
+}
+
+message GetRevertProfileRequest {
+  string profile_id = 1;
+}
+
+message CreateRevertMatchInviteRequest {
+  string receiver_profile_id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetRevertMatchRequest {
+  string match_id = 1;
+}
+
+message AcceptRevertMatchInviteRequest {
+  string match_id = 1;
+}
+
+message RejectRevertMatchInviteRequest {
+  string match_id = 1;
+}
+
+message EndRevertMatchRequest {
+  string match_id = 1;
+}

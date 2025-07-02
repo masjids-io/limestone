@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
+
+service AuthService {
+  rpc AuthenticateUser (AuthenticateUserRequest) returns (StandardAuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/login"
+      body: "*"
+    };
+  }
+
+  rpc RefreshToken (RefreshTokenRequest) returns (StandardAuthResponse) {
+    option (google.api.http) = {
+      post: "/v1/auth/refresh_token"
+      body: "*"
+    };
+  }
+}
+
+
+message StandardAuthResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof datas {
+    DataAuthenticateUserResponse authenticate_user_data = 5; // Unique field name
+    DataRefreshTokenResponse refresh_token_data = 6;       // Unique field name
+  }
+}
+
+message AuthenticateUserRequest {
+  oneof identifier {
+    string username = 1;
+    string email = 2;
+  }
+  string password = 3;
+}
+
+
+message DataAuthenticateUserResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+
+  string user_id = 3;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message DataRefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
