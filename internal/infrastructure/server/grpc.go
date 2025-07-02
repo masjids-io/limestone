@@ -6,11 +6,11 @@ package server
 import (
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"log"
 	"net"
 
 	"github.com/mnadev/limestone/internal/application/handler"
-	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"github.com/mnadev/limestone/internal/infrastructure/storage"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

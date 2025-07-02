@@ -25,6 +25,7 @@ func StandardUserResponse(code codes.Code, statusMessage string, message string,
 			LastName:        userEntity.LastName,
 			PhoneNumber:     userEntity.PhoneNumber,
 			Gender:          pb.User_Gender(pb.User_Gender_value[userEntity.Gender.String()]),
+			Role:            pb.User_Role(pb.User_Role_value[userEntity.Role.String()]),
 			CreateTime:      timestamppb.New(userEntity.CreatedAt),
 			UpdateTime:      timestamppb.New(userEntity.UpdatedAt),
 		}

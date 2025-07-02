@@ -2,7 +2,10 @@ package helper
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
+	"log"
+	"net/http"
 )
 
 var mp3MagicBytes = [][]byte{
@@ -46,3 +49,27 @@ var (
 	ErrMatchNotAccepted           = errors.New("revert match is not in accepted status")
 	ErrProfileNotFound            = errors.New("profile not found")
 )
+
+type ErrorResponse struct {
+	Code    string `json:"code"`
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
+
+// writeJSONError writes a standardized JSON error response to the http.ResponseWriter.
+func WriteJSONError(w http.ResponseWriter, statusCode int, code string, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+
+	errResponse := ErrorResponse{
+		Code:    code,
+		Status:  http.StatusText(statusCode), // e.g., "Forbidden", "Unauthorized"
+		Message: message,
+	}
+
+	if err := json.NewEncoder(w).Encode(errResponse); err != nil {
+		log.Printf("ERROR: Failed to write JSON error response: %v", err)
+		// Fallback to plain text if JSON encoding fails
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	grpcauth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
+	"github.com/mnadev/limestone/internal/application/helper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -16,7 +17,7 @@ import (
 	"time"
 )
 
-func GenerateJWT(userID string) (string, string, error) {
+func GenerateJWT(userID, userRole string) (string, string, error) {
 	accessSecret := os.Getenv("ACCESS_SECRET")
 	refreshSecret := os.Getenv("REFRESH_SECRET")
 	accessExpiration := os.Getenv("ACCESS_EXPIRATION")
@@ -34,12 +35,14 @@ func GenerateJWT(userID string) (string, string, error) {
 	now := time.Now()
 	accessClaims := jwt.MapClaims{
 		"user_id": userID,
+		"role":    userRole,
 		"exp":     now.Add(time.Minute * time.Duration(accessExpMinutes)).Unix(),
 		"iat":     now.Unix(),
 	}
 
 	refreshClaims := jwt.MapClaims{
 		"user_id": userID,
+		"role":    userRole,
 		"exp":     now.Add(time.Hour * time.Duration(refreshExpHours)).Unix(),
 		"iat":     now.Unix(),
 	}
@@ -63,9 +66,9 @@ func GenerateJWT(userID string) (string, string, error) {
 type AuthContextKey string
 
 const UserIDContextKey AuthContextKey = "userID"
+const UserRoleContextKey AuthContextKey = "userRole"
 
 func VerifyJWTInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-
 	if _, isUnprotected := UnprotectedRoutes[info.FullMethod]; isUnprotected {
 		return handler(ctx, req)
 	}
@@ -97,7 +100,14 @@ func VerifyJWTInterceptor(ctx context.Context, req interface{}, info *grpc.Unary
 			return nil, status.Errorf(codes.Unauthenticated, "invalid token claims: user_id not found")
 		}
 
+		userRole, ok := claims["role"].(string)
+		if !ok {
+			return nil, status.Errorf(codes.Unauthenticated, "invalid token claims: user_role not found or is not a string")
+		}
+
 		newCtx := context.WithValue(ctx, UserIDContextKey, userID)
+		newCtx = context.WithValue(newCtx, UserRoleContextKey, userRole)
+
 		return handler(newCtx, req)
 	}
 
@@ -186,13 +196,13 @@ func VerifyJWTInterceptorRest(next http.Handler) http.Handler {
 
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			helper.WriteJSONError(w, http.StatusUnauthorized, codes.Unauthenticated.String(), "Authorization header is missing.")
 			return
 		}
 
 		bearerToken := strings.Split(authHeader, " ")
 		if len(bearerToken) != 2 || strings.ToLower(bearerToken[0]) != "bearer" {
-			http.Error(w, "Invalid authorization header", http.StatusUnauthorized)
+			helper.WriteJSONError(w, http.StatusUnauthorized, codes.Unauthenticated.String(), "Invalid authorization header format. Expected 'Bearer <token>'.")
 			return
 		}
 
@@ -200,7 +210,7 @@ func VerifyJWTInterceptorRest(next http.Handler) http.Handler {
 		accessSecret := os.Getenv("ACCESS_SECRET")
 		if accessSecret == "" {
 			log.Println("ACCESS_SECRET not set for HTTP")
-			http.Error(w, "Server configuration error", http.StatusInternalServerError)
+			helper.WriteJSONError(w, http.StatusInternalServerError, codes.Internal.String(), "Server configuration error: ACCESS_SECRET not set.")
 			return
 		}
 
@@ -213,21 +223,27 @@ func VerifyJWTInterceptorRest(next http.Handler) http.Handler {
 
 		if err != nil {
 			log.Printf("Error parsing token (HTTP): %v", err)
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			helper.WriteJSONError(w, http.StatusUnauthorized, codes.Unauthenticated.String(), fmt.Sprintf("Invalid or expired token: %v", err))
 			return
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			userID, ok := claims["user_id"].(string)
 			if !ok {
-				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				helper.WriteJSONError(w, http.StatusUnauthorized, codes.Unauthenticated.String(), "Invalid token claims: user_id not found or invalid.")
+				return
+			}
+			userRole, ok := claims["role"].(string)
+			if !ok {
+				helper.WriteJSONError(w, http.StatusUnauthorized, codes.Unauthenticated.String(), "Invalid token claims: user role not found or invalid.")
 				return
 			}
 
 			ctx := context.WithValue(r.Context(), UserIDContextKey, userID)
+			ctx = context.WithValue(ctx, UserRoleContextKey, userRole)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		} else {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			helper.WriteJSONError(w, http.StatusUnauthorized, codes.Unauthenticated.String(), "Invalid token: claims could not be parsed or token is not valid.")
 		}
 	})
 }

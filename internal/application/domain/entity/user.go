@@ -14,7 +14,8 @@ type User struct {
 	FirstName      string    `gorm:"type:varchar(255);not null"`
 	LastName       string    `gorm:"type:varchar(255);not null"`
 	PhoneNumber    string    `gorm:"type:varchar(255);not null"`
-	Gender         Gender    `gorm:"not null"`
+	Gender         Gender    `gorm:"null"`
+	Role           Role      `gorm:"not null"`
 	CreatedAt      time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	UpdatedAt      time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 }

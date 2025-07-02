@@ -78,6 +78,61 @@ func (MasjidRole_Role) EnumDescriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{0, 0}
 }
 
+type User_Role int32
+
+const (
+	User_ROLE_UNSPECIFIED User_Role = 0
+	User_MASJID_MEMBER    User_Role = 1
+	User_MASJID_VOLUNTEER User_Role = 2
+	User_MASJID_ADMIN     User_Role = 3
+	User_MASJID_IMAM      User_Role = 4
+)
+
+// Enum value maps for User_Role.
+var (
+	User_Role_name = map[int32]string{
+		0: "ROLE_UNSPECIFIED",
+		1: "MASJID_MEMBER",
+		2: "MASJID_VOLUNTEER",
+		3: "MASJID_ADMIN",
+		4: "MASJID_IMAM",
+	}
+	User_Role_value = map[string]int32{
+		"ROLE_UNSPECIFIED": 0,
+		"MASJID_MEMBER":    1,
+		"MASJID_VOLUNTEER": 2,
+		"MASJID_ADMIN":     3,
+		"MASJID_IMAM":      4,
+	}
+)
+
+func (x User_Role) Enum() *User_Role {
+	p := new(User_Role)
+	*p = x
+	return p
+}
+
+func (x User_Role) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (User_Role) Descriptor() protoreflect.EnumDescriptor {
+	return file_user_service_proto_enumTypes[1].Descriptor()
+}
+
+func (User_Role) Type() protoreflect.EnumType {
+	return &file_user_service_proto_enumTypes[1]
+}
+
+func (x User_Role) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use User_Role.Descriptor instead.
+func (User_Role) EnumDescriptor() ([]byte, []int) {
+	return file_user_service_proto_rawDescGZIP(), []int{1, 0}
+}
+
 type User_Gender int32
 
 const (
@@ -111,11 +166,11 @@ func (x User_Gender) String() string {
 }
 
 func (User_Gender) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_service_proto_enumTypes[1].Descriptor()
+	return file_user_service_proto_enumTypes[2].Descriptor()
 }
 
 func (User_Gender) Type() protoreflect.EnumType {
-	return &file_user_service_proto_enumTypes[1]
+	return &file_user_service_proto_enumTypes[2]
 }
 
 func (x User_Gender) Number() protoreflect.EnumNumber {
@@ -124,7 +179,62 @@ func (x User_Gender) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use User_Gender.Descriptor instead.
 func (User_Gender) EnumDescriptor() ([]byte, []int) {
-	return file_user_service_proto_rawDescGZIP(), []int{1, 0}
+	return file_user_service_proto_rawDescGZIP(), []int{1, 1}
+}
+
+type CreateUserRequest_Role int32
+
+const (
+	CreateUserRequest_ROLE_UNSPECIFIED CreateUserRequest_Role = 0
+	CreateUserRequest_MASJID_MEMBER    CreateUserRequest_Role = 1
+	CreateUserRequest_MASJID_VOLUNTEER CreateUserRequest_Role = 2
+	CreateUserRequest_MASJID_ADMIN     CreateUserRequest_Role = 3
+	CreateUserRequest_MASJID_IMAM      CreateUserRequest_Role = 4
+)
+
+// Enum value maps for CreateUserRequest_Role.
+var (
+	CreateUserRequest_Role_name = map[int32]string{
+		0: "ROLE_UNSPECIFIED",
+		1: "MASJID_MEMBER",
+		2: "MASJID_VOLUNTEER",
+		3: "MASJID_ADMIN",
+		4: "MASJID_IMAM",
+	}
+	CreateUserRequest_Role_value = map[string]int32{
+		"ROLE_UNSPECIFIED": 0,
+		"MASJID_MEMBER":    1,
+		"MASJID_VOLUNTEER": 2,
+		"MASJID_ADMIN":     3,
+		"MASJID_IMAM":      4,
+	}
+)
+
+func (x CreateUserRequest_Role) Enum() *CreateUserRequest_Role {
+	p := new(CreateUserRequest_Role)
+	*p = x
+	return p
+}
+
+func (x CreateUserRequest_Role) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (CreateUserRequest_Role) Descriptor() protoreflect.EnumDescriptor {
+	return file_user_service_proto_enumTypes[3].Descriptor()
+}
+
+func (CreateUserRequest_Role) Type() protoreflect.EnumType {
+	return &file_user_service_proto_enumTypes[3]
+}
+
+func (x CreateUserRequest_Role) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use CreateUserRequest_Role.Descriptor instead.
+func (CreateUserRequest_Role) EnumDescriptor() ([]byte, []int) {
+	return file_user_service_proto_rawDescGZIP(), []int{3, 0}
 }
 
 type CreateUserRequest_Gender int32
@@ -160,11 +270,11 @@ func (x CreateUserRequest_Gender) String() string {
 }
 
 func (CreateUserRequest_Gender) Descriptor() protoreflect.EnumDescriptor {
-	return file_user_service_proto_enumTypes[2].Descriptor()
+	return file_user_service_proto_enumTypes[4].Descriptor()
 }
 
 func (CreateUserRequest_Gender) Type() protoreflect.EnumType {
-	return &file_user_service_proto_enumTypes[2]
+	return &file_user_service_proto_enumTypes[4]
 }
 
 func (x CreateUserRequest_Gender) Number() protoreflect.EnumNumber {
@@ -173,7 +283,7 @@ func (x CreateUserRequest_Gender) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use CreateUserRequest_Gender.Descriptor instead.
 func (CreateUserRequest_Gender) EnumDescriptor() ([]byte, []int) {
-	return file_user_service_proto_rawDescGZIP(), []int{3, 0}
+	return file_user_service_proto_rawDescGZIP(), []int{3, 1}
 }
 
 type MasjidRole struct {
@@ -246,8 +356,9 @@ type User struct {
 	LastName        string                 `protobuf:"bytes,6,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
 	PhoneNumber     string                 `protobuf:"bytes,7,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
 	Gender          User_Gender            `protobuf:"varint,8,opt,name=gender,proto3,enum=limestone.User_Gender" json:"gender,omitempty"`
-	CreateTime      *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
-	UpdateTime      *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	Role            User_Role              `protobuf:"varint,9,opt,name=role,proto3,enum=limestone.User_Role" json:"role,omitempty"`
+	CreateTime      *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
+	UpdateTime      *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -336,6 +447,13 @@ func (x *User) GetGender() User_Gender {
 		return x.Gender
 	}
 	return User_GENDER_UNSPECIFIED
+}
+
+func (x *User) GetRole() User_Role {
+	if x != nil {
+		return x.Role
+	}
+	return User_ROLE_UNSPECIFIED
 }
 
 func (x *User) GetCreateTime() *timestamppb.Timestamp {
@@ -500,6 +618,7 @@ type CreateUserRequest struct {
 	LastName        string                   `protobuf:"bytes,6,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
 	PhoneNumber     string                   `protobuf:"bytes,7,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
 	Gender          CreateUserRequest_Gender `protobuf:"varint,8,opt,name=gender,proto3,enum=limestone.CreateUserRequest_Gender" json:"gender,omitempty"`
+	Role            CreateUserRequest_Role   `protobuf:"varint,9,opt,name=role,proto3,enum=limestone.CreateUserRequest_Role" json:"role,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -588,6 +707,13 @@ func (x *CreateUserRequest) GetGender() CreateUserRequest_Gender {
 		return x.Gender
 	}
 	return CreateUserRequest_GENDER_UNSPECIFIED
+}
+
+func (x *CreateUserRequest) GetRole() CreateUserRequest_Role {
+	if x != nil {
+		return x.Role
+	}
+	return CreateUserRequest_ROLE_UNSPECIFIED
 }
 
 type GetUserRequest struct {
@@ -817,7 +943,7 @@ const file_user_service_proto_rawDesc = "" +
 	"\rMASJID_MEMBER\x10\x01\x12\x14\n" +
 	"\x10MASJID_VOLUNTEER\x10\x02\x12\x10\n" +
 	"\fMASJID_ADMIN\x10\x03\x12\x0f\n" +
-	"\vMASJID_IMAM\x10\x04\"\xb5\x03\n" +
+	"\vMASJID_IMAM\x10\x04\"\xc9\x04\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
@@ -827,12 +953,19 @@ const file_user_service_proto_rawDesc = "" +
 	"first_name\x18\x05 \x01(\tR\tfirstName\x12\x1b\n" +
 	"\tlast_name\x18\x06 \x01(\tR\blastName\x12!\n" +
 	"\fphone_number\x18\a \x01(\tR\vphoneNumber\x12.\n" +
-	"\x06gender\x18\b \x01(\x0e2\x16.limestone.User.GenderR\x06gender\x12;\n" +
-	"\vcreate_time\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\n" +
-	"createTime\x12;\n" +
-	"\vupdate_time\x18\n" +
+	"\x06gender\x18\b \x01(\x0e2\x16.limestone.User.GenderR\x06gender\x12(\n" +
+	"\x04role\x18\t \x01(\x0e2\x14.limestone.User.RoleR\x04role\x12;\n" +
+	"\vcreate_time\x18\n" +
 	" \x01(\v2\x1a.google.protobuf.TimestampR\n" +
-	"updateTime\"6\n" +
+	"createTime\x12;\n" +
+	"\vupdate_time\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"updateTime\"h\n" +
+	"\x04Role\x12\x14\n" +
+	"\x10ROLE_UNSPECIFIED\x10\x00\x12\x11\n" +
+	"\rMASJID_MEMBER\x10\x01\x12\x14\n" +
+	"\x10MASJID_VOLUNTEER\x10\x02\x12\x10\n" +
+	"\fMASJID_ADMIN\x10\x03\x12\x0f\n" +
+	"\vMASJID_IMAM\x10\x04\"6\n" +
 	"\x06Gender\x12\x16\n" +
 	"\x12GENDER_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04MALE\x10\x01\x12\n" +
@@ -846,7 +979,7 @@ const file_user_service_proto_rawDesc = "" +
 	"\x11get_user_response\x18\x05 \x01(\v2\x0f.limestone.UserH\x00R\x0fgetUserResponse\x12C\n" +
 	"\x14update_user_response\x18\x06 \x01(\v2\x0f.limestone.UserH\x00R\x12updateUserResponse\x12Q\n" +
 	"\x14delete_user_response\x18\a \x01(\v2\x1d.limestone.DeleteUserResponseH\x00R\x12deleteUserResponseB\x06\n" +
-	"\x04data\"\xe1\x02\n" +
+	"\x04data\"\x82\x04\n" +
 	"\x11CreateUserRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\busername\x18\x02 \x01(\tR\busername\x12\x1a\n" +
@@ -856,7 +989,14 @@ const file_user_service_proto_rawDesc = "" +
 	"first_name\x18\x05 \x01(\tR\tfirstName\x12\x1b\n" +
 	"\tlast_name\x18\x06 \x01(\tR\blastName\x12!\n" +
 	"\fphone_number\x18\a \x01(\tR\vphoneNumber\x12;\n" +
-	"\x06gender\x18\b \x01(\x0e2#.limestone.CreateUserRequest.GenderR\x06gender\"6\n" +
+	"\x06gender\x18\b \x01(\x0e2#.limestone.CreateUserRequest.GenderR\x06gender\x125\n" +
+	"\x04role\x18\t \x01(\x0e2!.limestone.CreateUserRequest.RoleR\x04role\"h\n" +
+	"\x04Role\x12\x14\n" +
+	"\x10ROLE_UNSPECIFIED\x10\x00\x12\x11\n" +
+	"\rMASJID_MEMBER\x10\x01\x12\x14\n" +
+	"\x10MASJID_VOLUNTEER\x10\x02\x12\x10\n" +
+	"\fMASJID_ADMIN\x10\x03\x12\x0f\n" +
+	"\vMASJID_IMAM\x10\x04\"6\n" +
 	"\x06Gender\x12\x16\n" +
 	"\x12GENDER_UNSPECIFIED\x10\x00\x12\b\n" +
 	"\x04MALE\x10\x01\x12\n" +
@@ -893,48 +1033,52 @@ func file_user_service_proto_rawDescGZIP() []byte {
 	return file_user_service_proto_rawDescData
 }
 
-var file_user_service_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
+var file_user_service_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
 var file_user_service_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_user_service_proto_goTypes = []any{
 	(MasjidRole_Role)(0),          // 0: limestone.MasjidRole.Role
-	(User_Gender)(0),              // 1: limestone.User.Gender
-	(CreateUserRequest_Gender)(0), // 2: limestone.CreateUserRequest.Gender
-	(*MasjidRole)(nil),            // 3: limestone.MasjidRole
-	(*User)(nil),                  // 4: limestone.User
-	(*StandardUserResponse)(nil),  // 5: limestone.StandardUserResponse
-	(*CreateUserRequest)(nil),     // 6: limestone.CreateUserRequest
-	(*GetUserRequest)(nil),        // 7: limestone.GetUserRequest
-	(*GetUserResponse)(nil),       // 8: limestone.GetUserResponse
-	(*UpdateUserRequest)(nil),     // 9: limestone.UpdateUserRequest
-	(*DeleteUserRequest)(nil),     // 10: limestone.DeleteUserRequest
-	(*DeleteUserResponse)(nil),    // 11: limestone.DeleteUserResponse
-	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
+	(User_Role)(0),                // 1: limestone.User.Role
+	(User_Gender)(0),              // 2: limestone.User.Gender
+	(CreateUserRequest_Role)(0),   // 3: limestone.CreateUserRequest.Role
+	(CreateUserRequest_Gender)(0), // 4: limestone.CreateUserRequest.Gender
+	(*MasjidRole)(nil),            // 5: limestone.MasjidRole
+	(*User)(nil),                  // 6: limestone.User
+	(*StandardUserResponse)(nil),  // 7: limestone.StandardUserResponse
+	(*CreateUserRequest)(nil),     // 8: limestone.CreateUserRequest
+	(*GetUserRequest)(nil),        // 9: limestone.GetUserRequest
+	(*GetUserResponse)(nil),       // 10: limestone.GetUserResponse
+	(*UpdateUserRequest)(nil),     // 11: limestone.UpdateUserRequest
+	(*DeleteUserRequest)(nil),     // 12: limestone.DeleteUserRequest
+	(*DeleteUserResponse)(nil),    // 13: limestone.DeleteUserResponse
+	(*timestamppb.Timestamp)(nil), // 14: google.protobuf.Timestamp
 }
 var file_user_service_proto_depIdxs = []int32{
 	0,  // 0: limestone.MasjidRole.role:type_name -> limestone.MasjidRole.Role
-	1,  // 1: limestone.User.gender:type_name -> limestone.User.Gender
-	12, // 2: limestone.User.create_time:type_name -> google.protobuf.Timestamp
-	12, // 3: limestone.User.update_time:type_name -> google.protobuf.Timestamp
-	4,  // 4: limestone.StandardUserResponse.add_user_response:type_name -> limestone.User
-	4,  // 5: limestone.StandardUserResponse.get_user_response:type_name -> limestone.User
-	4,  // 6: limestone.StandardUserResponse.update_user_response:type_name -> limestone.User
-	11, // 7: limestone.StandardUserResponse.delete_user_response:type_name -> limestone.DeleteUserResponse
-	2,  // 8: limestone.CreateUserRequest.gender:type_name -> limestone.CreateUserRequest.Gender
-	4,  // 9: limestone.GetUserResponse.user:type_name -> limestone.User
-	4,  // 10: limestone.UpdateUserRequest.user:type_name -> limestone.User
-	6,  // 11: limestone.UserService.CreateUser:input_type -> limestone.CreateUserRequest
-	7,  // 12: limestone.UserService.GetUser:input_type -> limestone.GetUserRequest
-	9,  // 13: limestone.UserService.UpdateUser:input_type -> limestone.UpdateUserRequest
-	10, // 14: limestone.UserService.DeleteUser:input_type -> limestone.DeleteUserRequest
-	5,  // 15: limestone.UserService.CreateUser:output_type -> limestone.StandardUserResponse
-	5,  // 16: limestone.UserService.GetUser:output_type -> limestone.StandardUserResponse
-	5,  // 17: limestone.UserService.UpdateUser:output_type -> limestone.StandardUserResponse
-	5,  // 18: limestone.UserService.DeleteUser:output_type -> limestone.StandardUserResponse
-	15, // [15:19] is the sub-list for method output_type
-	11, // [11:15] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	2,  // 1: limestone.User.gender:type_name -> limestone.User.Gender
+	1,  // 2: limestone.User.role:type_name -> limestone.User.Role
+	14, // 3: limestone.User.create_time:type_name -> google.protobuf.Timestamp
+	14, // 4: limestone.User.update_time:type_name -> google.protobuf.Timestamp
+	6,  // 5: limestone.StandardUserResponse.add_user_response:type_name -> limestone.User
+	6,  // 6: limestone.StandardUserResponse.get_user_response:type_name -> limestone.User
+	6,  // 7: limestone.StandardUserResponse.update_user_response:type_name -> limestone.User
+	13, // 8: limestone.StandardUserResponse.delete_user_response:type_name -> limestone.DeleteUserResponse
+	4,  // 9: limestone.CreateUserRequest.gender:type_name -> limestone.CreateUserRequest.Gender
+	3,  // 10: limestone.CreateUserRequest.role:type_name -> limestone.CreateUserRequest.Role
+	6,  // 11: limestone.GetUserResponse.user:type_name -> limestone.User
+	6,  // 12: limestone.UpdateUserRequest.user:type_name -> limestone.User
+	8,  // 13: limestone.UserService.CreateUser:input_type -> limestone.CreateUserRequest
+	9,  // 14: limestone.UserService.GetUser:input_type -> limestone.GetUserRequest
+	11, // 15: limestone.UserService.UpdateUser:input_type -> limestone.UpdateUserRequest
+	12, // 16: limestone.UserService.DeleteUser:input_type -> limestone.DeleteUserRequest
+	7,  // 17: limestone.UserService.CreateUser:output_type -> limestone.StandardUserResponse
+	7,  // 18: limestone.UserService.GetUser:output_type -> limestone.StandardUserResponse
+	7,  // 19: limestone.UserService.UpdateUser:output_type -> limestone.StandardUserResponse
+	7,  // 20: limestone.UserService.DeleteUser:output_type -> limestone.StandardUserResponse
+	17, // [17:21] is the sub-list for method output_type
+	13, // [13:17] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_user_service_proto_init() }
@@ -953,7 +1097,7 @@ func file_user_service_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_service_proto_rawDesc), len(file_user_service_proto_rawDesc)),
-			NumEnums:      3,
+			NumEnums:      5,
 			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,

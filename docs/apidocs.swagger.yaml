@@ -1081,6 +1081,8 @@ definitions:
         type: string
       gender:
         $ref: '#/definitions/limestoneCreateUserRequestGender'
+      role:
+        $ref: '#/definitions/limestoneCreateUserRequestRole'
   limestoneCreateUserRequestGender:
     type: string
     enum:
@@ -1088,6 +1090,15 @@ definitions:
       - MALE
       - FEMALE
     default: GENDER_UNSPECIFIED
+  limestoneCreateUserRequestRole:
+    type: string
+    enum:
+      - ROLE_UNSPECIFIED
+      - MASJID_MEMBER
+      - MASJID_VOLUNTEER
+      - MASJID_ADMIN
+      - MASJID_IMAM
+    default: ROLE_UNSPECIFIED
   limestoneDataAuthenticateUserResponse:
     type: object
     properties:
@@ -1598,6 +1609,8 @@ definitions:
         type: string
       gender:
         $ref: '#/definitions/limestoneUserGender'
+      role:
+        $ref: '#/definitions/limestoneUserRole'
       createTime:
         type: string
         format: date-time
@@ -1611,6 +1624,15 @@ definitions:
       - MALE
       - FEMALE
     default: GENDER_UNSPECIFIED
+  limestoneUserRole:
+    type: string
+    enum:
+      - ROLE_UNSPECIFIED
+      - MASJID_MEMBER
+      - MASJID_VOLUNTEER
+      - MASJID_ADMIN
+      - MASJID_IMAM
+    default: ROLE_UNSPECIFIED
   protobufAny:
     type: object
     properties:

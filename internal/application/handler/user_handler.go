@@ -43,6 +43,9 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 	if req.GetPhoneNumber() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "phone number is required")
 	}
+	if req.GetRole() == pb.CreateUserRequest_ROLE_UNSPECIFIED {
+		return nil, status.Errorf(codes.InvalidArgument, "role is required and cannot be unspecified.")
+	}
 
 	password := req.GetPassword()
 	if len(password) < 8 {
@@ -62,7 +65,9 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 		LastName:       req.GetLastName(),
 		PhoneNumber:    req.GetPhoneNumber(),
 		Gender:         entity.Gender(req.GetGender().String()),
+		Role:           entity.Role(req.GetRole().String()),
 	}
+
 	responseCreatedUser, err := h.Svc.CreateUser(ctx, u)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "already exists") {
@@ -74,6 +79,18 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 }
 
 func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.StandardUserResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_MEMBER),
+		string(entity.MASJID_VOLUNTEER),
+		string(entity.MASJID_IMAM),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "GetUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
+
 	user, err := h.Svc.GetUser(ctx, req.Id)
 	if err != nil {
 		return nil, status.Errorf(codes.Canceled, err.Error())
@@ -82,6 +99,15 @@ func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (
 }
 
 func (h *UserGrpcHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.StandardUserResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_VOLUNTEER),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "GetUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
 	userIDStr := req.User.GetId()
 	if userIDStr == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
@@ -117,7 +143,15 @@ func (h *UserGrpcHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequ
 }
 
 func (h *UserGrpcHandler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.StandardUserResponse, error) {
-	fmt.Println(req)
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "GetUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
+
 	userIDStr := req.GetId()
 	if userIDStr == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "id is required")
