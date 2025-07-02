@@ -104,7 +104,7 @@ func (h *UserGrpcHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequ
 		string(entity.MASJID_ADMIN),
 		string(entity.MASJID_VOLUNTEER),
 	}
-	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "GetUser"); err != nil {
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
 		return nil, err
 	}
 	// --- End Authorization (Coarse-Grained) ---
@@ -147,7 +147,7 @@ func (h *UserGrpcHandler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequ
 	allowedRolesForAnyUser := []string{
 		string(entity.MASJID_ADMIN),
 	}
-	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "GetUser"); err != nil {
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "DeleteUser"); err != nil {
 		return nil, err
 	}
 	// --- End Authorization (Coarse-Grained) ---
