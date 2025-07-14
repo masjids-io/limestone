@@ -8,6 +8,7 @@ import (
 	"github.com/mnadev/limestone/internal/application/domain/entity"
 	"github.com/mnadev/limestone/internal/application/helper"
 	"github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -25,6 +26,15 @@ func NewMasjidGrpcHandler(svc *services.MasjidService) *MasjidGrpcHandler {
 }
 
 func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasjidRequest) (*pb.StandardMasjidResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
+
 	masjid := req.GetMasjid()
 
 	masjidEntity := &entity.Masjid{
@@ -73,6 +83,16 @@ func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasj
 }
 
 func (h *MasjidGrpcHandler) UpdateMasjid(ctx context.Context, req *pb.UpdateMasjidRequest) (*pb.StandardMasjidResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_VOLUNTEER),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
+
 	masjid := req.GetMasjid()
 	if masjid == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "masjid data is required")
@@ -144,6 +164,14 @@ func (h *MasjidGrpcHandler) UpdateMasjid(ctx context.Context, req *pb.UpdateMasj
 }
 
 func (h *MasjidGrpcHandler) DeleteMasjid(ctx context.Context, req *pb.DeleteMasjidRequest) (*pb.StandardMasjidResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
 	err := h.Svc.DeleteMasjid(ctx, req.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete masjid: %v", err)
@@ -152,6 +180,17 @@ func (h *MasjidGrpcHandler) DeleteMasjid(ctx context.Context, req *pb.DeleteMasj
 }
 
 func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequest) (*pb.StandardMasjidResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_VOLUNTEER),
+		string(entity.MASJID_MEMBER),
+		string(entity.MASJID_IMAM),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
 	masjid, err := h.Svc.GetMasjid(ctx, req.GetId())
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -163,6 +202,17 @@ func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequ
 }
 
 func (h *MasjidGrpcHandler) ListMasjids(ctx context.Context, req *pb.ListMasjidsRequest) (*pb.StandardMasjidResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_VOLUNTEER),
+		string(entity.MASJID_MEMBER),
+		string(entity.MASJID_IMAM),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
 	params := &entity.ListMasjidsQueryParams{
 		Start:    req.GetStart(),
 		Limit:    req.GetLimit(),

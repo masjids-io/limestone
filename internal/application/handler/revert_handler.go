@@ -28,21 +28,15 @@ func NewRevertGrpcHandler(revertSvc *services.RevertService) *RevertsIoGrpcHandl
 	}
 }
 
-// CreateRevertProfile /*
-/*
-@Method CreateRevertProfile
-@name Handle creation of a revert profile via gRPC
-@description Validates the user authentication and request payload,
-             converts the gRPC profile message to the domain entity,
-             sets the authenticated user ID,
-             calls the RevertService to create the profile,
-             and returns a standardized gRPC response.
-@param ctx context.Context - request context, must include authenticated user ID
-@param req *pb.CreateRevertProfileRequest - incoming gRPC request containing profile data
-@return *pb.StandardRevertResponse - standardized response with created profile or error details
-@return error - gRPC error with appropriate status codes on failure
-*/
 func (h *RevertsIoGrpcHandler) CreateRevertProfile(ctx context.Context, req *pb.CreateRevertProfileRequest) (*pb.StandardRevertResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
 	userID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || userID == "" {
 		return nil, status.Errorf(codes.Unauthenticated, "Unauthenticated: user ID not found in context")
@@ -84,18 +78,6 @@ func (h *RevertsIoGrpcHandler) CreateRevertProfile(ctx context.Context, req *pb.
 	return resp, nil
 }
 
-// GetSelfRevertProfile /*
-/*
-@Method GetSelfRevertProfile
-@name Retrieve the authenticated user's own revert profile
-@description Extracts the user ID from context, fetches the revert profile associated with that user,
-             handles possible errors like unauthenticated user or profile not found,
-             and returns a standardized gRPC response containing the profile data.
-@param ctx context.Context - request context, must include authenticated user ID
-@param req *pb.GetSelfRevertProfileRequest - incoming gRPC request (empty payload)
-@return *pb.StandardRevertResponse - standardized response with the user's revert profile or error details
-@return error - gRPC error with appropriate status codes on failure
-*/
 func (h *RevertsIoGrpcHandler) GetSelfRevertProfile(ctx context.Context, req *pb.GetSelfRevertProfileRequest) (*pb.StandardRevertResponse, error) {
 	userID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || userID == "" {
@@ -122,22 +104,16 @@ func (h *RevertsIoGrpcHandler) GetSelfRevertProfile(ctx context.Context, req *pb
 	return resp, nil
 }
 
-// UpdateSelfRevertProfile /*
-/*
-@Method UpdateSelfRevertProfile
-@name Update the authenticated user's revert profile
-@description Retrieves the user ID from the context to ensure authentication,
-             validates the provided profile ID and update data,
-             checks ownership to prevent unauthorized updates,
-             converts the incoming protobuf profile data to entity format,
-             and updates the profile in the service layer.
-             Returns a standardized gRPC response with the updated profile or an appropriate error.
-@param ctx context.Context - the request context containing authentication info
-@param req *pb.UpdateSelfRevertProfileRequest - the gRPC request containing profile ID and updated profile data
-@return *pb.StandardRevertResponse - the standardized response containing updated profile data on success
-@return error - gRPC error with relevant status code if authentication, validation, permission, or update fails
-*/
 func (h *RevertsIoGrpcHandler) UpdateSelfRevertProfile(ctx context.Context, req *pb.UpdateSelfRevertProfileRequest) (*pb.StandardRevertResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_VOLUNTEER),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
 	userID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || userID == "" {
 		return nil, status.Errorf(codes.Unauthenticated, "Unauthenticated: user ID not found in context")
@@ -194,19 +170,6 @@ func (h *RevertsIoGrpcHandler) UpdateSelfRevertProfile(ctx context.Context, req 
 	return resp, nil
 }
 
-// ListRevertProfiles /*
-/*
-@Method ListRevertProfiles
-@name List revert profiles with optional pagination and filtering
-@description Handles listing of revert profiles based on query parameters such as start index, limit, page number, and optional name filter.
-             Calls the service layer to retrieve paginated results, converts domain entities to protobuf representations,
-             constructs a detailed list response including pagination metadata,
-             and returns a standardized gRPC response.
-@param ctx context.Context - the request context
-@param req *pb.ListRevertProfilesRequest - the gRPC request containing pagination and filter parameters
-@return *pb.StandardRevertResponse - the standardized response containing a list of revert profiles and pagination info on success
-@return error - gRPC error with relevant status code if the list operation or response construction fails
-*/
 func (h *RevertsIoGrpcHandler) ListRevertProfiles(ctx context.Context, req *pb.ListRevertProfilesRequest) (*pb.StandardRevertResponse, error) {
 	params := &entity.RevertProfileQueryParams{
 		Start:  req.GetStart(),
@@ -248,20 +211,15 @@ func (h *RevertsIoGrpcHandler) ListRevertProfiles(ctx context.Context, req *pb.L
 	return resp, nil
 }
 
-// CreateRevertMatchInvite /*
-/*
-@Method CreateRevertMatchInvite
-@name Create a new revert match invitation
-@description Handles the creation of a revert match invitation from an initiator to a receiver.
-             Validates the initiator's identity from the context, ensures required request fields are provided,
-             delegates creation to the RevertService, and handles various domain-specific errors
-             such as invalid data, self-invitation attempts, duplicates, or missing profiles.
-@param ctx context.Context - the request context, which must contain the initiator's user ID in context
-@param req *pb.CreateRevertMatchInviteRequest - the gRPC request containing the receiver profile ID
-@return *pb.StandardRevertResponse - a standardized response including the created revert match entity on success
-@return error - gRPC error with appropriate status code for authentication, validation, or internal failures
-*/
 func (h *RevertsIoGrpcHandler) CreateRevertMatchInvite(ctx context.Context, req *pb.CreateRevertMatchInviteRequest) (*pb.StandardRevertResponse, error) {
+	// --- Start Authorization (Coarse-Grained) ---
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+		return nil, err
+	}
+	// --- End Authorization (Coarse-Grained) ---
 	initiatorProfileID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || initiatorProfileID == "" {
 		return nil, status.Errorf(codes.Unauthenticated, "initiator profile ID not found in context")
@@ -300,18 +258,6 @@ func (h *RevertsIoGrpcHandler) CreateRevertMatchInvite(ctx context.Context, req 
 	return resp, nil
 }
 
-// GetRevertMatch /*
-/*
-@Method GetRevertMatch
-@name Retrieve a revert match by its ID
-@description Fetches a revert match entity based on the provided match ID.
-             Validates the match ID presence, delegates retrieval to the RevertService,
-             and handles errors including invalid ID format and not found cases.
-@param ctx context.Context - the request context
-@param req *pb.GetRevertMatchRequest - the gRPC request containing the match ID
-@return *pb.StandardRevertResponse - a standardized response containing the revert match on success
-@return error - gRPC error indicating validation, not found, or internal errors
-*/
 func (h *RevertsIoGrpcHandler) GetRevertMatch(ctx context.Context, req *pb.GetRevertMatchRequest) (*pb.StandardRevertResponse, error) {
 	if req.GetMatchId() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "match_id is required")
@@ -345,18 +291,6 @@ func (h *RevertsIoGrpcHandler) GetRevertMatch(ctx context.Context, req *pb.GetRe
 	return resp, nil
 }
 
-// AcceptRevertMatchInvite /*
-/*
-@Method AcceptRevertMatchInvite
-@name Accept a revert match invitation
-@description Accepts a revert match invite identified by the provided match ID.
-             Requires authentication and verifies the presence of the match ID.
-             Handles errors such as invalid match ID, match not found, and invalid match status.
-@param ctx context.Context - the request context containing authentication info
-@param req *pb.AcceptRevertMatchInviteRequest - the gRPC request containing the match ID to accept
-@return *pb.StandardRevertResponse - a standardized response containing the accepted revert match on success
-@return error - gRPC error indicating authentication failure, invalid arguments, not found, failed precondition, or internal errors
-*/
 func (h *RevertsIoGrpcHandler) AcceptRevertMatchInvite(ctx context.Context, req *pb.AcceptRevertMatchInviteRequest) (*pb.StandardRevertResponse, error) {
 	currentProfileID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || currentProfileID == "" {
@@ -398,18 +332,6 @@ func (h *RevertsIoGrpcHandler) AcceptRevertMatchInvite(ctx context.Context, req 
 	return resp, nil
 }
 
-// RejectRevertMatchInvite /*
-/*
-@Method RejectRevertMatchInvite
-@name Reject a revert match invitation
-@description Rejects a revert match invite specified by the given match ID.
-             Requires authentication and validates the presence of the match ID.
-             Handles errors such as invalid match ID, match not found, and invalid match status.
-@param ctx context.Context - the request context containing authentication information
-@param req *pb.RejectRevertMatchInviteRequest - the gRPC request containing the match ID to reject
-@return *pb.StandardRevertResponse - a standardized response containing the rejected revert match on success
-@return error - gRPC error indicating authentication failure, invalid arguments, not found, failed precondition, or internal errors
-*/
 func (h *RevertsIoGrpcHandler) RejectRevertMatchInvite(ctx context.Context, req *pb.RejectRevertMatchInviteRequest) (*pb.StandardRevertResponse, error) {
 	currentProfileID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || currentProfileID == "" {
@@ -451,18 +373,6 @@ func (h *RevertsIoGrpcHandler) RejectRevertMatchInvite(ctx context.Context, req 
 	return resp, nil
 }
 
-// EndRevertMatch /*
-/*
-@Method EndRevertMatch
-@name End a revert match
-@description Ends an active revert match specified by the given match ID.
-             Requires authentication and validates the presence of the match ID.
-             Returns appropriate gRPC errors for invalid match ID, not found matches, or invalid match status.
-@param ctx context.Context - the request context containing authentication information
-@param req *pb.EndRevertMatchRequest - the gRPC request containing the match ID to end
-@return *pb.StandardRevertResponse - a standardized response containing the ended revert match on success
-@return error - gRPC error indicating authentication failure, invalid arguments, not found, failed precondition, or internal errors
-*/
 func (h *RevertsIoGrpcHandler) EndRevertMatch(ctx context.Context, req *pb.EndRevertMatchRequest) (*pb.StandardRevertResponse, error) {
 	currentProfileID, ok := ctx.Value(auth.UserIDContextKey).(string)
 	if !ok || currentProfileID == "" {
