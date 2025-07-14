@@ -158,7 +158,7 @@ func (s *NikkahService) CreateNikkahLike(ctx context.Context, likerUserID string
 		case entity.LikeStatusCompleted:
 			return nil, errors.New("service: you have already matched with this profile")
 		default:
-			return nil, fmt.Errorf("service: existing like has an unhandled status: %s", existingLike.Status)
+			return nil, fmt.Errorf("service: existing like has an unhandled status: %v", existingLike.Status)
 		}
 	} else if !errors.Is(err, helper.ErrNotFound) {
 		return nil, fmt.Errorf("service: failed to check for existing like: %w", err)
@@ -220,7 +220,7 @@ func (s *NikkahService) CancelNikkahLike(ctx context.Context, likeID uuid.UUID, 
 	}
 
 	if nikkahLike.Status != entity.LikeStatusInitiated {
-		return nil, fmt.Errorf("service: nikkah like with ID %s cannot be cancelled as its current status is %s", likeID.String(), nikkahLike.Status)
+		return nil, fmt.Errorf("service: nikkah like with ID %s cannot be cancelled as its current status is %v", likeID.String(), nikkahLike.Status)
 	}
 
 	nikkahLike.Status = entity.LikeStatusCancelled
@@ -256,7 +256,7 @@ func (s *NikkahService) CompleteNikkahLike(ctx context.Context, likeID uuid.UUID
 	}
 
 	if initiatingLike.Status != entity.LikeStatusInitiated {
-		return nil, nil, fmt.Errorf("service: nikkah like with ID %s cannot be completed as its current status is %s. Only likes with 'Initiated' status can be completed.", likeID.String(), initiatingLike.Status)
+		return nil, nil, fmt.Errorf("service: nikkah like with ID %v cannot be completed as its current status is %v. Only likes with 'Initiated' status can be completed.", likeID.String(), initiatingLike.Status)
 	}
 
 	reverseLike, err := s.RepoNikkah.GetLikeByLikerAndLikedProfileID(
@@ -272,7 +272,7 @@ func (s *NikkahService) CompleteNikkahLike(ctx context.Context, likeID uuid.UUID
 	}
 
 	if reverseLike.Status != entity.LikeStatusInitiated {
-		return nil, nil, fmt.Errorf("service: reverse nikkah like from %s to %s cannot be completed as its current status is %s. It must be 'Initiated' to form a match.",
+		return nil, nil, fmt.Errorf("service: reverse nikkah like from %v to %v cannot be completed as its current status is %v. It must be 'Initiated' to form a match.",
 			reverseLike.LikerProfileID, reverseLike.LikedProfileID, reverseLike.Status)
 	}
 
@@ -359,7 +359,7 @@ func (s *NikkahService) AcceptNikkahMatchInvite(ctx context.Context, matchID uui
 	}
 
 	if nikkahMatch.Status != entity.MatchStatusInitiated {
-		return nil, fmt.Errorf("service: nikkah match with ID %s cannot be accepted as its current status is %s", matchID.String(), nikkahMatch.Status)
+		return nil, fmt.Errorf("service: nikkah match with ID %v cannot be accepted as its current status is %v", matchID.String(), nikkahMatch.Status)
 	}
 
 	nikkahMatch.Status = entity.MatchStatusAccepted
@@ -367,7 +367,7 @@ func (s *NikkahService) AcceptNikkahMatchInvite(ctx context.Context, matchID uui
 
 	updatedMatch, err := s.RepoNikkah.UpdateMatch(ctx, nikkahMatch)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to update nikkah match status to ACCEPTED for ID %s: %w", matchID.String(), err)
+		return nil, fmt.Errorf("service: failed to update nikkah match status to ACCEPTED for ID %v: %v", matchID.String(), err)
 	}
 
 	return updatedMatch, nil
@@ -429,7 +429,7 @@ func (s *NikkahService) RejectNikkahMatchInvite(ctx context.Context, matchID uui
 	}
 
 	if nikkahMatch.Status != entity.MatchStatusInitiated {
-		return nil, fmt.Errorf("service: nikkah match with ID %s cannot be rejected as its current status is %s. Only 'Initiated' matches can be rejected.", matchID.String(), nikkahMatch.Status)
+		return nil, fmt.Errorf("service: nikkah match with ID %v cannot be rejected as its current status is %v. Only 'Initiated' matches can be rejected.", matchID.String(), nikkahMatch.Status)
 	}
 
 	nikkahMatch.Status = entity.MatchStatusRejected
@@ -437,7 +437,7 @@ func (s *NikkahService) RejectNikkahMatchInvite(ctx context.Context, matchID uui
 
 	updatedMatch, err := s.RepoNikkah.UpdateMatch(ctx, nikkahMatch)
 	if err != nil {
-		return nil, fmt.Errorf("service: failed to update nikkah match status to ENDED for ID %s: %w", matchID.String(), err)
+		return nil, fmt.Errorf("service: failed to update nikkah match status to ENDED for ID %v: %v", matchID.String(), err)
 	}
 
 	return updatedMatch, nil

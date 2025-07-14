@@ -140,7 +140,7 @@ func (suite *GrpcHandlerTestSuite) TestRefreshToken_Success() {
 	require.NoError(suite.T(), err, "Failed to create test user")
 	userID := user.ID.String()
 
-	_, refreshToken, err := auth.GenerateJWT(userID)
+	_, refreshToken, err := auth.GenerateJWT(userID, string(entity.MASJID_MEMBER))
 	require.NoError(suite.T(), err, "Failed to generate initial JWT tokens")
 
 	authHandler := handler.NewAuthGrpcHandler(suite.AuthService)

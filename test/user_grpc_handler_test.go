@@ -26,6 +26,7 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_Success() {
 		LastName:        "User",
 		PhoneNumber:     "1234567890",
 		Gender:          pb.CreateUserRequest_MALE,
+		Role:            pb.CreateUserRequest_MASJID_ADMIN,
 		IsEmailVerified: false,
 	}
 
@@ -56,6 +57,7 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_InvalidEmail() {
 		LastName:        "User",
 		PhoneNumber:     "1234567890",
 		Gender:          pb.CreateUserRequest_MALE,
+		Role:            pb.CreateUserRequest_MASJID_ADMIN,
 		IsEmailVerified: false,
 	}
 
@@ -88,6 +90,7 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_DuplicateEmail() {
 		LastName:        "User",
 		PhoneNumber:     "1234567890",
 		Gender:          pb.CreateUserRequest_MALE,
+		Role:            pb.CreateUserRequest_MASJID_ADMIN,
 		IsEmailVerified: false,
 	}
 
