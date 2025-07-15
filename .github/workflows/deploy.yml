@@ -47,17 +47,18 @@ jobs:
 
       - name: Create .env file
         run: |
-          printf "DEBUG=%s\n" "$(echo "${{ secrets.DEBUG }}" | tr -d '\n')" > .env
-          printf "TEST_DB_NAME=%s\n" "$(echo "${{ secrets.TEST_DB_NAME }}" | tr -d '\n')" >> .env
-          printf "DB_HOST=%s\n" "$(echo "${{ secrets.DB_HOST }}" | tr -d '\n')" >> .env
-          printf "DB_PORT=%s\n" "$(echo "${{ secrets.DB_PORT }}" | tr -d '\n')" >> .env
-          printf "DB_USER=%s\n" "$(echo "${{ secrets.DB_USER }}" | tr -d '\n')" >> .env
-          printf "DB_PASSWORD=%s\n" "$(echo "${{ secrets.DB_PASSWORD }}" | tr -d '\n')" >> .env
-          printf "DB_NAME=%s\n" "$(echo "${{ secrets.DB_NAME }}" | tr -d '\n')" >> .env
-          printf "ACCESS_SECRET=%s\n" "$(echo "${{ secrets.ACCESS_SECRET }}" | tr -d '\n')" >> .env
-          printf "REFRESH_SECRET=%s\n" "$(echo "${{ secrets.REFRESH_SECRET }}" | tr -d '\n')" >> .env
-          printf "ACCESS_EXPIRATION=%s\n" "$(echo "${{ secrets.ACCESS_EXPIRATION }}" | tr -d '\n')" >> .env
-          printf "REFRESH_EXPIRATION=%s\n" "$(echo "${{ secrets.REFRESH_EXPIRATION }}" | tr -d '\n')" >> .env
+          echo "DEBUG=${{ secrets.DEBUG }}" >> .env
+          echo "TEST_DB_NAME=${{ secrets.TEST_DB_NAME }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" > .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "ACCESS_SECRET=${{ secrets.ACCESS_SECRET }}" >> .env
+          echo "REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}" >> .env
+          echo "ACCESS_EXPIRATION=${{ secrets.ACCESS_EXPIRATION }}" >> .env
+          echo "REFRESH_EXPIRATION=${{ secrets.REFRESH_EXPIRATION }}" >> .env
+
         working-directory: .
 
       - name: Set up Docker Buildx
@@ -79,20 +80,44 @@ jobs:
             ${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
             ${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
-#  deploy:
-#    name: Deploy
-#    needs: build
-#    runs-on: ubuntu-latest
-#
-#    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v4
-#
-#      - name: Deploy to DigitalOcean App Platform
-#        uses: digitalocean/app_action@v2
-#        with:
-#          app_name: ${{ env.APP_NAME }}
-#          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-#          image: ${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Prepare .env content for Droplet
+        id: env_content
+        run: |
+          ENV_VARS_RAW=$(echo "DEBUG=${{ secrets.DEBUG }}"
+          echo "TEST_DB_NAME=${{ secrets.TEST_DB_NAME }}"
+          echo "DB_HOST=${{ secrets.DB_HOST }}"
+          echo "DB_PORT=${{ secrets.DB_PORT }}"
+          echo "DB_USER=${{ secrets.DB_USER }}"
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}"
+          echo "DB_NAME=${{ secrets.DB_NAME }}"
+          echo "ACCESS_SECRET=${{ secrets.ACCESS_SECRET }}"
+          echo "REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}"
+          echo "ACCESS_EXPIRATION=${{ secrets.ACCESS_EXPIRATION }}"
+          echo "REFRESH_EXPIRATION=${{ secrets.REFRESH_EXPIRATION }}"
+          )
+          echo "ENV_FILE_CONTENT<<EOF" >> $GITHUB_OUTPUT
+          echo "$ENV_VARS_RAW" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Deploy Docker Image to Droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
