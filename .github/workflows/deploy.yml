@@ -125,7 +125,7 @@ jobs:
             echo "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" | docker login ${{ env.DIGITALOCEAN_REGISTRY }} --username ${{ secrets.DIGITALOCEAN_USERNAME }} --password-stdin
 
             IMAGE_TAG="${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:v1.0.0"
-            CONTAINER_NAME="${{ env.APP_NAME }}-container"
+            CONTAINER_NAME="${{ env.APP_NAME }}"
 
             if docker ps -a --format '{{.Names}}' | grep -q "${CONTAINER_NAME}"; then
               echo "Stopping existing container ${CONTAINER_NAME}..."
@@ -148,6 +148,7 @@ jobs:
               --restart always \
               --env-file /tmp/.env \
               -p 80:8080 \
+              -p 8081:8081 \
               "${IMAGE_TAG}"
 
             rm /tmp/.env

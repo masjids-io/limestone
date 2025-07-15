@@ -7,18 +7,21 @@ RUN go mod download
 
 COPY . .
 
-RUN curl -sSL https://github.com/bufbuild/buf/releases/download/v1.32.0/buf-Linux-x86_64 -o /usr/local/bin/buf && \
+RUN curl -sSL https://github.com/bufbuild/buf/releases/download/v1.55.1/buf-Linux-x86_64 -o /usr/local/bin/buf && \
     chmod +x /usr/local/bin/buf
 
 RUN buf generate
 
-RUN go build -o /bin/app cmd/main.go
+ENV CGO_ENABLED=0
+RUN go build -o /bin/app -ldflags="-s -w" cmd/main.go
 
-FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/distroless/static-debian12:nonroot
 
 WORKDIR /app
 
 COPY --from=builder /bin/app /app/app
 COPY --from=builder /app/.env /app/.env
+
+USER nonroot
 
 ENTRYPOINT ["/app/app"]
