@@ -121,3 +121,35 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" | docker login ${{ env.DIGITALOCEAN_REGISTRY }} --username ${{ secrets.DIGITALOCEAN_USERNAME }} --password-stdin
+
+            IMAGE_TAG="${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}"
+            CONTAINER_NAME="${{ env.APP_NAME }}-container"
+
+            if docker ps -a --format '{{.Names}}' | grep -q "${CONTAINER_NAME}"; then
+              echo "Stopping existing container ${CONTAINER_NAME}..."
+              docker stop "${CONTAINER_NAME}"
+              echo "Removing existing container ${CONTAINER_NAME}..."
+              docker rm "${CONTAINER_NAME}"
+            fi
+
+            echo "Pulling Docker image: ${IMAGE_TAG}..."
+            docker pull "${IMAGE_TAG}"
+
+            echo "Creating .env file on Droplet..."
+            cat << 'EOF_ENV' > /tmp/.env
+            ${{ steps.env_content.outputs.ENV_FILE_CONTENT }}
+            EOF_ENV
+
+            echo "Running new container ${CONTAINER_NAME}..."
+            docker run -d \
+              --name "${CONTAINER_NAME}" \
+              --restart always \
+              --env-file /tmp/.env \
+              -p 80:8080 \
+              "${IMAGE_TAG}"
+
+            rm /tmp/.env
+
+            echo "Deployment to Droplet complete!"
