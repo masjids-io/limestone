@@ -21,6 +21,7 @@ WORKDIR /app
 
 COPY --from=builder /bin/app /app/app
 COPY --from=builder /app/.env /app/.env
+COPY --from=builder /app/docs /app/docs
 
 USER nonroot
 
