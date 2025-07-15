@@ -2,7 +2,7 @@ package test
 
 import (
 	"context"
-	"errors" // Untuk errors.New jika diperlukan
+	"errors"
 	"testing"
 	"time"
 
@@ -22,34 +22,26 @@ import (
 	"github.com/mnadev/limestone/test/mocks"
 )
 
-// GrpcHandlerTestSuite akan menggunakan mock repository
 type GrpcHandlerTestSuite struct {
 	suite.Suite
 	MockUserRepo *mocks.MockUserRepository
-	UserHandler  *grpc_handler.UserGrpcHandler // Handler yang akan kita uji
+	UserHandler  *grpc_handler.UserGrpcHandler
 }
 
-// SetupTest dipanggil sebelum setiap test
 func (suite *GrpcHandlerTestSuite) SetupTest() {
-	// Inisialisasi mock repository baru untuk setiap test
 	suite.MockUserRepo = new(mocks.MockUserRepository)
-	// Inisialisasi service dengan mock repository
 	userService := services.NewUserService(suite.MockUserRepo)
-	// Inisialisasi handler gRPC dengan service yang sudah diinject
 	suite.UserHandler = grpc_handler.NewUserGrpcHandler(userService)
 
-	// Reset RequireRole ke defaultnya sebelum setiap test
 	auth.ResetRequireRole()
 }
-
-// --- Test `CreateUser` ---
 
 func (suite *GrpcHandlerTestSuite) TestCreateUser_Success() {
 	ctx := context.Background()
 	req := &pb.CreateUserRequest{
 		Email:           "test@example.com",
 		Username:        "testuser",
-		Password:        "password12345", // Pastikan > 8 karakter
+		Password:        "password12345",
 		FirstName:       "Test",
 		LastName:        "User",
 		PhoneNumber:     "1234567890",
@@ -58,20 +50,10 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_Success() {
 		IsEmailVerified: false,
 	}
 
-	// Ekspektasi: service CreateUser akan dipanggil dengan user yang ID-nya baru
-	// Kita tidak perlu mem-mock GetByEmail/GetByUsername secara eksplisit di test handler,
-	// karena handler tidak memanggilnya, service yang memanggilnya.
-	// Kita hanya perlu mock panggilan Create di service.
-
-	// `mock.AnythingOfType("*entity.User")` digunakan untuk argumen `user`
-	// karena kita tidak tahu persis ID UUID yang akan digenerate handler.
-	// Kita juga tidak peduli tentang `HashedPassword` yang tepat di sini,
-	// hanya memverifikasi bahwa `Create` dipanggil.
 	returnedUser := &entity.User{
-		ID:       uuid.New(), // ID ini akan cocok dengan yang digenerate oleh handler
-		Email:    req.Email,
-		Username: req.Username,
-		// ... bidang lainnya sesuai dengan yang dikembalikan handler
+		ID:          uuid.New(),
+		Email:       req.Email,
+		Username:    req.Username,
 		FirstName:   req.FirstName,
 		LastName:    req.LastName,
 		PhoneNumber: req.PhoneNumber,
@@ -147,7 +129,7 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_MissingRequiredFields() {
 			req: &pb.CreateUserRequest{
 				Email:       "e@e.com",
 				Username:    "user",
-				Password:    "short", // < 8 chars
+				Password:    "short",
 				FirstName:   "F",
 				LastName:    "L",
 				PhoneNumber: "1",
@@ -243,7 +225,6 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_DuplicateEmailOrUsername() {
 		IsEmailVerified: false,
 	}
 
-	// Ekspektasi: Service CreateUser akan mengembalikan error yang mengandung "duplicate key"
 	suite.MockUserRepo.On("Create", mock.Anything, mock.AnythingOfType("*entity.User")).Return(nil, errors.New("pq: duplicate key value violates unique constraint \"users_email_key\"")).Once()
 
 	resp, err := suite.UserHandler.CreateUser(ctx, req)
@@ -272,7 +253,6 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_ServiceInternalError() {
 		IsEmailVerified: false,
 	}
 
-	// Ekspektasi: Service CreateUser akan mengembalikan error internal lainnya
 	suite.MockUserRepo.On("Create", mock.Anything, mock.AnythingOfType("*entity.User")).Return(nil, errors.New("database connection lost")).Once()
 
 	resp, err := suite.UserHandler.CreateUser(ctx, req)
@@ -287,18 +267,15 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_ServiceInternalError() {
 	suite.MockUserRepo.AssertExpectations(suite.T())
 }
 
-// --- Test `GetUser` ---
-
 func (suite *GrpcHandlerTestSuite) TestGetUser_Success() {
 	ctx := context.Background()
 	userID := uuid.New().String()
 	req := &pb.GetUserRequest{Id: userID}
 
-	// Mock `auth.RequireRole` agar selalu berhasil untuk test ini
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
-		return nil // Langsung izinkan
+		return nil
 	}
-	defer auth.ResetRequireRole() // Pastikan direset setelah test
+	defer auth.ResetRequireRole()
 
 	expectedUser := &entity.User{
 		ID:          uuid.MustParse(userID),
@@ -334,13 +311,11 @@ func (suite *GrpcHandlerTestSuite) TestGetUser_NotFound() {
 	userID := uuid.New().String()
 	req := &pb.GetUserRequest{Id: userID}
 
-	// Mock `auth.RequireRole` agar selalu berhasil
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
 		return nil
 	}
 	defer auth.ResetRequireRole()
 
-	// Handler Anda mengonversi error dari service.GetUser jika mengandung "record not found"
 	suite.MockUserRepo.On("GetByID", mock.Anything, userID).Return(nil, errors.New("record not found")).Once()
 
 	resp, err := suite.UserHandler.GetUser(ctx, req)
@@ -348,8 +323,8 @@ func (suite *GrpcHandlerTestSuite) TestGetUser_NotFound() {
 	require.Error(suite.T(), err)
 	st, ok := status.FromError(err)
 	require.True(suite.T(), ok)
-	assert.Equal(suite.T(), codes.Canceled, st.Code())        // Harusnya NotFound, bukan Canceled
-	assert.Equal(suite.T(), "record not found", st.Message()) // Pesan dari handler
+	assert.Equal(suite.T(), codes.Canceled, st.Code())
+	assert.Equal(suite.T(), "record not found", st.Message())
 	assert.Nil(suite.T(), resp)
 
 	suite.MockUserRepo.AssertExpectations(suite.T())
@@ -359,7 +334,6 @@ func (suite *GrpcHandlerTestSuite) TestGetUser_AuthorizationDenied() {
 	ctx := context.Background()
 	req := &pb.GetUserRequest{Id: uuid.New().String()}
 
-	// Mock `auth.RequireRole` agar mengembalikan error PermissionDenied
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
 		return status.Errorf(codes.PermissionDenied, "role not allowed for GetUser")
 	}
@@ -374,26 +348,20 @@ func (suite *GrpcHandlerTestSuite) TestGetUser_AuthorizationDenied() {
 	assert.Equal(suite.T(), "role not allowed for GetUser", st.Message())
 	assert.Nil(suite.T(), resp)
 
-	// Pastikan service GetUser tidak dipanggil karena otorisasi gagal
 	suite.MockUserRepo.AssertNotCalled(suite.T(), "GetByID", mock.Anything, mock.Anything)
 	suite.MockUserRepo.AssertExpectations(suite.T())
 }
-
-// --- Test `UpdateUser` ---
 
 func (suite *GrpcHandlerTestSuite) TestUpdateUser_Success() {
 	ctx := context.Background()
 	userID := uuid.New()
 	userIDStr := userID.String()
 
-	// Mock `auth.RequireRole` agar selalu berhasil
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
 		return nil
 	}
 	defer auth.ResetRequireRole()
 
-	// Initial user (tidak digunakan langsung oleh handler, tapi penting untuk GetUser setelah update)
-	// Handler memanggil GetUser setelah UpdateUser
 	initialUserForGet := &entity.User{
 		ID:          userID,
 		Email:       "initial@example.com",
@@ -416,11 +384,8 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_Success() {
 		},
 	}
 
-	// Ekspektasi: service UpdateUser dipanggil dan berhasil
-	// Argumen kedua mock.AnythingOfType("*entity.User") karena updateData dibuat di handler.
 	suite.MockUserRepo.On("Update", mock.Anything, mock.AnythingOfType("*entity.User")).Return(&entity.User{ID: userID}, nil).Once()
 
-	// Ekspektasi: service GetUser dipanggil setelah update untuk mengambil data terbaru
 	updatedUserAfterService := &entity.User{
 		ID:          userID,
 		Email:       updateReq.GetUser().GetEmail(),
@@ -455,7 +420,7 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_InvalidUserIDFormat() {
 	ctx := context.Background()
 	updateReq := &pb.UpdateUserRequest{
 		User: &pb.User{
-			Id:          "invalid-uuid-format", // Invalid UUID
+			Id:          "invalid-uuid-format",
 			Email:       "updated@example.com",
 			Username:    "updateduser",
 			FirstName:   "Updated",
@@ -465,7 +430,6 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_InvalidUserIDFormat() {
 		},
 	}
 
-	// Mock `auth.RequireRole` agar selalu berhasil
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
 		return nil
 	}
@@ -480,7 +444,6 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_InvalidUserIDFormat() {
 	assert.Equal(suite.T(), "invalid user ID format", st.Message())
 	assert.Nil(suite.T(), resp)
 
-	// Pastikan tidak ada interaksi dengan mock repo
 	suite.MockUserRepo.AssertNotCalled(suite.T(), "Update", mock.Anything, mock.Anything)
 	suite.MockUserRepo.AssertNotCalled(suite.T(), "GetByID", mock.Anything, mock.Anything)
 	suite.MockUserRepo.AssertExpectations(suite.T())
@@ -501,13 +464,11 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_ServiceUpdateFails() {
 		},
 	}
 
-	// Mock `auth.RequireRole` agar selalu berhasil
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
 		return nil
 	}
 	defer auth.ResetRequireRole()
 
-	// Ekspektasi: Service UpdateUser mengembalikan error "record not found"
 	suite.MockUserRepo.On("Update", mock.Anything, mock.AnythingOfType("*entity.User")).Return(nil, errors.New("record not found")).Once()
 
 	resp, err := suite.UserHandler.UpdateUser(ctx, updateReq)
@@ -518,7 +479,6 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_ServiceUpdateFails() {
 	assert.Equal(suite.T(), "failed to update user: record not found", st.Message())
 	assert.Nil(suite.T(), resp)
 
-	// Pastikan GetUser tidak dipanggil setelah update gagal
 	suite.MockUserRepo.AssertNotCalled(suite.T(), "GetByID", mock.Anything, mock.Anything)
 	suite.MockUserRepo.AssertExpectations(suite.T())
 }
@@ -528,7 +488,6 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_RetrieveUpdatedUserFails() {
 	userID := uuid.New()
 	userIDStr := userID.String()
 
-	// Mock `auth.RequireRole` agar selalu berhasil
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
 		return nil
 	}
@@ -546,10 +505,8 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_RetrieveUpdatedUserFails() {
 		},
 	}
 
-	// Ekspektasi: Service UpdateUser berhasil
 	suite.MockUserRepo.On("Update", mock.Anything, mock.AnythingOfType("*entity.User")).Return(&entity.User{ID: userID}, nil).Once()
 
-	// Ekspektasi: Service GetUser GAGAL setelah update berhasil (simulasi kasus edge/bug)
 	suite.MockUserRepo.On("GetByID", mock.Anything, userIDStr).Return(nil, errors.New("database error during retrieve")).Once()
 
 	resp, err := suite.UserHandler.UpdateUser(ctx, updateReq)
@@ -563,20 +520,16 @@ func (suite *GrpcHandlerTestSuite) TestUpdateUser_RetrieveUpdatedUserFails() {
 	suite.MockUserRepo.AssertExpectations(suite.T())
 }
 
-// --- Test `DeleteUser` ---
-
 func (suite *GrpcHandlerTestSuite) TestDeleteUser_Success() {
 	ctx := context.Background()
 	userIDToDelete := uuid.New().String()
 	req := &pb.DeleteUserRequest{Id: userIDToDelete}
 
-	// Mock `auth.RequireRole` agar selalu berhasil
 	auth.RequireRole = func(ctx context.Context, allowedRoles []string, methodName string) error {
 		return nil
 	}
 	defer auth.ResetRequireRole()
 
-	// Ekspektasi: service DeleteUser dipanggil dan berhasil
 	suite.MockUserRepo.On("Delete", mock.Anything, userIDToDelete).Return(nil).Once()
 
 	resp, err := suite.UserHandler.DeleteUser(ctx, req)
@@ -590,7 +543,6 @@ func (suite *GrpcHandlerTestSuite) TestDeleteUser_Success() {
 	suite.MockUserRepo.AssertExpectations(suite.T())
 }
 
-// Untuk menjalankan Test Suite Anda
 func TestGrpcHandlerTestSuite(t *testing.T) {
 	suite.Run(t, new(GrpcHandlerTestSuite))
 }
