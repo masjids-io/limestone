@@ -32,7 +32,7 @@ jobs:
         run: go mod download
 
       - name: Run Go unit tests
-        run: go test -v -cover ./test/ -run "Test/TestCreateUser_Success"
+        run: go test -v ./test/user_repository_test.go
 
 #  build:
 #    name: Build

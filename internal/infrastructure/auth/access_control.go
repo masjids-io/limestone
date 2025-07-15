@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -16,20 +15,20 @@ func containsRole(s []string, role string) bool {
 	return false
 }
 
-func RequireRole(ctx context.Context, allowedRoles []string, operationName string) error {
-	userRole, ok := ctx.Value(UserRoleContextKey).(string)
-	fmt.Println(userRole)
-	fmt.Println(ok)
-	if !ok {
-		return status.Errorf(codes.Unauthenticated, "Authentication context missing for operation '%s'", operationName)
-	}
-
-	if !containsRole(allowedRoles, userRole) {
-		return status.Errorf(codes.PermissionDenied, "User with role '%s' does not have permission for operation '%s'. Required roles: %v", userRole, operationName, allowedRoles)
-	}
-
-	return nil
-}
+//func RequireRole(ctx context.Context, allowedRoles []string, operationName string) error {
+//	userRole, ok := ctx.Value(UserRoleContextKey).(string)
+//	fmt.Println(userRole)
+//	fmt.Println(ok)
+//	if !ok {
+//		return status.Errorf(codes.Unauthenticated, "Authentication context missing for operation '%s'", operationName)
+//	}
+//
+//	if !containsRole(allowedRoles, userRole) {
+//		return status.Errorf(codes.PermissionDenied, "User with role '%s' does not have permission for operation '%s'. Required roles: %v", userRole, operationName, allowedRoles)
+//	}
+//
+//	return nil
+//}
 
 func RequireSelfOrRole(ctx context.Context, targetUserID string, allowedRoles []string, operationName string) error {
 	requesterID, idOk := ctx.Value(UserIDContextKey).(string)
