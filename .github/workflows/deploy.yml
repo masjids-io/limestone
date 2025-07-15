@@ -47,17 +47,17 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "DEBUG=${{ secrets.DEBUG }}" >> .env
-          echo "TEST_DB_NAME=${{ secrets.TEST_DB_NAME }}" >> .env
-          echo "DB_HOST=${{ secrets.DB_HOST }}" > .env
-          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
-          echo "ACCESS_SECRET=${{ secrets.ACCESS_SECRET }}" >> .env
-          echo "REFRESH_SECRET=${{ secrets.REFRESH_SECRET }}" >> .env
-          echo "ACCESS_EXPIRATION=${{ secrets.ACCESS_EXPIRATION }}" >> .env
-          echo "REFRESH_EXPIRATION=${{ secrets.REFRESH_EXPIRATION }}" >> .env
+          printf "DEBUG=%s\n" "$(echo "${{ secrets.DEBUG }}" | tr -d '\n')" > .env
+          printf "TEST_DB_NAME=%s\n" "$(echo "${{ secrets.TEST_DB_NAME }}" | tr -d '\n')" >> .env
+          printf "DB_HOST=%s\n" "$(echo "${{ secrets.DB_HOST }}" | tr -d '\n')" >> .env
+          printf "DB_PORT=%s\n" "$(echo "${{ secrets.DB_PORT }}" | tr -d '\n')" >> .env
+          printf "DB_USER=%s\n" "$(echo "${{ secrets.DB_USER }}" | tr -d '\n')" >> .env
+          printf "DB_PASSWORD=%s\n" "$(echo "${{ secrets.DB_PASSWORD }}" | tr -d '\n')" >> .env
+          printf "DB_NAME=%s\n" "$(echo "${{ secrets.DB_NAME }}" | tr -d '\n')" >> .env
+          printf "ACCESS_SECRET=%s\n" "$(echo "${{ secrets.ACCESS_SECRET }}" | tr -d '\n')" >> .env
+          printf "REFRESH_SECRET=%s\n" "$(echo "${{ secrets.REFRESH_SECRET }}" | tr -d '\n')" >> .env
+          printf "ACCESS_EXPIRATION=%s\n" "$(echo "${{ secrets.ACCESS_EXPIRATION }}" | tr -d '\n')" >> .env
+          printf "REFRESH_EXPIRATION=%s\n" "$(echo "${{ secrets.REFRESH_EXPIRATION }}" | tr -d '\n')" >> .env
         working-directory: .
 
       - name: Set up Docker Buildx
