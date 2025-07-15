@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . .
 
-RUN curl -sSL https://github.com/bufbuild/buf/releases/download/v1.30.0/buf-Linux-x86_64 -o /usr/local/bin/buf && \
+RUN curl -sSL https://github.com/bufbuild/buf/releases/download/v1.32.0/buf-Linux-x86_64 -o /usr/local/bin/buf && \
     chmod +x /usr/local/bin/buf
 
 RUN buf generate
