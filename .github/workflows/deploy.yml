@@ -77,7 +77,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:v1.0.0
             ${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
   deploy:
@@ -124,7 +124,7 @@ jobs:
           script: |
             echo "${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}" | docker login ${{ env.DIGITALOCEAN_REGISTRY }} --username ${{ secrets.DIGITALOCEAN_USERNAME }} --password-stdin
 
-            IMAGE_TAG="${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}"
+            IMAGE_TAG="${{ env.DIGITALOCEAN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:v1.0.0"
             CONTAINER_NAME="${{ env.APP_NAME }}-container"
 
             if docker ps -a --format '{{.Names}}' | grep -q "${CONTAINER_NAME}"; then
