@@ -146,7 +146,7 @@ jobs:
             echo "Running new container ${CONTAINER_NAME}..."
             docker run -d \
               --name "${CONTAINER_NAME}" \
-              --restart always \
+              --restart unless-stopped \
               --env-file /tmp/.env \
               -p 80:8080 \
               -p 8081:8081 \
