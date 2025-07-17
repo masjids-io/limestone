@@ -148,8 +148,8 @@ jobs:
               --name "${CONTAINER_NAME}" \
               --restart unless-stopped \
               --env-file /tmp/.env \
-              -p 8080:8080 \
-              -p 8081:8081 \
+              -p 127.0.0.1:8080:8080 \
+              -p 127.0.0.1:8081:8081 \
               "${IMAGE_TAG}"
 
             rm /tmp/.env
