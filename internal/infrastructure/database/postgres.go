@@ -26,7 +26,7 @@ func SetupDatabase() *gorm.DB {
 		password,
 	)
 	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		//Logger: logger.Default.LogMode(logger.Silent),
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
