@@ -27,10 +27,8 @@ func NewMasjidGrpcHandler(svc *services.MasjidService) *MasjidGrpcHandler {
 
 func (h *MasjidGrpcHandler) CreateMasjid(ctx context.Context, req *pb.CreateMasjidRequest) (*pb.StandardMasjidResponse, error) {
 	// --- Start Authorization (Coarse-Grained) ---
-	allowedRolesForAnyUser := []string{
-		string(entity.MASJID_ADMIN),
-	}
-	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
+	allowedRolesForAnyUser := []string{string(entity.MASJID_ADMIN)}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "Create Masjid"); err != nil {
 		return nil, err
 	}
 	// --- End Authorization (Coarse-Grained) ---
