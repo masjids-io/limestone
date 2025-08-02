@@ -20,11 +20,11 @@ In order to run the server, you will need to install and be familiar with the fo
 
 ## Regenerating protos
 
-To regenerate protos, run `cd proto`, then run `buf generate .`. This MUST be done after each proto change.
+To regenerate proto file, run `buf generate .`. This MUST be done after each proto change.
 
 ## Regenerate swagger docs
 
-To regenerate the Swagger YAML, run `cd proto`, then run `buf generate .`. This MUST be done after each proto change.
+To regenerate the Swagger YAML, run `buf mod update`, then run `buf generate .`. This MUST be done after each proto change.
 
 To create the `index.html`` file from the YAML file, first install redoc-cli via:
 
@@ -38,7 +38,7 @@ Then, run:
 ## Running the server
 To run the server, make sure the relevant environment variables are set; then, run the command:
 
-`go run server.go`
+`go run cmd/main.go`
 
 from the root directory. This exposes both an HTTP server and a gRPC server. You can make calls to the gRPC server via [grpcurl](https://github.com/fullstorydev/grpcurl). But, for end-to-end testing, it's just easier to call the HTTP server, with any HTTP client (Postman or curl).
 
@@ -47,16 +47,16 @@ from the root directory. This exposes both an HTTP server and a gRPC server. You
 ### Implemented
 
 - User service
+- Auth service (JWT authentication)
 - Event service
 - Masjid Service
 - Adhan service
-- gRPC Integration tests
+- unit test for implemented services
 
 ### TODOs
 
 - Nikkah Service API
 - Reverts Service API
-- JWT authentication
 - HTTP integration tests
 - Docker-ify server
 - Setup github workflows to test and check for formatting, and push to prod

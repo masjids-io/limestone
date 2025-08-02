@@ -1,0 +1,249 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
+
+service NikkahIoService {
+
+  rpc CreateNikkahProfile (CreateNikkahProfileRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/profile"
+      body: "profile"
+    };
+    option (google.api.method_signature) = "profile";
+  }
+
+  rpc GetSelfNikkahProfile (GetSelfNikkahProfileRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      get: "/v1/nikkah/profile"
+    };
+  }
+
+  rpc UpdateSelfNikkahProfile (UpdateSelfNikkahProfileRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      put: "/v1/nikkah/profile/{profile_id}"
+      body: "profile"
+    };
+  }
+
+
+  rpc ListNikkahProfiles (ListNikkahProfilesRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      get: "/v1/nikkah/profiles"
+    };
+  }
+
+  rpc GetNikkahProfile (GetNikkahProfileRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      get: "/v1/nikkah/profile/{profile_id}"
+    };
+  }
+
+
+  rpc InitiateNikkahLike (InitiateNikkahLikeRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/likes"
+      body: "like"
+    };
+    option (google.api.method_signature) = "like";
+  }
+
+  rpc GetNikkahLike (GetNikkahLikeRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      get: "/v1/nikkah/likes/{like_id}"
+    };
+  }
+
+  rpc CancelNikkahLike (CancelNikkahLikeRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/likes/{like_id}/cancel"
+    };
+  }
+
+  rpc CompleteNikkahLike (CompleteNikkahLikeRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/likes/{like_id}/complete"
+    };
+  }
+
+  rpc AcceptNikkahMatchInvite (AcceptNikkahMatchInviteRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/match/{match_id}/accept"
+    };
+  }
+
+  rpc GetNikkahMatch (GetNikkahMatchRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      get: "/v1/nikkah/match/{match_id}"
+    };
+  }
+
+  rpc RejectNikkahMatchInvite (RejectNikkahMatchInviteRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/match/{match_id}/reject"
+    };
+  }
+
+  rpc EndNikkahMatch (EndNikkahMatchRequest) returns (StandardNikkahResponse) {
+    option (google.api.http) = {
+      post: "/v1/nikkah/match/{match_id}/end"
+    };
+  }
+}
+
+message StandardNikkahResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    NikkahProfile nikkah_profile = 4;
+    NikkahLike like = 5;
+    NikkahMatch match = 6;
+    ListNikkahProfilesResponse list_profiles_response = 7;
+    NikkahLike single_like = 8;
+    CompleteNikkahLikeResponse complete_nikah_like = 9;
+    NikkahMatch nikkah_match = 10;
+  }
+}
+
+
+message NikkahProfile {
+  string id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string user_id = 2;
+  string name = 3;
+  enum Gender {
+    GENDER_UNSPECIFIED = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+  Gender gender = 4;
+
+  message BirthDate {
+    int32 year = 1;
+    enum Month {
+      MONTH_UNSPECIFIED = 0;
+      JANUARY = 1;
+      FEBRUARY = 2;
+      MARCH = 3;
+      APRIL = 4;
+      MAY = 5;
+      JUNE = 6;
+      JULY = 7;
+      AUGUST = 8;
+      SEPTEMBER = 9;
+      OCTOBER = 10;
+      NOVEMBER = 11;
+      DECEMBER = 12;
+    }
+    Month month = 2;
+    int32 day = 3;
+  }
+
+  BirthDate birth_date = 5;
+  google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.protobuf.Timestamp update_time = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+message NikkahLike {
+  string like_id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string liker_profile_id = 2;
+  string liked_profile_id = 3;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    INITIATED = 1;
+    COMPLETED = 2;
+    CANCELLED = 3;
+  }
+  Status status = 4;
+  google.protobuf.Timestamp create_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.protobuf.Timestamp update_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+message NikkahMatch {
+  string match_id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+  string initiator_profile_id = 2;
+  string receiver_profile_id = 3;
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    INITIATED = 1;
+    ACCEPTED = 2;
+    REJECTED = 3;
+    ENDED = 4;
+  }
+  Status status = 4;
+  google.protobuf.Timestamp create_time = 5 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.protobuf.Timestamp update_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+message CreateNikkahProfileRequest {
+  NikkahProfile profile = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetSelfNikkahProfileRequest {}
+
+message UpdateSelfNikkahProfileRequest {
+  string profile_id = 1;
+  NikkahProfile profile = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ListNikkahProfilesRequest {
+  int32 start = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  optional string name = 4;
+  optional string gender = 5;
+}
+
+message ListNikkahProfilesResponse {
+  repeated NikkahProfile profiles = 1;
+  int32 total_count = 2;
+  int32 current_page = 3;
+  int32 total_pages = 4;
+}
+
+message GetNikkahProfileRequest {
+  string profile_id = 1;
+}
+
+message InitiateNikkahLikeRequest {
+  NikkahLike like = 1;
+}
+
+message GetNikkahLikeRequest {
+  string like_id = 1;
+}
+
+message CancelNikkahLikeRequest {
+  string like_id = 1;
+}
+
+message CompleteNikkahLikeRequest {
+  string like_id = 1;
+}
+
+message CompleteNikkahLikeResponse {
+  NikkahLike like = 1;
+  NikkahMatch match = 2;
+}
+
+message AcceptNikkahMatchInviteRequest {
+  string match_id = 1;
+}
+
+message GetNikkahMatchRequest {
+  string match_id = 1;
+}
+
+message RejectNikkahMatchInviteRequest {
+  string match_id = 1;
+}
+
+message EndNikkahMatchRequest {
+  string match_id = 1;
+}

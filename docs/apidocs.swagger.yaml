@@ -4,6 +4,7 @@ info:
   version: version not set
 tags:
   - name: AdhanService
+  - name: AuthService
   - name: EventService
   - name: MasjidService
   - name: NikkahIoService
@@ -14,15 +15,98 @@ consumes:
 produces:
   - application/json
 paths:
-  /users/authenticate:
+  /v1/adhan:
     post:
-      summary: Authenticates a user based on their username or email and password
-      operationId: UserService_AuthenticateUser
+      operationId: AdhanService_CreateAdhan
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneAuthenticateUserResponse'
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: adhanFile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+            required:
+              - adhanFile
+      tags:
+        - AdhanService
+  /v1/adhan/{id}:
+    get:
+      operationId: AdhanService_GetAdhanById
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanService
+    delete:
+      operationId: AdhanService_DeleteAdhan
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanService
+    patch:
+      operationId: AdhanService_UpdateAdhan
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: adhanFile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneAdhanFile'
+            required:
+              - adhanFile
+      tags:
+        - AdhanService
+  /v1/auth/login:
+    post:
+      operationId: AuthService_AuthenticateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardAuthResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -34,16 +118,15 @@ paths:
           schema:
             $ref: '#/definitions/limestoneAuthenticateUserRequest'
       tags:
-        - UserService
-  /users/refresh_token:
+        - AuthService
+  /v1/auth/refresh_token:
     post:
-      summary: Refreshes an existing authentication token
-      operationId: UserService_RefreshToken
+      operationId: AuthService_RefreshToken
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneRefreshTokenResponse'
+            $ref: '#/definitions/limestoneStandardAuthResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -55,75 +138,44 @@ paths:
           schema:
             $ref: '#/definitions/limestoneRefreshTokenRequest'
       tags:
-        - UserService
-  /v1/adhan_files:
-    post:
-      summary: Creates an adhan audio file in the database for a masjid.
-      operationId: AdhanService_CreateAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneAdhanFile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: adhanFile
-          description: The adhan file to create.
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneAdhanFile'
-            required:
-              - adhanFile
-      tags:
-        - AdhanService
-  /v1/events:
+        - AuthService
+  /v1/event:
     get:
-      summary: Returns a paginated list of events from the database.
       operationId: EventService_ListEvents
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneListEventsResponse'
+            $ref: '#/definitions/limestoneStandardEventResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: pageSize
-          description: |-
-            The maximum number of events to return. Fewer events might be returned.
-            Default value is 25.
           in: query
           required: false
           type: integer
           format: int32
         - name: pageToken
-          description: "A page token from a previous `ListEvents` call. If this is provided, then the \nnext page will be returned."
           in: query
           required: false
           type: string
       tags:
         - EventService
     post:
-      summary: Creates a event in the database.
       operationId: EventService_CreateEvent
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneEvent'
+            $ref: '#/definitions/limestoneStandardEventResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: event
-          description: The event to create in the database.
           in: body
           required: true
           schema:
@@ -132,50 +184,82 @@ paths:
               - event
       tags:
         - EventService
-  /v1/masjids:
+  /v1/event/{id}:
     get:
-      summary: Returns a paginated list of masjids from the database.
-      operationId: MasjidService_ListMasjids
+      operationId: EventService_GetEvent
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneListMasjidsResponse'
+            $ref: '#/definitions/limestoneStandardEventResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
-        - name: pageSize
-          description: |-
-            The maximum number of masjids to return. Fewer masjids might be returned.
-            Default value is 25.
-          in: query
-          required: false
-          type: integer
-          format: int32
-        - name: pageToken
-          description: "A page token from a previous `ListMasjids` call. If this is provided, then the \nnext page will be returned."
-          in: query
-          required: false
+        - name: id
+          in: path
+          required: true
           type: string
       tags:
-        - MasjidService
+        - EventService
+    delete:
+      operationId: EventService_DeleteEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - EventService
+    patch:
+      operationId: EventService_UpdateEvent
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardEventResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: event
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneEvent'
+            required:
+              - event
+      tags:
+        - EventService
+  /v1/masjid:
     post:
-      summary: Creates a masjid in the database.
       operationId: MasjidService_CreateMasjid
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneMasjid'
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: masjid
-          description: The masjid to create in the database.
           in: body
           required: true
           schema:
@@ -184,22 +268,116 @@ paths:
               - masjid
       tags:
         - MasjidService
+    patch:
+      operationId: MasjidService_UpdateMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: masjid
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneMasjid'
+            required:
+              - masjid
+      tags:
+        - MasjidService
+  /v1/masjid/{id}:
+    get:
+      operationId: MasjidService_GetMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - MasjidService
+    delete:
+      operationId: MasjidService_DeleteMasjid
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - MasjidService
+  /v1/masjids:
+    get:
+      operationId: MasjidService_ListMasjids
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardMasjidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: start
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          type: string
+        - name: location
+          in: query
+          required: false
+          type: string
+      tags:
+        - MasjidService
   /v1/nikkah/likes:
     post:
-      summary: "Initiates a like process to another profile.\nThis does not send a like request to another profile. It is used when a user\nis interested in the bio and details of a profile, and wants to see the \npictures associated with the profile, before making a decision to send \na match request."
       operationId: NikkahIoService_InitiateNikkahLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahLike'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: like
-          description: The like to create in the database.
           in: body
           required: true
           schema:
@@ -208,20 +386,18 @@ paths:
         - NikkahIoService
   /v1/nikkah/likes/{likeId}:
     get:
-      summary: Gets a like with the given id.
       operationId: NikkahIoService_GetNikkahLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahLike'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: likeId
-          description: The ID of the like to retrieve.
           in: path
           required: true
           type: string
@@ -229,23 +405,18 @@ paths:
         - NikkahIoService
   /v1/nikkah/likes/{likeId}/cancel:
     post:
-      summary: |-
-        Cancels a like process to another profile.
-        This cancels a like process to another profile, if a user finds that
-        the user is not to their liking after initiating a like.
       operationId: NikkahIoService_CancelNikkahLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahLike'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: likeId
-          description: The ID of the like process to cancel.
           in: path
           required: true
           type: string
@@ -253,24 +424,18 @@ paths:
         - NikkahIoService
   /v1/nikkah/likes/{likeId}/complete:
     post:
-      summary: |-
-        Completes a like process to another profile.
-        This completes a like process to another profile, if a user finds that
-        the user is to their liking after initiating a like. This notifies
-        the other user of this. Creates a match resource in the database.
       operationId: NikkahIoService_CompleteNikkahLike
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneCompleteNikkahLikeResponse'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: likeId
-          description: The ID of the like to complete.
           in: path
           required: true
           type: string
@@ -278,20 +443,18 @@ paths:
         - NikkahIoService
   /v1/nikkah/match/{matchId}:
     get:
-      summary: Gets a match with the given id.
       operationId: NikkahIoService_GetNikkahMatch
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahMatch'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match to retrieve.
           in: path
           required: true
           type: string
@@ -299,23 +462,18 @@ paths:
         - NikkahIoService
   /v1/nikkah/match/{matchId}/accept:
     post:
-      summary: |-
-        Accepts a received match request from a user.
-        This then notifies the other user that the match is accepted, and initiates a chat
-        between both users.
       operationId: NikkahIoService_AcceptNikkahMatchInvite
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahMatch'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match invite to accept.
           in: path
           required: true
           type: string
@@ -323,20 +481,18 @@ paths:
         - NikkahIoService
   /v1/nikkah/match/{matchId}/end:
     post:
-      summary: Ends a currently accepted match.
       operationId: NikkahIoService_EndNikkahMatch
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahMatch'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match invite to end.
           in: path
           required: true
           type: string
@@ -344,22 +500,18 @@ paths:
         - NikkahIoService
   /v1/nikkah/match/{matchId}/reject:
     post:
-      summary: |-
-        Rejects a received match request.
-        This then silently notifies the other user of the rejection.
       operationId: NikkahIoService_RejectNikkahMatchInvite
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahMatch'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match invite to reject.
           in: path
           required: true
           type: string
@@ -367,84 +519,31 @@ paths:
         - NikkahIoService
   /v1/nikkah/profile:
     get:
-      summary: Retrieves the profile of the authenticated user.
       operationId: NikkahIoService_GetSelfNikkahProfile
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahProfile'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
-      tags:
-        - NikkahIoService
-    put:
-      summary: Updates the profile of the authenticated user.
-      operationId: NikkahIoService_UpdateSelfNikkahProfile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneNikkahProfile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: body
-          description: UpdateSelfNikkahProfileRequest represents a request to update the authenticated user's profile.
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneUpdateSelfNikkahProfileRequest'
-      tags:
-        - NikkahIoService
-  /v1/nikkah/profiles:
-    get:
-      summary: Lists profiles based on specified criteria.
-      operationId: NikkahIoService_ListNikkahProfiles
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneListNikkahProfilesResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: pageSize
-          description: |-
-            The maximum number of profiles to return. Fewer profiles might be returned.
-            Default value is 25.
-          in: query
-          required: false
-          type: integer
-          format: int32
-        - name: pageToken
-          description: "A page token from a previous `ListNikkahProfiles` call. If this is provided, then the \nnext page will be returned."
-          in: query
-          required: false
-          type: string
       tags:
         - NikkahIoService
     post:
-      summary: Creates a marriage profile for the authenticated user.
       operationId: NikkahIoService_CreateNikkahProfile
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahProfile'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: profile
-          description: The profile to create in the database.
           in: body
           required: true
           schema:
@@ -453,163 +552,308 @@ paths:
               - profile
       tags:
         - NikkahIoService
-  /v1/nikkah/profiles/{profileId}:
+  /v1/nikkah/profile/{profileId}:
     get:
-      summary: Gets the details of a specific profile.
       operationId: NikkahIoService_GetNikkahProfile
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneNikkahProfile'
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: profileId
-          description: The ID of the profile to retrieve.
           in: path
           required: true
           type: string
       tags:
         - NikkahIoService
-  /v1/reverts/match/{matchId}:
+    put:
+      operationId: NikkahIoService_UpdateSelfNikkahProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          type: string
+        - name: profile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneNikkahProfile'
+            required:
+              - profile
+      tags:
+        - NikkahIoService
+  /v1/nikkah/profiles:
     get:
-      summary: Gets a match with the given id.
+      operationId: NikkahIoService_ListNikkahProfiles
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardNikkahResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: start
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          type: string
+        - name: gender
+          in: query
+          required: false
+          type: string
+      tags:
+        - NikkahIoService
+  /v1/revert/match/{matchId}:
+    get:
       operationId: RevertsIoService_GetRevertMatch
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneRevertMatch'
+            $ref: '#/definitions/limestoneStandardRevertResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match to retrieve.
           in: path
           required: true
           type: string
       tags:
         - RevertsIoService
-  /v1/reverts/match/{matchId}/accept:
+  /v1/revert/match/{matchId}/accept:
     post:
-      summary: |-
-        Accepts a received match request from a user.
-        This then notifies the other user that the match is accepted, and initiates a chat
-        between both users.
       operationId: RevertsIoService_AcceptRevertMatchInvite
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneRevertMatch'
+            $ref: '#/definitions/limestoneStandardRevertResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match invite to accept.
           in: path
           required: true
           type: string
       tags:
         - RevertsIoService
-  /v1/reverts/match/{matchId}/end:
+  /v1/revert/match/{matchId}/end:
     post:
-      summary: Ends a currently accepted match.
       operationId: RevertsIoService_EndRevertMatch
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneRevertMatch'
+            $ref: '#/definitions/limestoneStandardRevertResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match invite to end.
           in: path
           required: true
           type: string
       tags:
         - RevertsIoService
-  /v1/reverts/match/{matchId}/reject:
+  /v1/revert/match/{matchId}/reject:
     post:
-      summary: |-
-        Rejects a received match request.
-        This then silently notifies the other user of the rejection.
       operationId: RevertsIoService_RejectRevertMatchInvite
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneRevertMatch'
+            $ref: '#/definitions/limestoneStandardRevertResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: matchId
-          description: The ID of the match invite to reject.
           in: path
           required: true
           type: string
       tags:
         - RevertsIoService
-  /v1/reverts/match/{receiverProfileId}:
+  /v1/revert/match/{receiverProfileId}:
     post:
-      summary: |-
-        Accepts a received match request from a user.
-        This then notifies the other user that the match is accepted, and initiates a chat
-        between both users.
       operationId: RevertsIoService_CreateRevertMatchInvite
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneRevertMatch'
+            $ref: '#/definitions/limestoneStandardRevertResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: receiverProfileId
-          description: The ID of the profile receiving the match invite.
           in: path
           required: true
           type: string
       tags:
         - RevertsIoService
-  /v1/reverts/profile:
+  /v1/revert/profile:
     get:
-      summary: Retrieves the profile of the authenticated user.
       operationId: RevertsIoService_GetSelfRevertProfile
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneRevertProfile'
+            $ref: '#/definitions/limestoneStandardRevertResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       tags:
         - RevertsIoService
+    post:
+      operationId: RevertsIoService_CreateRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profile
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneRevertProfile'
+            required:
+              - profile
+      tags:
+        - RevertsIoService
+  /v1/revert/profile/{profileId}:
+    get:
+      operationId: RevertsIoService_GetRevertProfile
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          type: string
+      tags:
+        - RevertsIoService
     put:
-      summary: Updates the profile of the authenticated user.
       operationId: RevertsIoService_UpdateSelfRevertProfile
       responses:
         "200":
           description: A successful response.
           schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          type: string
+        - name: profile
+          in: body
+          required: true
+          schema:
             $ref: '#/definitions/limestoneRevertProfile'
+            required:
+              - profile
+      tags:
+        - RevertsIoService
+  /v1/revert/profiles:
+    get:
+      operationId: RevertsIoService_ListRevertProfiles
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardRevertResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: start
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          required: false
+          type: string
+        - name: gender
+          in: query
+          required: false
+          type: string
+      tags:
+        - RevertsIoService
+  /v1/users:
+    post:
+      operationId: UserService_CreateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneStandardUserResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -619,545 +863,65 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/limestoneUpdateSelfRevertProfileRequest'
+            $ref: '#/definitions/limestoneCreateUserRequest'
       tags:
-        - RevertsIoService
-  /v1/reverts/profiles:
-    get:
-      summary: Lists profiles based on specified criteria.
-      operationId: RevertsIoService_ListRevertProfiles
+        - UserService
+    patch:
+      operationId: UserService_UpdateUser
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneListRevertProfilesResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: pageSize
-          description: |-
-            The maximum number of profiles to return. Fewer profiles might be returned.
-            Default value is 25.
-          in: query
-          required: false
-          type: integer
-          format: int32
-        - name: pageToken
-          description: "A page token from a previous `ListRevertProfiles` call. If this is provided, then the \nnext page will be returned."
-          in: query
-          required: false
-          type: string
-      tags:
-        - RevertsIoService
-    post:
-      summary: Creates a reverts matching profile for the authenticated user.
-      operationId: RevertsIoService_CreateRevertProfile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneRevertProfile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: profile
-          description: The profile to create in the database.
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/limestoneRevertProfile'
-            required:
-              - profile
-      tags:
-        - RevertsIoService
-  /v1/reverts/profiles/{profileId}:
-    get:
-      summary: Gets the details of a specific profile.
-      operationId: RevertsIoService_GetRevertProfile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneRevertProfile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: profileId
-          description: The ID of the profile to retrieve.
-          in: path
-          required: true
-          type: string
-      tags:
-        - RevertsIoService
-  /v1/users:
-    post:
-      summary: Creates the given User with the given password.
-      operationId: UserService_CreateUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneUser'
+            $ref: '#/definitions/limestoneStandardUserResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: user
-          description: The user to create.
           in: body
           required: true
           schema:
             $ref: '#/definitions/limestoneUser'
             required:
               - user
-        - name: password
-          description: "The password for the user. This password is hashed before being\nstored in the database. \nThe password must be at least 8 characters."
-          in: query
-          required: true
-          type: string
       tags:
         - UserService
   /v1/users/{id}:
     get:
-      summary: Gets a User from the database and tokens provided the auth token is valid.
       operationId: UserService_GetUser
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneGetUserResponse'
+            $ref: '#/definitions/limestoneStandardUserResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
-          description: The id of the user to get.
           in: path
           required: true
           type: string
       tags:
         - UserService
-  /v1/{adhanFile.id}:
-    patch:
-      summary: Updates an adhan audio file in the database for a masjid.
-      operationId: AdhanService_UpdateAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneAdhanFile'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: adhanFile.id
-          description: The unique id associated with this file.
-          in: path
-          required: true
-          type: string
-          pattern: adhanFiles/[^/]+
-        - name: adhanFile
-          description: |-
-            The adhan file to update to. The file associated with the id
-            will be updated to this given adhan file.
-
-            The adhan file's `id` field is used to identify the book to update.
-            Format: adhan_files/{adhan_file}
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              masjidId:
-                type: string
-                description: The masjid id associated with this file.
-              file:
-                type: string
-                format: byte
-                description: "The bytes of the audio file. This should be in LINEAR16 format at \na sample rate of 16 kHz."
-              createTime:
-                type: string
-                format: date-time
-                description: The create time of the file. This field is output only.
-              updateTime:
-                type: string
-                format: date-time
-                description: The update time of the file. This field is output only.
-            description: |-
-              The adhan file's `id` field is used to identify the book to update.
-              Format: adhan_files/{adhan_file}
-            title: |-
-              The adhan file to update to. The file associated with the id
-              will be updated to this given adhan file.
-      tags:
-        - AdhanService
-  /v1/{event.id}:
-    patch:
-      summary: |-
-        Updates a event in the database with the corresponding id to the given
-        event (i.e. all fields are overwritten).
-      operationId: EventService_UpdateEvent
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneEvent'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: event.id
-          description: The unique id associated with the event.
-          in: path
-          required: true
-          type: string
-          pattern: events/[^/]+
-        - name: event
-          description: |-
-            The event to update in the database.
-
-            The event's `id` field is used to identify the book to update.
-            Format: events/{event}
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              organizationId:
-                type: string
-                description: The id of the organization which owns the event.
-              name:
-                type: string
-                description: The name of the event.
-              description:
-                type: string
-                description: The description of the event.
-              startTime:
-                type: string
-                format: date-time
-                description: The start time of the event.
-              endTime:
-                type: string
-                format: date-time
-                description: The end time of the event.
-              genderRestriction:
-                $ref: '#/definitions/EventGenderRestriction'
-                description: The gender restriction associated with the event.
-              types:
-                type: array
-                items:
-                  $ref: '#/definitions/EventEventType'
-                description: The different event types associated with this event.
-              isPaid:
-                type: boolean
-                description: Whether or not the event is a paid event.
-              requiresRsvp:
-                type: boolean
-                description: Whether or not the event requires RSVP.
-              maxParticipants:
-                type: integer
-                format: int32
-                description: |-
-                  The maximum number of participants for this event. If set to -1, then there
-                  is no limit on the number of participants.
-              livestreamLink:
-                type: string
-                description: |-
-                  The livestream link for this event. If empty, then there is no livestream
-                  associated with the event.
-              createTime:
-                type: string
-                format: date-time
-                description: The create time of the event. This field is output only.
-              updateTime:
-                type: string
-                format: date-time
-                description: The update time of the event. This field is output only.
-            description: |-
-              The event's `id` field is used to identify the book to update.
-              Format: events/{event}
-            title: The event to update in the database.
-      tags:
-        - EventService
-  /v1/{id_1}:
-    get:
-      summary: Gets a event from the database with the given id.
-      operationId: EventService_GetEvent
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneEvent'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: id_1
-          description: The id of the event that should be returned.
-          in: path
-          required: true
-          type: string
-          pattern: events/[^/]+
-      tags:
-        - EventService
     delete:
-      summary: Deletes a event from the database with the given id.
-      operationId: EventService_DeleteEvent
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteEventResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: id_1
-          description: The id of the event that should be deleted.
-          in: path
-          required: true
-          type: string
-          pattern: events/[^/]+
-      tags:
-        - EventService
-  /v1/{id_2}:
-    get:
-      summary: Gets a masjid from the database with the given id.
-      operationId: MasjidService_GetMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneMasjid'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: id_2
-          description: The id of the masjid that should be returned.
-          in: path
-          required: true
-          type: string
-          pattern: masjids/[^/]+
-      tags:
-        - MasjidService
-    delete:
-      summary: Deletes a masjid from the database with the given id.
-      operationId: MasjidService_DeleteMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteMasjidResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: id_2
-          description: The id of the masjid that should be deleted.
-          in: path
-          required: true
-          type: string
-          pattern: masjids/[^/]+
-      tags:
-        - MasjidService
-  /v1/{id_3}:
-    delete:
-      summary: Deletes a User from the database provided the auth token is valid.
       operationId: UserService_DeleteUser
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/limestoneDeleteUserResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: id_3
-          description: The id of the user to delete.
-          in: path
-          required: true
-          type: string
-          pattern: users/[^/]+
-      tags:
-        - UserService
-  /v1/{id}:
-    get:
-      summary: Get an adhan audio file from the database for a masjid.
-      operationId: AdhanService_GetAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneAdhanFile'
+            $ref: '#/definitions/limestoneStandardUserResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
         - name: id
-          description: The adhan file id to get.
           in: path
           required: true
           type: string
-          pattern: adhanFiles/[^/]+
-      tags:
-        - AdhanService
-    delete:
-      summary: Deletes an adhan audio from the database for a masjid.
-      operationId: AdhanService_DeleteAdhanFile
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneDeleteAdhanFileResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: id
-          description: The adhan file id to delete.
-          in: path
-          required: true
-          type: string
-          pattern: adhanFiles/[^/]+
-      tags:
-        - AdhanService
-  /v1/{masjid.id}:
-    patch:
-      summary: |-
-        Updates a masjid in the database with the corresponding id to the given
-        masjid (i.e. all fields are overwritten).
-      operationId: MasjidService_UpdateMasjid
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneMasjid'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: masjid.id
-          description: The unique id of the masjid. This field is output only.
-          in: path
-          required: true
-          type: string
-          pattern: masjids/[^/]+
-        - name: masjid
-          description: |-
-            The masjid to update in the database.
-
-            The masjid's `id` field is used to identify the book to update.
-            Format: masjids/{masjid}
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-                description: The name of the masjid.
-              isVerified:
-                type: boolean
-                description: Whether or not the masjid has been verified.
-              address:
-                $ref: '#/definitions/MasjidAddress'
-                description: The main address of the masjid.
-              phoneNumber:
-                $ref: '#/definitions/MasjidPhoneNumber'
-                description: The main phone number to contact for the masjid.
-              prayerConfig:
-                $ref: '#/definitions/limestonePrayerTimesConfiguration'
-                description: The configuration to calculate prayer times for the masjid.
-              createTime:
-                type: string
-                format: date-time
-                description: The create time of the Masjid. This field is output only.
-              updateTime:
-                type: string
-                format: date-time
-                description: The update time of the Masjid. This field is output only.
-            description: |-
-              The masjid's `id` field is used to identify the book to update.
-              Format: masjids/{masjid}
-            title: The masjid to update in the database.
-      tags:
-        - MasjidService
-  /v1/{user.id}:
-    patch:
-      summary: Updates a User to the given User in the request provided the auth token is valid.
-      operationId: UserService_UpdateUser
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/limestoneUser'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/googlerpcStatus'
-      parameters:
-        - name: user.id
-          description: The ID of the user. This field is output only.
-          in: path
-          required: true
-          type: string
-          pattern: users/[^/]+
-        - name: user
-          description: The updated user proto.
-          in: body
-          required: true
-          schema:
-            type: object
-            properties:
-              email:
-                type: string
-                description: The email of the user. This field is required and must be unique.
-              username:
-                type: string
-                description: The username of the user. This field is required and must be unique.
-              isEmailVerified:
-                type: boolean
-                description: Whether or not the email of the user was verified.
-              firstName:
-                type: string
-                description: The first name of the user.
-              lastName:
-                type: string
-                description: The last name of the user.
-              phoneNumber:
-                type: string
-                description: The phone number associated with the user.
-              gender:
-                $ref: '#/definitions/limestoneUserGender'
-              createTime:
-                type: string
-                format: date-time
-                description: The create time of the user. This field is output only.
-              updateTime:
-                type: string
-                format: date-time
-                description: The update time of the user. This field is output only.
-            title: The updated user proto.
       tags:
         - UserService
 definitions:
@@ -1174,18 +938,6 @@ definitions:
       - MATRIMONIAL
       - FUNERAL
     default: WORSHIP
-    description: |-
-      Specifies the different event types an event can be specified as.
-
-       - WORSHIP: The event is a worship event such as Eid salah.
-       - EDUCATIONAL: The event is an educational event such as a class or lecture.
-       - COMMUNITY: The event is a social community event.
-       - ATHLETIC: The event is an athletic event such as fitness class or a sports game.
-       - FUNDRAISING: The event is related to fundraising.
-       - YOUTH: The event is relevant to the youth.
-       - CHILDREN_SPECIFIC: The event is specific to children.
-       - MATRIMONIAL: The event is related to marriage.
-       - FUNERAL: The event is a funeral.
   EventGenderRestriction:
     type: string
     enum:
@@ -1193,68 +945,36 @@ definitions:
       - MALE_ONLY
       - FEMALE_ONLY
     default: NO_RESTRICTION
-    description: |-
-      Specifies the gender restriction associated with the event.
-
-       - NO_RESTRICTION: No restriction on gender for event, aka co-ed.
-       - MALE_ONLY: Male only event.
-       - FEMALE_ONLY: Female only event.
   MasjidAddress:
     type: object
     properties:
       addressLine1:
         type: string
-        description: The street address of the masjid.
       addressLine2:
         type: string
-        description: Additional address information for the masjid, such as suite number, floor, etc.
       zoneCode:
         type: string
-        description: |-
-          The code of the administrative divisions in a country.
-          See https://en.wikipedia.org/wiki/List_of_administrative_divisions_by_country.Address
-          This field is what should be used for things like states or provinces.
       postalCode:
         type: string
-        description: The postal code of the masjid.
       city:
         type: string
-        description: The city where the masjid is located.
       countryCode:
         type: string
-        description: |-
-          A valid ISO 3166-1 country code. The full list can be found here: https://www.iban.com/country-codes.
-          Consider only the Alpha-2 code column.
-    title: |-
-      Defines a postal address for the masjid. This message can be used across countries.
-      The fields were inspired by this blog post: https://shopify.engineering/handling-addresses-from-all-around-the-world
   MasjidPhoneNumber:
     type: object
     properties:
       countryCode:
         type: string
-        description: |-
-          The country code corresponding to the phone number.
-          Country codes are defined by ITU-T standards E.123 and E.164.
-          See https://en.wikipedia.org/wiki/List_of_country_calling_codes.
       number:
         type: string
-        description: The phone number of the masjid.
       extension:
         type: string
-        description: A extension for the number, if required.
-    description: Defines the main phone number for the masjid.
   PrayerTimesConfigurationAsrJuristicMethod:
     type: string
     enum:
       - SHAFI_HANBALI_MALIKI
       - HANAFI
     default: SHAFI_HANBALI_MALIKI
-    description: |-
-      The Juristic method to use for calculating Asr prayer times.
-
-       - SHAFI_HANBALI_MALIKI: Use the Shafi/Hanbali/Maliki method to calculate Asr timings.
-       - HANAFI: Use the Hanafi method to calculate Asr timings.
   PrayerTimesConfigurationCalculationMethod:
     type: string
     enum:
@@ -1271,7 +991,6 @@ definitions:
       - SINGAPORE
       - UOIF
     default: OTHER
-    description: "Defines the calculation method to use. If this field is set (excluding OTHER), then the Fajr \nand Isha angle fields are automatically set.\n\n - OTHER: A custom calculation method.\n - MUSLIM_WORLD_LEAGUE: Muslim World League\nUses Fajr angle of 18 and an Isha angle of 17\n - EGYPTIAN: Egyptian General Authority of Survey\nUses Fajr angle of 19.5 and an Isha angle of 17.5\n - KARACHI: University of Islamic Sciences, Karachi\nUses Fajr angle of 18 and an Isha angle of 18\n - UMM_AL_QURA: Umm al-Qura University, Makkah\nUses a Fajr angle of 18.5 and an Isha angle of 90. Note: You should add a +30 minute custom\nadjustment of Isha during Ramadan.\n - DUBAI: The Gulf Region\nUses Fajr and Isha angles of 18.2 degrees.\n - MOON_SIGHTING_COMMITTEE: Moonsighting Committee\nUses a Fajr angle of 18 and an Isha angle of 18. Also uses seasonal adjustment values.\n - NORTH_AMERICA: Referred to as the ISNA method\nThis method is included for completeness, but is not recommended.\nUses a Fajr angle of 15 and an Isha angle of 15.\n - KUWAIT: Kuwait\nUses a Fajr angle of 18 and an Isha angle of 17.5\n - QATAR: Qatar\nModified version of Umm al-Qura that uses a Fajr angle of 18.\n - SINGAPORE: Singapore\nUses a Fajr angle of 20 and an Isha angle of 18\n - UOIF: UOIF\nUses a Fajr angle of 12 and an Isha angle of 12"
   PrayerTimesConfigurationHighLatitudeRule:
     type: string
     enum:
@@ -1280,39 +999,24 @@ definitions:
       - SEVENTH_OF_THE_NIGHT
       - TWILIGHT_ANGLE
     default: NO_HIGH_LATITUDE_RULE
-    description: |-
-      The high latitude rule for calculating Fajr and Isha prayers.
-
-       - MIDDLE_OF_THE_NIGHT: Fajr will never be earlier than the middle of the night, and Isha will never be later than
-      the middle of the night.
-       - SEVENTH_OF_THE_NIGHT: Fajr will never be earlier than the beginning of the last seventh of the night, and Isha will
-      never be later than the end of the first seventh of the night.
-       - TWILIGHT_ANGLE: Similar to SEVENTH_OF_THE_NIGHT, but instead of 1/7th, the fraction of the night used
-      is fajr_angle / 60 and isha_angle / 60.
   PrayerTimesConfigurationPrayerAdjustments:
     type: object
     properties:
       fajrAdjustment:
         type: integer
         format: int32
-        description: Adjustment offset for Fajr in minutes. Value can be negative.
       dhuhrAdjustment:
         type: integer
         format: int32
-        description: Adjustment offset for Dhuhr in minutes. Value can be negative.
       asrAdjustment:
         type: integer
         format: int32
-        description: Adjustment offset for Asr in minutes. Value can be negative.
       maghribAdjustment:
         type: integer
         format: int32
-        description: Adjustment offset for Maghrib in minutes. Value can be negative.
       ishaAdjustment:
         type: integer
         format: int32
-        description: Adjustment offset for Isha in minutes. Value can be negative.
-    description: "The manual adjustments to apply to the prayer timings. The value that each field is set to is \nthe offset which will be added to the calculated time to obtain the final prayer time."
   googlerpcStatus:
     type: object
     properties:
@@ -1331,22 +1035,17 @@ definitions:
     properties:
       id:
         type: string
-        description: The unique id associated with this file.
       masjidId:
         type: string
-        description: The masjid id associated with this file.
       file:
         type: string
         format: byte
-        description: "The bytes of the audio file. This should be in LINEAR16 format at \na sample rate of 16 kHz."
       createTime:
         type: string
         format: date-time
-        description: The create time of the file. This field is output only.
       updateTime:
         type: string
         format: date-time
-        description: The update time of the file. This field is output only.
   limestoneAuthenticateUserRequest:
     type: object
     properties:
@@ -1356,30 +1055,66 @@ definitions:
         type: string
       password:
         type: string
-        title: The password for authentication
-  limestoneAuthenticateUserResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-        description: The access token for subsequent authenticated requests.
-      refreshToken:
-        type: string
-        description: The refresh token to obtain a new access token when it expires.
-      userId:
-        type: integer
-        format: int32
-        description: The ID of the authenticated user (if successful).
   limestoneCompleteNikkahLikeResponse:
     type: object
     properties:
       like:
         $ref: '#/definitions/limestoneNikkahLike'
-        description: The like that was completed.
       match:
         $ref: '#/definitions/limestoneNikkahMatch'
-        description: The match that was initiated.
-    description: CompleteNikkahLikeResponse represents a response to a complete like request.
+  limestoneCreateUserRequest:
+    type: object
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+      password:
+        type: string
+      isEmailVerified:
+        type: boolean
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phoneNumber:
+        type: string
+      gender:
+        $ref: '#/definitions/limestoneCreateUserRequestGender'
+      role:
+        $ref: '#/definitions/limestoneCreateUserRequestRole'
+  limestoneCreateUserRequestGender:
+    type: string
+    enum:
+      - GENDER_UNSPECIFIED
+      - MALE
+      - FEMALE
+    default: GENDER_UNSPECIFIED
+  limestoneCreateUserRequestRole:
+    type: string
+    enum:
+      - ROLE_UNSPECIFIED
+      - MASJID_MEMBER
+      - MASJID_VOLUNTEER
+      - MASJID_ADMIN
+      - MASJID_IMAM
+    default: ROLE_UNSPECIFIED
+  limestoneDataAuthenticateUserResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+      userId:
+        type: string
+  limestoneDataRefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
   limestoneDeleteAdhanFileResponse:
     type: object
   limestoneDeleteEventResponse:
@@ -1388,69 +1123,51 @@ definitions:
     type: object
   limestoneDeleteUserResponse:
     type: object
-    description: Empty response returned for DeleteUser RPC.
   limestoneEvent:
     type: object
     properties:
       id:
         type: string
-        description: The unique id associated with the event.
-      organizationId:
+      masjidId:
         type: string
-        description: The id of the organization which owns the event.
       name:
         type: string
-        description: The name of the event.
       description:
         type: string
-        description: The description of the event.
       startTime:
         type: string
         format: date-time
-        description: The start time of the event.
       endTime:
         type: string
         format: date-time
-        description: The end time of the event.
       genderRestriction:
         $ref: '#/definitions/EventGenderRestriction'
-        description: The gender restriction associated with the event.
       types:
         type: array
         items:
           $ref: '#/definitions/EventEventType'
-        description: The different event types associated with this event.
       isPaid:
         type: boolean
-        description: Whether or not the event is a paid event.
       requiresRsvp:
         type: boolean
-        description: Whether or not the event requires RSVP.
       maxParticipants:
         type: integer
         format: int32
-        description: |-
-          The maximum number of participants for this event. If set to -1, then there
-          is no limit on the number of participants.
       livestreamLink:
         type: string
-        description: |-
-          The livestream link for this event. If empty, then there is no livestream
-          associated with the event.
       createTime:
         type: string
         format: date-time
-        description: The create time of the event. This field is output only.
       updateTime:
         type: string
         format: date-time
-        description: The update time of the event. This field is output only.
-  limestoneGetUserResponse:
+  limestoneGetMasjidRequest:
     type: object
     properties:
-      user:
-        $ref: '#/definitions/limestoneUser'
-        description: The authenticated user.
+      id:
+        type: string
+    required:
+      - id
   limestoneListEventsResponse:
     type: object
     properties:
@@ -1459,7 +1176,6 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/limestoneEvent'
-        description: The list of returned events.
   limestoneListMasjidsResponse:
     type: object
     properties:
@@ -1468,7 +1184,15 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/limestoneMasjid'
-        description: The list of returned masjids.
+      totalCount:
+        type: integer
+        format: int32
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
   limestoneListNikkahProfilesResponse:
     type: object
     properties:
@@ -1477,13 +1201,15 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/limestoneNikkahProfile'
-        description: The list of returned profiles.
-      nextPageToken:
-        type: string
-        description: |-
-          A page token that can be used in a subsequent `ListNikkahProfiles`
-          call to fetch the next page of results.
-    description: ListNikkahProfilesResponse represents a response to a list of profiles.
+      totalCount:
+        type: integer
+        format: int32
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
   limestoneListRevertProfilesResponse:
     type: object
     properties:
@@ -1492,71 +1218,58 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/limestoneRevertProfile'
-        description: The list of returned profiles.
-      nextPageToken:
-        type: string
-        description: |-
-          A page token that can be used in a subsequent `ListRevertProfiles`
-          call to fetch the next page of results.
+      totalCount:
+        type: integer
+        format: int32
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
   limestoneMasjid:
     type: object
     properties:
       id:
         type: string
-        description: The unique id of the masjid. This field is output only.
       name:
         type: string
-        description: The name of the masjid.
+      location:
+        type: string
       isVerified:
         type: boolean
-        description: Whether or not the masjid has been verified.
       address:
         $ref: '#/definitions/MasjidAddress'
-        description: The main address of the masjid.
       phoneNumber:
         $ref: '#/definitions/MasjidPhoneNumber'
-        description: The main phone number to contact for the masjid.
       prayerConfig:
         $ref: '#/definitions/limestonePrayerTimesConfiguration'
-        description: The configuration to calculate prayer times for the masjid.
       createTime:
         type: string
         format: date-time
-        description: The create time of the Masjid. This field is output only.
       updateTime:
         type: string
         format: date-time
-        description: The update time of the Masjid. This field is output only.
-    description: |-
-      Defines a proto representing the main data corresponding to a masjid.
-      This data includes the masjid name, address, phone number and prayer times configuration.
   limestoneNikkahLike:
     type: object
     properties:
       likeId:
         type: string
-        description: The unique identifier for the like process. This field is output only.
         readOnly: true
       likerProfileId:
         type: string
-        description: The ID of the profile who initiated the like.
       likedProfileId:
         type: string
-        description: The ID of the profile which was liked.
       status:
         $ref: '#/definitions/limestoneNikkahLikeStatus'
-        description: The current status of the like process.
       createTime:
         type: string
         format: date-time
-        description: The create time of the event. This field is output only.
         readOnly: true
       updateTime:
         type: string
         format: date-time
-        description: The update time of the event. This field is output only.
         readOnly: true
-    description: NikkahLike represents a like process initiated by a user towards another user's profile.
   limestoneNikkahLikeStatus:
     type: string
     enum:
@@ -1565,39 +1278,26 @@ definitions:
       - COMPLETED
       - CANCELLED
     default: STATUS_UNSPECIFIED
-    description: |-
-      Denotes an enum that specifies the current status of the like.
-
-       - INITIATED: The like is initiated, so the user can see the pictures of the other profile.
-       - COMPLETED: The like has been completed, indicating mutual interest.
-       - CANCELLED: The like has been cancelled.
   limestoneNikkahMatch:
     type: object
     properties:
       matchId:
         type: string
-        description: The unique identifier for the match. This field is output only.
         readOnly: true
       initiatorProfileId:
         type: string
-        description: The ID of the profile who initiated the match.
       receiverProfileId:
         type: string
-        description: The ID of the profile which received the match.
       status:
         $ref: '#/definitions/limestoneNikkahMatchStatus'
-        description: The current status of the match.
       createTime:
         type: string
         format: date-time
-        description: The create time of the event. This field is output only.
         readOnly: true
       updateTime:
         type: string
         format: date-time
-        description: The update time of the event. This field is output only.
         readOnly: true
-    description: NikkahMatch represents a successful match between two users.
   limestoneNikkahMatchStatus:
     type: string
     enum:
@@ -1607,51 +1307,39 @@ definitions:
       - REJECTED
       - ENDED
     default: STATUS_UNSPECIFIED
-    description: "Denotes an enum that specifies the current status of the match.\n\n - INITIATED: The match has been initiated, so one side has sent the invite to the other.\n - ACCEPTED: The match has been accepted, indicating mutual interest.\n - REJECTED: The match has been rejected.\n - ENDED: The match has been ended. \nThis should occur after the match was in ACCEPTED status."
   limestoneNikkahProfile:
     type: object
     properties:
       id:
         type: string
-        description: The unique id associated with the profile. Field is output only.
         readOnly: true
       userId:
         type: string
-        description: The user id associated with the profile.
       name:
         type: string
-        description: The user id associated with the profile.
       gender:
         $ref: '#/definitions/limestoneNikkahProfileGender'
-        description: The gender of the user.
       birthDate:
         $ref: '#/definitions/limestoneNikkahProfileBirthDate'
-        description: The birthdate of the user.
       createTime:
         type: string
         format: date-time
-        description: The create time of the event. This field is output only.
         readOnly: true
       updateTime:
         type: string
         format: date-time
-        description: The update time of the event. This field is output only.
         readOnly: true
-    description: Represents a user's profile in the nikkah.io.
   limestoneNikkahProfileBirthDate:
     type: object
     properties:
       year:
         type: integer
         format: int32
-        title: Year of birth (e.g., 1995)
       month:
         $ref: '#/definitions/limestoneNikkahProfileBirthDateMonth'
       day:
         type: integer
         format: int32
-        title: Day of birth (1-31)
-    description: A message describing the birth date of a user.
   limestoneNikkahProfileBirthDateMonth:
     type: string
     enum:
@@ -1669,7 +1357,6 @@ definitions:
       - NOVEMBER
       - DECEMBER
     default: MONTH_UNSPECIFIED
-    title: Month of birth (1-12)
   limestoneNikkahProfileGender:
     type: string
     enum:
@@ -1677,56 +1364,29 @@ definitions:
       - MALE
       - FEMALE
     default: GENDER_UNSPECIFIED
-    description: |-
-      Defines an enum representing the gender of the user.
-
-       - GENDER_UNSPECIFIED: Default value.
   limestonePrayerTimesConfiguration:
     type: object
     properties:
       method:
         $ref: '#/definitions/PrayerTimesConfigurationCalculationMethod'
-        description: The calculation method to use.
       fajrAngle:
         type: number
         format: double
-        description: |-
-          The Fajr angle to use. This does not need to be set if the calculation method is set.
-          If both fields are set, then the calculation method field takes precedence.
       ishaAngle:
         type: number
         format: double
-        description: |-
-          The Isha angle to use. This does not need to be set if the calculation method is set.
-          If both fields are set, then the calculation method field takes precedence.
       ishaInterval:
         type: integer
         format: int32
-        description: Minutes after Maghrib (if set, the time for Isha will be Maghrib plus the Isha interval).
       asrMethod:
         $ref: '#/definitions/PrayerTimesConfigurationAsrJuristicMethod'
-        description: The juristic method to use for calculating Asr timings.
       highLatitudeRule:
         $ref: '#/definitions/PrayerTimesConfigurationHighLatitudeRule'
-        description: The high latitude rule to use to calculate Fajr and Isha prayers.
       adjustments:
         $ref: '#/definitions/PrayerTimesConfigurationPrayerAdjustments'
-        description: The prayer adjusments (aka offsets) to apply to the calculated prayer times.
-    description: |-
-      A message that holds prayer times configuration. This message contains all the fields
-      necessary to calculate prayer times.
   limestoneRefreshTokenRequest:
     type: object
     properties:
-      refreshToken:
-        type: string
-        description: The refresh JWT for the user.
-  limestoneRefreshTokenResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-        description: The access token for subsequent authenticated requests.
       refreshToken:
         type: string
   limestoneRevertMatch:
@@ -1734,28 +1394,21 @@ definitions:
     properties:
       matchId:
         type: string
-        description: The unique identifier for the match. This field is output only.
         readOnly: true
       initiatorProfileId:
         type: string
-        description: The ID of the profile who initiated the match.
       receiverProfileId:
         type: string
-        description: The ID of the profile which received the match.
       status:
         $ref: '#/definitions/limestoneRevertMatchStatus'
-        description: The current status of the match.
       createTime:
         type: string
         format: date-time
-        description: The create time of the event. This field is output only.
         readOnly: true
       updateTime:
         type: string
         format: date-time
-        description: The update time of the event. This field is output only.
         readOnly: true
-    description: RevertMatch represents a successful match between two users.
   limestoneRevertMatchStatus:
     type: string
     enum:
@@ -1765,37 +1418,28 @@ definitions:
       - REJECTED
       - ENDED
     default: STATUS_UNSPECIFIED
-    description: "Denotes an enum that specifies the current status of the match.\n\n - INITIATED: The match has been initiated, so one side has sent the invite to the other.\n - ACCEPTED: The match has been accepted, indicating mutual interest.\n - REJECTED: The match has been rejected.\n - ENDED: The match has been ended. \nThis should occur after the match was in ACCEPTED status.\n\nChanged to 4 to be unique"
   limestoneRevertProfile:
     type: object
     properties:
       id:
         type: string
-        description: The unique id associated with the profile. Field is output only.
         readOnly: true
       userId:
         type: string
-        description: The user id associated with the profile.
       name:
         type: string
-        description: The user id associated with the profile.
       gender:
         $ref: '#/definitions/limestoneRevertProfileGender'
-        description: The gender of the user.
       birthDate:
         $ref: '#/definitions/limestoneRevertProfileBirthDate'
-        description: The birthdate of the user.
       createTime:
         type: string
         format: date-time
-        description: The create time of the event. This field is output only.
         readOnly: true
       updateTime:
         type: string
         format: date-time
-        description: The update time of the event. This field is output only.
         readOnly: true
-    description: Represents a user's profile in the nikkah.io.
   limestoneRevertProfileBirthDate:
     type: object
     properties:
@@ -1807,7 +1451,6 @@ definitions:
       day:
         type: integer
         format: int32
-    description: A message describing the birth date of a user.
   limestoneRevertProfileBirthDateMonth:
     type: string
     enum:
@@ -1832,69 +1475,148 @@ definitions:
       - MALE
       - FEMALE
     default: GENDER_UNSPECIFIED
-    description: |-
-      Defines an enum representing the gender of the user.
-
-       - GENDER_UNSPECIFIED: Default value.
-  limestoneUpdateSelfNikkahProfileRequest:
+  limestoneStandardAdhanResponse:
     type: object
     properties:
-      profile:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      adhanFile:
+        $ref: '#/definitions/limestoneAdhanFile'
+      deleteAdhanFileResponse:
+        $ref: '#/definitions/limestoneDeleteAdhanFileResponse'
+  limestoneStandardAuthResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      authenticateUserData:
+        $ref: '#/definitions/limestoneDataAuthenticateUserResponse'
+        title: Unique field name
+      refreshTokenData:
+        $ref: '#/definitions/limestoneDataRefreshTokenResponse'
+        title: Unique field name
+  limestoneStandardEventResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      event:
+        $ref: '#/definitions/limestoneEvent'
+      deleteEventResponse:
+        $ref: '#/definitions/limestoneDeleteEventResponse'
+      listEventResponse:
+        $ref: '#/definitions/limestoneListEventsResponse'
+  limestoneStandardMasjidResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      Masjid:
+        $ref: '#/definitions/limestoneMasjid'
+      deleteMasjidResponse:
+        $ref: '#/definitions/limestoneDeleteMasjidResponse'
+      listMasjidResponse:
+        $ref: '#/definitions/limestoneListMasjidsResponse'
+      getMasjidResponse:
+        $ref: '#/definitions/limestoneGetMasjidRequest'
+  limestoneStandardNikkahResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      nikkahProfile:
         $ref: '#/definitions/limestoneNikkahProfile'
-        description: |-
-          The profile to update in the database.
-
-          The profile's `name` field is used to identify the profile to update.
-    description: UpdateSelfNikkahProfileRequest represents a request to update the authenticated user's profile.
-    required:
-      - profile
-  limestoneUpdateSelfRevertProfileRequest:
+      like:
+        $ref: '#/definitions/limestoneNikkahLike'
+      match:
+        $ref: '#/definitions/limestoneNikkahMatch'
+      listProfilesResponse:
+        $ref: '#/definitions/limestoneListNikkahProfilesResponse'
+      singleLike:
+        $ref: '#/definitions/limestoneNikkahLike'
+      completeNikahLike:
+        $ref: '#/definitions/limestoneCompleteNikkahLikeResponse'
+      nikkahMatch:
+        $ref: '#/definitions/limestoneNikkahMatch'
+  limestoneStandardRevertResponse:
     type: object
     properties:
-      profile:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      revertProfile:
         $ref: '#/definitions/limestoneRevertProfile'
-        description: |-
-          The event to update in the database.
-
-          The event's `id` field is used to identify the book to update.
-          Format: events/{event}
-    required:
-      - profile
+      listRevertProfilesResponse:
+        $ref: '#/definitions/limestoneListRevertProfilesResponse'
+      revertMatch:
+        $ref: '#/definitions/limestoneRevertMatch'
+  limestoneStandardUserResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      addUserResponse:
+        $ref: '#/definitions/limestoneUser'
+      getUserResponse:
+        $ref: '#/definitions/limestoneUser'
+      updateUserResponse:
+        $ref: '#/definitions/limestoneUser'
+      deleteUserResponse:
+        $ref: '#/definitions/limestoneDeleteUserResponse'
   limestoneUser:
     type: object
     properties:
       id:
         type: string
-        description: The ID of the user. This field is output only.
       email:
         type: string
-        description: The email of the user. This field is required and must be unique.
       username:
         type: string
-        description: The username of the user. This field is required and must be unique.
       isEmailVerified:
         type: boolean
-        description: Whether or not the email of the user was verified.
       firstName:
         type: string
-        description: The first name of the user.
       lastName:
         type: string
-        description: The last name of the user.
       phoneNumber:
         type: string
-        description: The phone number associated with the user.
       gender:
         $ref: '#/definitions/limestoneUserGender'
+      role:
+        $ref: '#/definitions/limestoneUserRole'
       createTime:
         type: string
         format: date-time
-        description: The create time of the user. This field is output only.
       updateTime:
         type: string
         format: date-time
-        description: The update time of the user. This field is output only.
-    description: Defines a User.
   limestoneUserGender:
     type: string
     enum:
@@ -1902,10 +1624,15 @@ definitions:
       - MALE
       - FEMALE
     default: GENDER_UNSPECIFIED
-    description: |-
-      Defines an enum representing the gender of the user.
-
-       - GENDER_UNSPECIFIED: Default value.
+  limestoneUserRole:
+    type: string
+    enum:
+      - ROLE_UNSPECIFIED
+      - MASJID_MEMBER
+      - MASJID_VOLUNTEER
+      - MASJID_ADMIN
+      - MASJID_IMAM
+    default: ROLE_UNSPECIFIED
   protobufAny:
     type: object
     properties:

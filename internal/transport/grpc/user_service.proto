@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+
+package limestone;
+
+option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (StandardUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "*"
+    };
+    option (google.api.method_signature) = "email,username,password,is_email_verified,first_name,last_name,phone_number,gender";
+  }
+
+  rpc GetUser(GetUserRequest) returns (StandardUserResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (StandardUserResponse) {
+    option (google.api.http) = {
+      patch: "/v1/users"
+      body: "user"
+    };
+    option (google.api.method_signature) = "user";
+  }
+
+  rpc DeleteUser(DeleteUserRequest) returns (StandardUserResponse) {
+    option (google.api.http) = {
+      delete: "/v1/users/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+}
+
+
+message MasjidRole {
+  enum Role {
+    ROLE_UNSPECIFIED = 0;
+    MASJID_MEMBER = 1;
+    MASJID_VOLUNTEER = 2;
+    MASJID_ADMIN = 3;
+    MASJID_IMAM = 4;
+  }
+  Role role = 1;
+  string masjid_id = 2;
+  string user_id = 3;
+}
+
+message User {
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  bool is_email_verified = 4;
+  string first_name = 5;
+  string last_name = 6;
+  string phone_number = 7;
+  enum Role {
+    ROLE_UNSPECIFIED = 0;
+    MASJID_MEMBER = 1;
+    MASJID_VOLUNTEER = 2;
+    MASJID_ADMIN = 3;
+    MASJID_IMAM = 4;
+  }
+  enum Gender {
+    GENDER_UNSPECIFIED = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+  Gender gender = 8;
+  Role role = 9;
+  google.protobuf.Timestamp create_time = 10;
+  google.protobuf.Timestamp update_time = 11;
+}
+
+message StandardUserResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  oneof data {
+    User add_user_response  = 4;
+    User get_user_response = 5;
+    User update_user_response = 6;
+    DeleteUserResponse delete_user_response = 7;
+  }
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+  bool is_email_verified = 4;
+  string first_name = 5;
+  string last_name = 6;
+  string phone_number = 7;
+  enum Role {
+    ROLE_UNSPECIFIED = 0;
+    MASJID_MEMBER = 1;
+    MASJID_VOLUNTEER = 2;
+    MASJID_ADMIN = 3;
+    MASJID_IMAM = 4;
+  }
+  enum Gender {
+    GENDER_UNSPECIFIED = 0;
+    MALE = 1;
+    FEMALE = 2;
+  }
+  Gender gender = 8;
+  Role role = 9;
+}
+
+message GetUserRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message UpdateUserRequest {
+  User user = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteUserRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteUserResponse {}

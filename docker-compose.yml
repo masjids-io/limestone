@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - /srv/.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - /srv/.env:/app/.env
+    restart: unless-stopped
