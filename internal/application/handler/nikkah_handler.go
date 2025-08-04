@@ -203,7 +203,7 @@ func (h *NikkahIoGrpcHandler) ListNikkahProfiles(ctx context.Context, req *pb.Li
 		Limit:  req.GetLimit(),
 		Page:   req.GetPage(),
 		Name:   req.GetName(),
-		Gender: req.GetGender(),
+		Gender: req.GetGender().String(),
 	}
 
 	queryResult, err := h.NikkahSvc.ListNikkahProfiles(ctx, params)
