@@ -4,6 +4,7 @@ import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
+import "masjid_service.proto";
 
 package limestone;
 
@@ -38,6 +39,22 @@ service AdhanService {
   }
 }
 
+// When the user logs in to the app, we want to save their adhan preferences.
+// We want to save the adhan file id and the prayer times configuration or masjid id.
+// If the masjid id is provided, we will use the masjid's prayer times configuration.
+// We need to create CRUD for this.
+message SavedUserAdhanPreferences {
+  string id = 1;
+  string user_id = 2;
+  string adhan_file_id = 3;
+  oneof configuration {
+    Masjid.PrayerTimesConfiguration prayer_times_configuration = 6;
+    string masjid_id = 7;
+  }
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp update_time = 5;
+}
+
 message StandardAdhanResponse {
   string code = 1;
   string status = 2;
@@ -47,6 +64,7 @@ message StandardAdhanResponse {
     DeleteAdhanFileResponse delete_adhan_file_response = 5;
   }
 }
+
 message AdhanFile {
   string id = 1;
   string masjid_id = 2;
