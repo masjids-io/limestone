@@ -161,12 +161,12 @@ enum Hobbies {
   TRAVELING = 8;
   GAMING = 9;
   MARTIAL_ARTS = 10;
-  SOCCER = 7;
-  BASKETBALL = 8;
-  FOOTBALL = 9;
-  TENNIS = 8;
-  BADMINTON = 9;
-  CRICKET = 10;
+  SOCCER = 11;
+  BASKETBALL = 12;
+  FOOTBALL = 13;
+  TENNIS = 14;
+  BADMINTON = 15;
+  CRICKET = 16;
 }
 
 message NikkahProfile {

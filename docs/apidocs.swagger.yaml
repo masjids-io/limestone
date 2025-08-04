@@ -1,12 +1,13 @@
 swagger: "2.0"
 info:
-  title: adhan_service.proto
+  title: masjid_service.proto
   version: version not set
 tags:
+  - name: MasjidService
   - name: AdhanService
+  - name: AdhanPreferencesService
   - name: AuthService
   - name: EventService
-  - name: MasjidService
   - name: NikkahIoService
   - name: RevertsIoService
   - name: UserService
@@ -632,8 +633,197 @@ paths:
           in: query
           required: false
           type: string
+          enum:
+            - GENDER_UNSPECIFIED
+            - MALE
+            - FEMALE
+          default: GENDER_UNSPECIFIED
+        - name: location.country
+          in: query
+          required: false
+          type: string
+        - name: location.city
+          in: query
+          required: false
+          type: string
+        - name: location.state
+          in: query
+          required: false
+          type: string
+        - name: location.zipCode
+          in: query
+          required: false
+          type: string
+        - name: location.latitude
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: location.longitude
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: education
+          in: query
+          required: false
+          type: string
+          enum:
+            - EDUCATION_UNSPECIFIED
+            - HIGH_SCHOOL
+            - BACHELOR
+            - MASTER
+            - DOCTORATE
+          default: EDUCATION_UNSPECIFIED
+        - name: occupation
+          in: query
+          required: false
+          type: string
+        - name: height.cm
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: sect
+          in: query
+          required: false
+          type: string
+          enum:
+            - SECT_UNSPECIFIED
+            - SUNNI
+            - SUNNI_HANAFI
+            - SUNNI_MALEKI
+            - SUNNI_SHAFII
+            - SUNNI_MALIKI
+            - SHIA
+            - OTHER
+          default: SECT_UNSPECIFIED
+        - name: hobbies
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            enum:
+              - HOBBIES_UNSPECIFIED
+              - READING
+              - WATCHING_MOVIES
+              - WATCHING_TV
+              - PAINTING
+              - WRITING
+              - VOLUNTEERING
+              - VOLLEYBALL
+              - TRAVELING
+              - GAMING
+              - MARTIAL_ARTS
+              - SOCCER
+              - BASKETBALL
+              - FOOTBALL
+              - TENNIS
+              - BADMINTON
+              - CRICKET
+          collectionFormat: multi
       tags:
         - NikkahIoService
+  /v1/preferences:
+    get:
+      operationId: AdhanPreferencesService_ListAdhanPreferences
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListAdhanPreferencesResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          type: string
+      tags:
+        - AdhanPreferencesService
+    post:
+      operationId: AdhanPreferencesService_CreateAdhanPreferences
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanPreferencesResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/limestoneCreateAdhanPreferencesRequest'
+      tags:
+        - AdhanPreferencesService
+  /v1/preferences/{id}:
+    get:
+      operationId: AdhanPreferencesService_GetAdhanPreferences
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanPreferencesResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanPreferencesService
+    delete:
+      operationId: AdhanPreferencesService_DeleteAdhanPreferences
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            type: object
+            properties: {}
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      tags:
+        - AdhanPreferencesService
+    patch:
+      operationId: AdhanPreferencesService_UpdateAdhanPreferences
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneAdhanPreferencesResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AdhanPreferencesServiceUpdateAdhanPreferencesBody'
+      tags:
+        - AdhanPreferencesService
   /v1/revert/match/{matchId}:
     get:
       operationId: RevertsIoService_GetRevertMatch
@@ -925,6 +1115,13 @@ paths:
       tags:
         - UserService
 definitions:
+  AdhanPreferencesServiceUpdateAdhanPreferencesBody:
+    type: object
+    properties:
+      preferences:
+        $ref: '#/definitions/limestoneSavedUserAdhanPreferences'
+    required:
+      - preferences
   EventEventType:
     type: string
     enum:
@@ -1046,6 +1243,11 @@ definitions:
       updateTime:
         type: string
         format: date-time
+  limestoneAdhanPreferencesResponse:
+    type: object
+    properties:
+      preferences:
+        $ref: '#/definitions/limestoneSavedUserAdhanPreferences'
   limestoneAuthenticateUserRequest:
     type: object
     properties:
@@ -1062,6 +1264,14 @@ definitions:
         $ref: '#/definitions/limestoneNikkahLike'
       match:
         $ref: '#/definitions/limestoneNikkahMatch'
+  limestoneCreateAdhanPreferencesRequest:
+    type: object
+    properties:
+      preferences:
+        $ref: '#/definitions/limestoneSavedUserAdhanPreferences'
+    title: CRUD messages for SavedUserAdhanPreferences
+    required:
+      - preferences
   limestoneCreateUserRequest:
     type: object
     properties:
@@ -1123,6 +1333,15 @@ definitions:
     type: object
   limestoneDeleteUserResponse:
     type: object
+  limestoneEducation:
+    type: string
+    enum:
+      - EDUCATION_UNSPECIFIED
+      - HIGH_SCHOOL
+      - BACHELOR
+      - MASTER
+      - DOCTORATE
+    default: EDUCATION_UNSPECIFIED
   limestoneEvent:
     type: object
     properties:
@@ -1168,6 +1387,41 @@ definitions:
         type: string
     required:
       - id
+  limestoneHeight:
+    type: object
+    properties:
+      cm:
+        type: integer
+        format: int32
+  limestoneHobbies:
+    type: string
+    enum:
+      - HOBBIES_UNSPECIFIED
+      - READING
+      - WATCHING_MOVIES
+      - WATCHING_TV
+      - PAINTING
+      - WRITING
+      - VOLUNTEERING
+      - VOLLEYBALL
+      - TRAVELING
+      - GAMING
+      - MARTIAL_ARTS
+      - SOCCER
+      - BASKETBALL
+      - FOOTBALL
+      - TENNIS
+      - BADMINTON
+      - CRICKET
+    default: HOBBIES_UNSPECIFIED
+  limestoneListAdhanPreferencesResponse:
+    type: object
+    properties:
+      preferences:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneSavedUserAdhanPreferences'
   limestoneListEventsResponse:
     type: object
     properties:
@@ -1227,6 +1481,23 @@ definitions:
       totalPages:
         type: integer
         format: int32
+  limestoneLocation:
+    type: object
+    properties:
+      country:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zipCode:
+        type: string
+      latitude:
+        type: integer
+        format: int32
+      longitude:
+        type: integer
+        format: int32
   limestoneMasjid:
     type: object
     properties:
@@ -1250,6 +1521,25 @@ definitions:
       updateTime:
         type: string
         format: date-time
+  limestoneMasjidsPrayerTimesConfiguration:
+    type: object
+    properties:
+      calculationMethod:
+        type: string
+      fajrAngle:
+        type: number
+        format: double
+      ishaAngle:
+        type: number
+        format: double
+      madhab:
+        type: string
+      latitude:
+        type: number
+        format: double
+      longitude:
+        type: number
+        format: double
   limestoneNikkahLike:
     type: object
     properties:
@@ -1321,6 +1611,25 @@ definitions:
         $ref: '#/definitions/limestoneNikkahProfileGender'
       birthDate:
         $ref: '#/definitions/limestoneNikkahProfileBirthDate'
+      location:
+        $ref: '#/definitions/limestoneLocation'
+      education:
+        $ref: '#/definitions/limestoneEducation'
+      occupation:
+        type: string
+      height:
+        $ref: '#/definitions/limestoneHeight'
+      sect:
+        $ref: '#/definitions/limestoneSect'
+      pictures:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestonePicture'
+      hobbies:
+        type: array
+        items:
+          $ref: '#/definitions/limestoneHobbies'
       createTime:
         type: string
         format: date-time
@@ -1364,6 +1673,14 @@ definitions:
       - MALE
       - FEMALE
     default: GENDER_UNSPECIFIED
+  limestonePicture:
+    type: object
+    properties:
+      image:
+        type: string
+        format: byte
+      mimeType:
+        type: string
   limestonePrayerTimesConfiguration:
     type: object
     properties:
@@ -1475,6 +1792,42 @@ definitions:
       - MALE
       - FEMALE
     default: GENDER_UNSPECIFIED
+  limestoneSavedUserAdhanPreferences:
+    type: object
+    properties:
+      id:
+        type: string
+      userId:
+        type: string
+      adhanFileId:
+        type: string
+      prayerTimesConfiguration:
+        $ref: '#/definitions/limestoneMasjidsPrayerTimesConfiguration'
+      masjidId:
+        type: string
+      createTime:
+        type: string
+        format: date-time
+      updateTime:
+        type: string
+        format: date-time
+    description: |-
+      When the user logs in to the app, we want to save their adhan preferences.
+      We want to save the adhan file id and the prayer times configuration or masjid id.
+      If the masjid id is provided, we will use the masjid's prayer times configuration.
+      We need to create CRUD for this.
+  limestoneSect:
+    type: string
+    enum:
+      - SECT_UNSPECIFIED
+      - SUNNI
+      - SUNNI_HANAFI
+      - SUNNI_MALEKI
+      - SUNNI_SHAFII
+      - SUNNI_MALIKI
+      - SHIA
+      - OTHER
+    default: SECT_UNSPECIFIED
   limestoneStandardAdhanResponse:
     type: object
     properties:
