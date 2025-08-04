@@ -43,9 +43,6 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 	if req.GetPhoneNumber() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "phone number is required")
 	}
-	if req.GetRole() == pb.CreateUserRequest_ROLE_UNSPECIFIED {
-		return nil, status.Errorf(codes.InvalidArgument, "role is required and cannot be unspecified.")
-	}
 
 	password := req.GetPassword()
 	if len(password) < 8 {
@@ -65,7 +62,7 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 		LastName:       req.GetLastName(),
 		PhoneNumber:    req.GetPhoneNumber(),
 		Gender:         entity.Gender(req.GetGender().String()),
-		Role:           entity.Role(req.GetRole().String()),
+		Role:           entity.MASJID_MEMBER,
 	}
 
 	responseCreatedUser, err := h.Svc.CreateUser(ctx, u)
