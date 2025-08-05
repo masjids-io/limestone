@@ -131,9 +131,10 @@ message ListUsersRequest {}
 
 // Message for a single user item in a list response
 message ListUserResponseItem {
-  string email = 1;
-  string username = 2;
-  User.Role role = 3; // Referencing the Role enum from the User message
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  User.Role role = 4; // Referencing the Role enum from the User message
 }
 
 // New message for the list user response with a flat "data" array

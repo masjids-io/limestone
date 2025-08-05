@@ -93,6 +93,7 @@ func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersReq
 	var listUserResponseItems []*pb.ListUserResponseItem
 	for _, user := range users {
 		listUserResponseItems = append(listUserResponseItems, &pb.ListUserResponseItem{
+			Id:       user.ID.String(),
 			Email:    user.Email,
 			Username: user.Username,
 			Role:     pb.User_Role(pb.User_Role_value[user.Role.String()]),

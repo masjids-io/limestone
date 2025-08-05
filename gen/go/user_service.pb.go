@@ -799,9 +799,10 @@ func (*ListUsersRequest) Descriptor() ([]byte, []int) {
 // Message for a single user item in a list response
 type ListUserResponseItem struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	Username      string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
-	Role          User_Role              `protobuf:"varint,3,opt,name=role,proto3,enum=limestone.User_Role" json:"role,omitempty"` // Referencing the Role enum from the User message
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Username      string                 `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	Role          User_Role              `protobuf:"varint,4,opt,name=role,proto3,enum=limestone.User_Role" json:"role,omitempty"` // Referencing the Role enum from the User message
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -834,6 +835,13 @@ func (x *ListUserResponseItem) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ListUserResponseItem.ProtoReflect.Descriptor instead.
 func (*ListUserResponseItem) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListUserResponseItem) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *ListUserResponseItem) GetEmail() string {
@@ -1170,11 +1178,12 @@ const file_user_service_proto_rawDesc = "" +
 	"\x06FEMALE\x10\x02\"%\n" +
 	"\x0eGetUserRequest\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x12\n" +
-	"\x10ListUsersRequest\"r\n" +
-	"\x14ListUserResponseItem\x12\x14\n" +
-	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\busername\x18\x02 \x01(\tR\busername\x12(\n" +
-	"\x04role\x18\x03 \x01(\x0e2\x14.limestone.User.RoleR\x04role\"\x8e\x01\n" +
+	"\x10ListUsersRequest\"\x82\x01\n" +
+	"\x14ListUserResponseItem\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
+	"\busername\x18\x03 \x01(\tR\busername\x12(\n" +
+	"\x04role\x18\x04 \x01(\x0e2\x14.limestone.User.RoleR\x04role\"\x8e\x01\n" +
 	"\x11ListUsersResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
