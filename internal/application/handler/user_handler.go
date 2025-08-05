@@ -75,7 +75,6 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 	return helper.StandardUserResponse(codes.OK, "success", "user created successfully", responseCreatedUser, nil)
 }
 
-// GetListUsers handles a gRPC request to retrieve a list of all users.
 func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
 	// --- Start Authorization (Coarse-Grained) ---
 	allowedRolesForAnyUser := []string{
@@ -91,8 +90,6 @@ func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersReq
 		return nil, status.Errorf(codes.Canceled, err.Error())
 	}
 
-	// This section of code now correctly maps the Go entity to the Protobuf message
-	// and uses the helper function designed for a list response.
 	var listUserResponseItems []*pb.ListUserResponseItem
 	for _, user := range users {
 		listUserResponseItems = append(listUserResponseItems, &pb.ListUserResponseItem{
@@ -102,7 +99,6 @@ func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersReq
 		})
 	}
 
-	// Calling the correct helper function for a list response.
 	return &pb.ListUsersResponse{
 		Code:    codes.OK.String(),
 		Status:  "success",
