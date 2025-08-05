@@ -22,6 +22,14 @@ func (r *GormUserRepository) Create(ctx context.Context, user *entity.User) (*en
 	return user, nil
 }
 
+func (r *GormUserRepository) GetListUsers(ctx context.Context) ([]entity.User, error) {
+	var users []entity.User
+	if err := r.db.WithContext(ctx).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 func (r *GormUserRepository) Update(ctx context.Context, user *entity.User) (*entity.User, error) {
 	if err := r.db.WithContext(ctx).Model(&entity.User{}).Where("id = ?", user.ID).Updates(user).Error; err != nil {
 		return nil, err

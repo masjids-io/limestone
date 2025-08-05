@@ -247,6 +247,20 @@ paths:
               - event
       tags:
         - EventService
+  /v1/list-users:
+    get:
+      operationId: UserService_GetListUsers
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListUsersResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      tags:
+        - UserService
   /v1/masjid:
     post:
       operationId: MasjidService_CreateMasjid
@@ -1481,6 +1495,32 @@ definitions:
       totalPages:
         type: integer
         format: int32
+  limestoneListUserResponseItem:
+    type: object
+    properties:
+      email:
+        type: string
+      username:
+        type: string
+      role:
+        $ref: '#/definitions/limestoneUserRole'
+        title: Referencing the Role enum from the User message
+    title: Message for a single user item in a list response
+  limestoneListUsersResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      data:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneListUserResponseItem'
+    title: New message for the list user response with a flat "data" array
   limestoneLocation:
     type: object
     properties:
