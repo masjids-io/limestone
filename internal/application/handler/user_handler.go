@@ -76,35 +76,84 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 }
 
 func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
-	// --- Start Authorization (Coarse-Grained) ---
+	// --- Mulai Otorisasi (Coarse-Grained) ---
 	allowedRolesForAnyUser := []string{
 		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_MEMBER),
+		string(entity.MASJID_VOLUNTEER),
+		string(entity.MASJID_IMAM),
 	}
 	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "ListUsers"); err != nil {
 		return nil, err
 	}
-	// --- End Authorization (Coarse-Grained) ---
+	// --- Akhir Otorisasi (Coarse-Grained) ---
 
-	users, err := h.Svc.GetListUsers(ctx)
+	// Ekstrak parameter paginasi dari permintaan
+	params := &entity.ListUsersQueryParams{
+		Start:    req.GetStart(),
+		Limit:    req.GetLimit(),
+		Page:     req.GetPage(),
+		Email:    req.GetEmail(),
+		Username: req.GetUsername(),
+	}
+
+	users, totalCount, err := h.Svc.GetListUsers(ctx, params)
 	if err != nil {
 		return nil, status.Errorf(codes.Canceled, err.Error())
 	}
 
+	// Bagian kode ini sekarang dengan benar memetakan entitas Go ke pesan Protobuf
+	// dan menangani bidang `data` sebagai daftar datar.
 	var listUserResponseItems []*pb.ListUserResponseItem
 	for _, user := range users {
+		// Gunakan variabel sementara untuk menampung nilai enum.
+		var protoRole pb.User_Role
+
+		// Periksa dengan aman apakah string peran ada di peta nilai protobuf.
+		if roleValue, ok := pb.User_Role_value[user.Role.String()]; ok {
+			// Jika ada, ubah nilai ke tipe enum protobuf.
+			protoRole = pb.User_Role(roleValue)
+		} else {
+			// Jika tidak ada, default ke peran yang tidak ditentukan untuk mencegah panic.
+			protoRole = pb.User_ROLE_UNSPECIFIED
+		}
+
 		listUserResponseItems = append(listUserResponseItems, &pb.ListUserResponseItem{
-			Id:       user.ID.String(),
 			Email:    user.Email,
 			Username: user.Username,
-			Role:     pb.User_Role(pb.User_Role_value[user.Role.String()]),
+			Role:     protoRole,
 		})
 	}
 
+	// Hitung metadata paginasi
+	pageSize := params.Limit
+	if pageSize <= 0 {
+		pageSize = 10 // Ukuran halaman default
+	}
+
+	totalPages := int32(0)
+	if pageSize > 0 {
+		totalPages = (totalCount + pageSize - 1) / pageSize
+	}
+
+	currentPage := params.Page
+	if currentPage == 0 {
+		if params.Start > 0 && pageSize > 0 {
+			currentPage = (params.Start / pageSize) + 1
+		} else {
+			currentPage = 1
+		}
+	}
+
+	// Handler sekarang membuat dan mengembalikan ListUsersResponse baru dengan data langsung dalam bidang berulang.
 	return &pb.ListUsersResponse{
-		Code:    codes.OK.String(),
-		Status:  "success",
-		Message: "users retrieved successfully",
-		Data:    listUserResponseItems,
+		Code:        codes.OK.String(),
+		Status:      "success",
+		Message:     "users retrieved successfully",
+		Data:        listUserResponseItems,
+		TotalCount:  totalCount,
+		CurrentPage: currentPage,
+		TotalPages:  totalPages,
 	}, nil
 }
 
@@ -155,6 +204,7 @@ func (h *UserGrpcHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequ
 		FirstName:   req.User.FirstName,
 		LastName:    req.User.LastName,
 		PhoneNumber: req.User.PhoneNumber,
+		Role:        entity.Role(req.User.Role.String()),
 		Gender:      entity.Gender(req.User.Gender),
 		UpdatedAt:   time.Now(),
 	}

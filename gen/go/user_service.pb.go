@@ -762,6 +762,11 @@ func (x *GetUserRequest) GetId() string {
 
 type ListUsersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Start         int32                  `protobuf:"varint,1,opt,name=start,proto3" json:"start,omitempty"`
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	Email         *string                `protobuf:"bytes,4,opt,name=email,proto3,oneof" json:"email,omitempty"`
+	Username      *string                `protobuf:"bytes,5,opt,name=username,proto3,oneof" json:"username,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -794,6 +799,41 @@ func (x *ListUsersRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ListUsersRequest.ProtoReflect.Descriptor instead.
 func (*ListUsersRequest) Descriptor() ([]byte, []int) {
 	return file_user_service_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ListUsersRequest) GetStart() int32 {
+	if x != nil {
+		return x.Start
+	}
+	return 0
+}
+
+func (x *ListUsersRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *ListUsersRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListUsersRequest) GetEmail() string {
+	if x != nil && x.Email != nil {
+		return *x.Email
+	}
+	return ""
+}
+
+func (x *ListUsersRequest) GetUsername() string {
+	if x != nil && x.Username != nil {
+		return *x.Username
+	}
+	return ""
 }
 
 // Message for a single user item in a list response
@@ -872,6 +912,9 @@ type ListUsersResponse struct {
 	Status        string                  `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
 	Message       string                  `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 	Data          []*ListUserResponseItem `protobuf:"bytes,4,rep,name=data,proto3" json:"data,omitempty"`
+	TotalCount    int32                   `protobuf:"varint,5,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	CurrentPage   int32                   `protobuf:"varint,6,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
+	TotalPages    int32                   `protobuf:"varint,7,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -932,6 +975,27 @@ func (x *ListUsersResponse) GetData() []*ListUserResponseItem {
 		return x.Data
 	}
 	return nil
+}
+
+func (x *ListUsersResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *ListUsersResponse) GetCurrentPage() int32 {
+	if x != nil {
+		return x.CurrentPage
+	}
+	return 0
+}
+
+func (x *ListUsersResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
 }
 
 type GetUserResponse struct {
@@ -1177,18 +1241,30 @@ const file_user_service_proto_rawDesc = "" +
 	"\n" +
 	"\x06FEMALE\x10\x02\"%\n" +
 	"\x0eGetUserRequest\x12\x13\n" +
-	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\x12\n" +
-	"\x10ListUsersRequest\"\x82\x01\n" +
+	"\x02id\x18\x01 \x01(\tB\x03\xe0A\x02R\x02id\"\xa5\x01\n" +
+	"\x10ListUsersRequest\x12\x14\n" +
+	"\x05start\x18\x01 \x01(\x05R\x05start\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x19\n" +
+	"\x05email\x18\x04 \x01(\tH\x00R\x05email\x88\x01\x01\x12\x1f\n" +
+	"\busername\x18\x05 \x01(\tH\x01R\busername\x88\x01\x01B\b\n" +
+	"\x06_emailB\v\n" +
+	"\t_username\"\x82\x01\n" +
 	"\x14ListUserResponseItem\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
 	"\busername\x18\x03 \x01(\tR\busername\x12(\n" +
-	"\x04role\x18\x04 \x01(\x0e2\x14.limestone.User.RoleR\x04role\"\x8e\x01\n" +
+	"\x04role\x18\x04 \x01(\x0e2\x14.limestone.User.RoleR\x04role\"\xf3\x01\n" +
 	"\x11ListUsersResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
 	"\amessage\x18\x03 \x01(\tR\amessage\x123\n" +
-	"\x04data\x18\x04 \x03(\v2\x1f.limestone.ListUserResponseItemR\x04data\"6\n" +
+	"\x04data\x18\x04 \x03(\v2\x1f.limestone.ListUserResponseItemR\x04data\x12\x1f\n" +
+	"\vtotal_count\x18\x05 \x01(\x05R\n" +
+	"totalCount\x12!\n" +
+	"\fcurrent_page\x18\x06 \x01(\x05R\vcurrentPage\x12\x1f\n" +
+	"\vtotal_pages\x18\a \x01(\x05R\n" +
+	"totalPages\"6\n" +
 	"\x0fGetUserResponse\x12#\n" +
 	"\x04user\x18\x01 \x01(\v2\x0f.limestone.UserR\x04user\"=\n" +
 	"\x11UpdateUserRequest\x12(\n" +
@@ -1285,6 +1361,7 @@ func file_user_service_proto_init() {
 		(*StandardUserResponse_UpdateUserResponse)(nil),
 		(*StandardUserResponse_DeleteUserResponse)(nil),
 	}
+	file_user_service_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

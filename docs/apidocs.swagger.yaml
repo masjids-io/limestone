@@ -259,6 +259,30 @@ paths:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: start
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: email
+          in: query
+          required: false
+          type: string
+        - name: username
+          in: query
+          required: false
+          type: string
       tags:
         - UserService
   /v1/masjid:
@@ -1522,6 +1546,15 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/limestoneListUserResponseItem'
+      totalCount:
+        type: integer
+        format: int32
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
     title: New message for the list user response with a flat "data" array
   limestoneLocation:
     type: object

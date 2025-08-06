@@ -127,7 +127,13 @@ message GetUserRequest {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-message ListUsersRequest {}
+message ListUsersRequest {
+  int32 start = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  optional string email = 4;
+  optional string username = 5;
+}
 
 // Message for a single user item in a list response
 message ListUserResponseItem {
@@ -143,6 +149,9 @@ message ListUsersResponse {
   string status = 2;
   string message = 3;
   repeated ListUserResponseItem data = 4;
+  int32 total_count = 5;
+  int32 current_page = 6;
+  int32 total_pages = 7;
 }
 
 message GetUserResponse {
