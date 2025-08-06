@@ -18,6 +18,12 @@ service UserService {
     option (google.api.method_signature) = "email,username,password,is_email_verified,first_name,last_name,phone_number,gender";
   }
 
+    rpc GetListUsers(ListUsersRequest) returns (ListUsersResponse) {
+      option (google.api.http) = {
+        get: "/v1/list-users"
+      };
+    }
+
   rpc GetUser(GetUserRequest) returns (StandardUserResponse) {
     option (google.api.http) = {
       get: "/v1/users/{id}"
@@ -119,6 +125,33 @@ message CreateUserRequest {
 
 message GetUserRequest {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ListUsersRequest {
+  int32 start = 1;
+  int32 limit = 2;
+  int32 page = 3;
+  optional string email = 4;
+  optional string username = 5;
+}
+
+// Message for a single user item in a list response
+message ListUserResponseItem {
+  string id = 1;
+  string email = 2;
+  string username = 3;
+  User.Role role = 4; // Referencing the Role enum from the User message
+}
+
+// New message for the list user response with a flat "data" array
+message ListUsersResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  repeated ListUserResponseItem data = 4;
+  int32 total_count = 5;
+  int32 current_page = 6;
+  int32 total_pages = 7;
 }
 
 message GetUserResponse {

@@ -5,6 +5,14 @@ import (
 	"time"
 )
 
+type ListUsersQueryParams struct {
+	Start    int32
+	Limit    int32
+	Page     int32
+	Username string
+	Email    string
+}
+
 type User struct {
 	ID             uuid.UUID `gorm:"primaryKey;type:char(36)"`
 	Email          string    `gorm:"type:varchar(320);unique;not null"`

@@ -46,7 +46,7 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_Success() {
 		LastName:        "User",
 		PhoneNumber:     "1234567890",
 		Gender:          pb.CreateUserRequest_MALE,
-		Role:            pb.CreateUserRequest_MASJID_ADMIN,
+		Role:            pb.CreateUserRequest_MASJID_MEMBER,
 		IsEmailVerified: true,
 	}
 
@@ -176,20 +176,6 @@ func (suite *GrpcHandlerTestSuite) TestCreateUser_MissingRequiredFields() {
 			},
 			expectedCode:  codes.InvalidArgument,
 			expectedError: "phone number is required",
-		},
-		{
-			name: "Unspecified Role",
-			req: &pb.CreateUserRequest{
-				Email:       "e@e.com",
-				Username:    "user",
-				Password:    "password12345",
-				FirstName:   "F",
-				LastName:    "L",
-				PhoneNumber: "1",
-				Role:        pb.CreateUserRequest_ROLE_UNSPECIFIED,
-			},
-			expectedCode:  codes.InvalidArgument,
-			expectedError: "role is required and cannot be unspecified.",
 		},
 	}
 

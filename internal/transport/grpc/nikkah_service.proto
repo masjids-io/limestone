@@ -112,6 +112,62 @@ message StandardNikkahResponse {
   }
 }
 
+message Height {
+  int32 cm = 1;
+}
+
+message Picture {
+  bytes image = 1;
+  string mime_type = 2;
+}
+
+enum Education {
+  EDUCATION_UNSPECIFIED = 0;
+  HIGH_SCHOOL = 1;
+  BACHELOR = 2;
+  MASTER = 3;
+  DOCTORATE = 4;
+}
+
+message Location {
+  string country = 1;
+  string city = 2;
+  string state = 3;
+  string zip_code = 4;
+  int32 latitude = 5;
+  int32 longitude = 6;
+}
+
+enum Sect {
+  SECT_UNSPECIFIED = 0;
+  SUNNI = 1;
+  SUNNI_HANAFI = 2;
+  SUNNI_MALEKI = 3;
+  SUNNI_SHAFII = 4;
+  SUNNI_MALIKI = 5;
+  SHIA = 6;
+  OTHER = 7;
+}
+
+enum Hobbies {
+  HOBBIES_UNSPECIFIED = 0;
+  READING = 1;
+  WATCHING_MOVIES = 2;
+  WATCHING_TV = 3;
+  PAINTING = 4;
+  WRITING = 5;
+  VOLUNTEERING = 6;
+  VOLLEYBALL = 7;
+  TRAVELING = 8;
+  GAMING = 9;
+  MARTIAL_ARTS = 10;
+  SOCCER = 11;
+  BASKETBALL = 12;
+  FOOTBALL = 13;
+  TENNIS = 14;
+  BADMINTON = 15;
+  CRICKET = 16;
+}
 
 message NikkahProfile {
   string id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -146,6 +202,13 @@ message NikkahProfile {
   }
 
   BirthDate birth_date = 5;
+  Location location = 8;
+  Education education = 9;
+  string occupation = 10;
+  Height height = 11;
+  Sect sect = 12;
+  repeated Picture pictures = 13;
+  repeated Hobbies hobbies = 14;
   google.protobuf.Timestamp create_time = 6 [(google.api.field_behavior) = OUTPUT_ONLY];
   google.protobuf.Timestamp update_time = 7 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
@@ -197,7 +260,13 @@ message ListNikkahProfilesRequest {
   int32 limit = 2;
   int32 page = 3;
   optional string name = 4;
-  optional string gender = 5;
+  NikkahProfile.Gender gender = 5;
+  Location location = 6;
+  Education education = 7;
+  string occupation = 8;
+  Height height = 11;
+  Sect sect = 12;
+  repeated Hobbies hobbies = 13;
 }
 
 message ListNikkahProfilesResponse {

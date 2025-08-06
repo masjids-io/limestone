@@ -201,15 +201,15 @@ func (h *MasjidGrpcHandler) GetMasjid(ctx context.Context, req *pb.GetMasjidRequ
 
 func (h *MasjidGrpcHandler) ListMasjids(ctx context.Context, req *pb.ListMasjidsRequest) (*pb.StandardMasjidResponse, error) {
 	// --- Start Authorization (Coarse-Grained) ---
-	allowedRolesForAnyUser := []string{
-		string(entity.MASJID_ADMIN),
-		string(entity.MASJID_VOLUNTEER),
-		string(entity.MASJID_MEMBER),
-		string(entity.MASJID_IMAM),
-	}
-	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "UpdateUser"); err != nil {
-		return nil, err
-	}
+	//allowedRolesForAnyUser := []string{
+	//	string(entity.MASJID_ADMIN),
+	//	string(entity.MASJID_VOLUNTEER),
+	//	string(entity.MASJID_MEMBER),
+	//	string(entity.MASJID_IMAM),
+	//}
+	//if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "ListMajids"); err != nil {
+	//	return nil, err
+	//}
 	// --- End Authorization (Coarse-Grained) ---
 	params := &entity.ListMasjidsQueryParams{
 		Start:    req.GetStart(),

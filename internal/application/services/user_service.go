@@ -18,6 +18,10 @@ func (s *UserService) CreateUser(ctx context.Context, user *entity.User) (*entit
 	return s.Repo.Create(ctx, user)
 }
 
+func (s *UserService) GetListUsers(ctx context.Context, params *entity.ListUsersQueryParams) ([]entity.User, int32, error) {
+	return s.Repo.GetListUsers(ctx, params)
+}
+
 func (s *UserService) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
 	return s.Repo.Update(ctx, user)
 }
