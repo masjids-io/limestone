@@ -76,7 +76,6 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 }
 
 func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
-	// --- Mulai Otorisasi (Coarse-Grained) ---
 	allowedRolesForAnyUser := []string{
 		string(entity.MASJID_ADMIN),
 		string(entity.MASJID_MEMBER),
@@ -86,9 +85,7 @@ func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersReq
 	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "ListUsers"); err != nil {
 		return nil, err
 	}
-	// --- Akhir Otorisasi (Coarse-Grained) ---
 
-	// Ekstrak parameter paginasi dari permintaan
 	params := &entity.ListUsersQueryParams{
 		Start:    req.GetStart(),
 		Limit:    req.GetLimit(),
@@ -102,33 +99,27 @@ func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersReq
 		return nil, status.Errorf(codes.Canceled, err.Error())
 	}
 
-	// Bagian kode ini sekarang dengan benar memetakan entitas Go ke pesan Protobuf
-	// dan menangani bidang `data` sebagai daftar datar.
 	var listUserResponseItems []*pb.ListUserResponseItem
 	for _, user := range users {
-		// Gunakan variabel sementara untuk menampung nilai enum.
 		var protoRole pb.User_Role
 
-		// Periksa dengan aman apakah string peran ada di peta nilai protobuf.
 		if roleValue, ok := pb.User_Role_value[user.Role.String()]; ok {
-			// Jika ada, ubah nilai ke tipe enum protobuf.
 			protoRole = pb.User_Role(roleValue)
 		} else {
-			// Jika tidak ada, default ke peran yang tidak ditentukan untuk mencegah panic.
 			protoRole = pb.User_ROLE_UNSPECIFIED
 		}
 
 		listUserResponseItems = append(listUserResponseItems, &pb.ListUserResponseItem{
+			Id:       user.ID.String(),
 			Email:    user.Email,
 			Username: user.Username,
 			Role:     protoRole,
 		})
 	}
 
-	// Hitung metadata paginasi
 	pageSize := params.Limit
 	if pageSize <= 0 {
-		pageSize = 10 // Ukuran halaman default
+		pageSize = 10
 	}
 
 	totalPages := int32(0)
@@ -145,7 +136,6 @@ func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersReq
 		}
 	}
 
-	// Handler sekarang membuat dan mengembalikan ListUsersResponse baru dengan data langsung dalam bidang berulang.
 	return &pb.ListUsersResponse{
 		Code:        codes.OK.String(),
 		Status:      "success",
