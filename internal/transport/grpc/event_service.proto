@@ -20,10 +20,10 @@ service EventService {
 
   rpc UpdateEvent(UpdateEventRequest) returns (StandardEventResponse) {
     option (google.api.http) = {
-      patch: "/v1/event/{id}"
-      body: "event"
+      patch: "/v1/event/{event.id}"
+      body: "*"
     };
-    option (google.api.method_signature) = "event";
+    option (google.api.method_signature) = "event,update_mask";
   }
 
   rpc DeleteEvent(DeleteEventRequest) returns (StandardEventResponse) {
@@ -40,7 +40,7 @@ service EventService {
     option (google.api.method_signature) = "id";
   }
 
-  rpc ListEvents(ListEventsRequest) returns (StandardEventResponse) {
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse) {
     option (google.api.http) = {
       get: "/v1/event"
     };
@@ -54,7 +54,6 @@ message StandardEventResponse {
   oneof data {
     Event event = 4;
     DeleteEventResponse delete_event_response = 5;
-    ListEventsResponse list_event_response = 6;
 
   }
 }
@@ -99,8 +98,7 @@ message CreateEventRequest {
 }
 
 message UpdateEventRequest {
-  string id = 1;
-  Event event = 2 [(google.api.field_behavior) = REQUIRED];
+  Event event = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 message DeleteEventRequest {
@@ -114,10 +112,17 @@ message GetEventRequest {
 }
 
 message ListEventsRequest {
-  int32 page_size = 2;
-  string page_token = 3;
+  int32 page = 1;
+  int32 limit = 2;
+  optional string search = 3;
 }
 
 message ListEventsResponse {
-  repeated Event events = 1;
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  repeated Event data = 4;
+  int64 total_items = 5;
+  int32 current_page = 6;
+  int32 total_pages = 7;
 }

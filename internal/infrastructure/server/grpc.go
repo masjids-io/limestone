@@ -53,7 +53,7 @@ func SetupGRPCServer(db *gorm.DB, grpcEndpoint string) (*grpc.Server, net.Listen
 	authHandler := handler.NewAuthGrpcHandler(authService)
 	masjidHandler := handler.NewMasjidGrpcHandler(masjidService)
 	adhanHandler := handler.NewAdhanGrpcHandler(adhanService)
-	eventHandler := handler.NewEventGrpcHandler(eventService)
+	eventHandler := handler.NewEventGrpcHandler(eventService, masjidService)
 	nikkahHandler := handler.NewNikkahIoGrpcHandler(nikkahService)
 	revertHandler := handler.NewRevertGrpcHandler(revertService)
 

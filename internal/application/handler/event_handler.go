@@ -8,6 +8,7 @@ import (
 	"github.com/mnadev/limestone/internal/application/domain/entity"
 	"github.com/mnadev/limestone/internal/application/helper"
 	"github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -17,15 +18,33 @@ import (
 
 type EventGrpcHandler struct {
 	pb.UnimplementedEventServiceServer
-	Svc *services.EventService
+	Svc       *services.EventService
+	MasjidSvc *services.MasjidService
 }
 
-func NewEventGrpcHandler(svc *services.EventService) *EventGrpcHandler {
-	return &EventGrpcHandler{Svc: svc}
+func NewEventGrpcHandler(svc *services.EventService, masjidSvc *services.MasjidService) *EventGrpcHandler {
+	return &EventGrpcHandler{
+		Svc:       svc,
+		MasjidSvc: masjidSvc,
+	}
 }
 
 func (h *EventGrpcHandler) CreateEvent(ctx context.Context, req *pb.CreateEventRequest) (*pb.StandardEventResponse, error) {
 	event := req.GetEvent()
+
+	masjidIdStr := event.GetMasjidId()
+	masjidId, err := uuid.Parse(masjidIdStr)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid masjid_id format: %v", err)
+	}
+
+	_, err = h.MasjidSvc.GetMasjid(ctx, masjidId.String())
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Errorf(codes.NotFound, "masjid with id '%s' not found", masjidIdStr)
+		}
+		return nil, status.Errorf(codes.Internal, "failed to verify masjid: %v", err)
+	}
 
 	eventEntity := &entity.Event{
 		ID:                uuid.New(),
@@ -52,58 +71,64 @@ func (h *EventGrpcHandler) CreateEvent(ctx context.Context, req *pb.CreateEventR
 }
 
 func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventRequest) (*pb.StandardEventResponse, error) {
-	event := req.GetEvent()
-	if event == nil {
+	eventData := req.GetEvent()
+	if eventData == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "event data is required")
 	}
 
-	eventIDStr := event.GetId()
-	if eventIDStr == "" {
-		return nil, status.Errorf(codes.InvalidArgument, "event ID is required for update")
-	}
-
-	eventID, err := uuid.Parse(eventIDStr)
+	eventID, err := uuid.Parse(eventData.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid event ID format: %v", err)
 	}
 
-	eventEntity := &entity.Event{
-		ID:        eventID,
-		UpdatedAt: time.Now(),
+	// 1. READ: Ambil data event yang ada dari database terlebih dahulu.
+	existingEvent, err := h.Svc.GetById(ctx, eventID.String()) // Anda perlu method Get(ctx, id) di service.
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, status.Errorf(codes.NotFound, "event with id %s not found", eventID)
+		}
+		return nil, status.Errorf(codes.Internal, "failed to retrieve event for update: %v", err)
 	}
 
-	if event.GetMasjidId() != "" {
-		eventEntity.MasjidId = event.GetMasjidId()
+	// 2. MODIFY: Timpa field pada data yang ada dengan nilai dari request.
+	// Hanya timpa jika nilai dari request bukan nilai default (zero-value).
+	if eventData.GetName() != "" {
+		existingEvent.Name = eventData.GetName()
 	}
-	if event.GetName() != "" {
-		eventEntity.Name = event.GetName()
+	if eventData.GetDescription() != "" {
+		existingEvent.Description = eventData.GetDescription()
 	}
-	if event.GetDescription() != "" {
-		eventEntity.Description = event.GetDescription()
+	if eventData.GetMasjidId() != "" {
+		existingEvent.MasjidId = eventData.GetMasjidId()
 	}
-	if event.GetStartTime() != nil {
-		eventEntity.StartTime = event.GetStartTime().AsTime()
+	if eventData.GetStartTime() != nil && eventData.GetStartTime().IsValid() {
+		existingEvent.StartTime = eventData.GetStartTime().AsTime()
 	}
-	if event.GetEndTime() != nil {
-		eventEntity.EndTime = event.GetEndTime().AsTime()
+	if eventData.GetEndTime() != nil && eventData.GetEndTime().IsValid() {
+		existingEvent.EndTime = eventData.GetEndTime().AsTime()
 	}
-	if event.GetGenderRestriction() != pb.Event_NO_RESTRICTION {
-		eventEntity.GenderRestriction = entity.GenderRestriction(event.GetGenderRestriction())
+	if eventData.GetMaxParticipants() > 0 {
+		existingEvent.MaxParticipants = eventData.GetMaxParticipants()
 	}
-	if event.GetIsPaid() != false {
-		eventEntity.IsPaid = event.GetIsPaid()
-	}
-	if event.GetRequiresRsvp() != false {
-		eventEntity.RequiresRsvp = event.GetRequiresRsvp()
-	}
-	if event.GetMaxParticipants() != 0 {
-		eventEntity.MaxParticipants = event.GetMaxParticipants()
-	}
-	if event.GetLivestreamLink() != "" {
-		eventEntity.LivestreamLink = event.GetLivestreamLink()
+	if eventData.GetLivestreamLink() != "" {
+		existingEvent.LivestreamLink = eventData.GetLivestreamLink()
 	}
 
-	updatedEvent, err := h.Svc.Update(ctx, eventEntity)
+	// Catatan: Untuk boolean, pendekatan ini memiliki batasan.
+	// Anda tidak bisa mengubah nilai dari 'true' ke 'false' karena 'false' adalah nilai default.
+	// Untuk saat ini, kita asumsikan hanya bisa mengubah dari 'false' ke 'true'.
+	if eventData.GetIsPaid() {
+		existingEvent.IsPaid = true
+	}
+	if eventData.GetRequiresRsvp() {
+		existingEvent.RequiresRsvp = true
+	}
+
+	existingEvent.UpdatedAt = time.Now()
+
+	// 3. WRITE: Simpan kembali seluruh objek yang sudah diperbarui.
+	// Pastikan service 'Update' Anda menerima dan menyimpan seluruh objek entity.
+	updatedEvent, err := h.Svc.Update(ctx, existingEvent)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update event: %v", err)
 	}
@@ -150,15 +175,40 @@ func (h *EventGrpcHandler) DeleteEvent(ctx context.Context, req *pb.DeleteEventR
 	return helper.StandardEventResponse(codes.OK, "success", "event deleted successfully", nil, nil, &pb.DeleteEventResponse{})
 }
 
-func (h *EventGrpcHandler) ListEvents(ctx context.Context, req *pb.ListEventsRequest) (*pb.StandardEventResponse, error) {
-	events, err := h.Svc.ListEvents(ctx, req.GetPageSize(), req.GetPageToken())
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to list masjids: %v", err)
+func (h *EventGrpcHandler) ListEvents(ctx context.Context, req *pb.ListEventsRequest) (*pb.ListEventsResponse, error) {
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_MEMBER),
+		string(entity.MASJID_VOLUNTEER),
+		string(entity.MASJID_IMAM),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "ListEvents"); err != nil {
+		return nil, err
 	}
 
-	protoEvents := &pb.ListEventsResponse{}
+	page := req.GetPage()
+	if page <= 0 {
+		page = 1
+	}
+	limit := req.GetLimit()
+	if limit <= 0 {
+		limit = 10
+	}
+	searchQuery := req.GetSearch()
+
+	events, totalItems, err := h.Svc.ListEvents(ctx, searchQuery, page, limit)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to list events: %v", err)
+	}
+
+	var totalPages int32
+	if totalItems > 0 {
+		totalPages = int32((totalItems + int64(limit) - 1) / int64(limit))
+	}
+
+	protoEvents := make([]*pb.Event, 0, len(events))
 	for _, event := range events {
-		protoEvents.Events = append(protoEvents.Events, &pb.Event{
+		protoEvents = append(protoEvents, &pb.Event{
 			Id:                event.ID.String(),
 			MasjidId:          event.MasjidId,
 			Name:              event.Name,
@@ -174,5 +224,14 @@ func (h *EventGrpcHandler) ListEvents(ctx context.Context, req *pb.ListEventsReq
 			UpdateTime:        timestamppb.New(event.UpdatedAt),
 		})
 	}
-	return helper.StandardEventResponse(codes.OK, "success", "events retrieved successfully", nil, protoEvents, nil)
+
+	return &pb.ListEventsResponse{
+		Code:        codes.OK.String(),
+		Status:      "success",
+		Message:     "Events retrieved successfully",
+		Data:        protoEvents,
+		TotalItems:  totalItems,
+		CurrentPage: page,
+		TotalPages:  totalPages,
+	}, nil
 }

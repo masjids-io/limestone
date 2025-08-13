@@ -73,7 +73,7 @@ func request_EventService_UpdateEvent_0(ctx context.Context, marshaler runtime.M
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Event); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -84,14 +84,14 @@ func request_EventService_UpdateEvent_0(ctx context.Context, marshaler runtime.M
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["event.id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "event.id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "event.id", val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "event.id", err)
 	}
 
 	msg, err := client.UpdateEvent(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -107,7 +107,7 @@ func local_request_EventService_UpdateEvent_0(ctx context.Context, marshaler run
 	if berr != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
 	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq.Event); err != nil && err != io.EOF {
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -118,14 +118,14 @@ func local_request_EventService_UpdateEvent_0(ctx context.Context, marshaler run
 		_   = err
 	)
 
-	val, ok = pathParams["id"]
+	val, ok = pathParams["event.id"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "id")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "event.id")
 	}
 
-	protoReq.Id, err = runtime.String(val)
+	err = runtime.PopulateFieldFromPath(&protoReq, "event.id", val)
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "id", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "event.id", err)
 	}
 
 	msg, err := server.UpdateEvent(ctx, &protoReq)
@@ -312,7 +312,7 @@ func RegisterEventServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.EventService/UpdateEvent", runtime.WithHTTPPathPattern("/v1/event/{id}"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/limestone.EventService/UpdateEvent", runtime.WithHTTPPathPattern("/v1/event/{event.id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -473,7 +473,7 @@ func RegisterEventServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.EventService/UpdateEvent", runtime.WithHTTPPathPattern("/v1/event/{id}"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/limestone.EventService/UpdateEvent", runtime.WithHTTPPathPattern("/v1/event/{event.id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -561,7 +561,7 @@ func RegisterEventServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 var (
 	pattern_EventService_CreateEvent_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "event"}, ""))
 
-	pattern_EventService_UpdateEvent_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "event", "id"}, ""))
+	pattern_EventService_UpdateEvent_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "event", "event.id"}, ""))
 
 	pattern_EventService_DeleteEvent_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "event", "id"}, ""))
 

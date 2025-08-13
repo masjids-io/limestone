@@ -34,7 +34,7 @@ type EventServiceClient interface {
 	UpdateEvent(ctx context.Context, in *UpdateEventRequest, opts ...grpc.CallOption) (*StandardEventResponse, error)
 	DeleteEvent(ctx context.Context, in *DeleteEventRequest, opts ...grpc.CallOption) (*StandardEventResponse, error)
 	GetEvent(ctx context.Context, in *GetEventRequest, opts ...grpc.CallOption) (*StandardEventResponse, error)
-	ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*StandardEventResponse, error)
+	ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error)
 }
 
 type eventServiceClient struct {
@@ -85,9 +85,9 @@ func (c *eventServiceClient) GetEvent(ctx context.Context, in *GetEventRequest, 
 	return out, nil
 }
 
-func (c *eventServiceClient) ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*StandardEventResponse, error) {
+func (c *eventServiceClient) ListEvents(ctx context.Context, in *ListEventsRequest, opts ...grpc.CallOption) (*ListEventsResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(StandardEventResponse)
+	out := new(ListEventsResponse)
 	err := c.cc.Invoke(ctx, EventService_ListEvents_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ type EventServiceServer interface {
 	UpdateEvent(context.Context, *UpdateEventRequest) (*StandardEventResponse, error)
 	DeleteEvent(context.Context, *DeleteEventRequest) (*StandardEventResponse, error)
 	GetEvent(context.Context, *GetEventRequest) (*StandardEventResponse, error)
-	ListEvents(context.Context, *ListEventsRequest) (*StandardEventResponse, error)
+	ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error)
 	mustEmbedUnimplementedEventServiceServer()
 }
 
@@ -126,7 +126,7 @@ func (UnimplementedEventServiceServer) DeleteEvent(context.Context, *DeleteEvent
 func (UnimplementedEventServiceServer) GetEvent(context.Context, *GetEventRequest) (*StandardEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetEvent not implemented")
 }
-func (UnimplementedEventServiceServer) ListEvents(context.Context, *ListEventsRequest) (*StandardEventResponse, error) {
+func (UnimplementedEventServiceServer) ListEvents(context.Context, *ListEventsRequest) (*ListEventsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListEvents not implemented")
 }
 func (UnimplementedEventServiceServer) mustEmbedUnimplementedEventServiceServer() {}
