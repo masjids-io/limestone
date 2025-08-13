@@ -81,8 +81,7 @@ func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventR
 		return nil, status.Errorf(codes.InvalidArgument, "invalid event ID format: %v", err)
 	}
 
-	// 1. READ: Ambil data event yang ada dari database terlebih dahulu.
-	existingEvent, err := h.Svc.GetById(ctx, eventID.String()) // Anda perlu method Get(ctx, id) di service.
+	existingEvent, err := h.Svc.GetById(ctx, eventID.String())
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, status.Errorf(codes.NotFound, "event with id %s not found", eventID)
@@ -90,8 +89,6 @@ func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventR
 		return nil, status.Errorf(codes.Internal, "failed to retrieve event for update: %v", err)
 	}
 
-	// 2. MODIFY: Timpa field pada data yang ada dengan nilai dari request.
-	// Hanya timpa jika nilai dari request bukan nilai default (zero-value).
 	if eventData.GetName() != "" {
 		existingEvent.Name = eventData.GetName()
 	}
@@ -114,9 +111,6 @@ func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventR
 		existingEvent.LivestreamLink = eventData.GetLivestreamLink()
 	}
 
-	// Catatan: Untuk boolean, pendekatan ini memiliki batasan.
-	// Anda tidak bisa mengubah nilai dari 'true' ke 'false' karena 'false' adalah nilai default.
-	// Untuk saat ini, kita asumsikan hanya bisa mengubah dari 'false' ke 'true'.
 	if eventData.GetIsPaid() {
 		existingEvent.IsPaid = true
 	}
@@ -126,8 +120,6 @@ func (h *EventGrpcHandler) UpdateEvent(ctx context.Context, req *pb.UpdateEventR
 
 	existingEvent.UpdatedAt = time.Now()
 
-	// 3. WRITE: Simpan kembali seluruh objek yang sudah diperbarui.
-	// Pastikan service 'Update' Anda menerima dan menyimpan seluruh objek entity.
 	updatedEvent, err := h.Svc.Update(ctx, existingEvent)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update event: %v", err)

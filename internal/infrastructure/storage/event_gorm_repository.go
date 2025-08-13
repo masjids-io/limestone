@@ -45,25 +45,20 @@ func (r *GormEventRepository) ListEvents(ctx context.Context, searchQuery string
 	var totalItems int64
 	var events []entity.Event
 
-	// Buat query dasar yang bisa digunakan kembali
 	query := r.db.WithContext(ctx).Model(&entity.Event{})
 
 	if searchQuery != "" {
-		// Terapkan filter pencarian jika ada
 		query = query.Where("name LIKE ?", "%"+searchQuery+"%")
 	}
 
-	// 1. Jalankan query untuk menghitung total item yang cocok
 	if err := query.Count(&totalItems).Error; err != nil {
 		return nil, 0, err
 	}
 
-	// Optimisasi: Jika tidak ada item, tidak perlu query lagi
 	if totalItems == 0 {
 		return []entity.Event{}, 0, nil
 	}
 
-	// 2. Jalankan query untuk mengambil data halaman ini dengan offset dan limit
 	offset := (page - 1) * limit
 	err := query.Offset(int(offset)).Limit(int(limit)).Order("start_time DESC").Find(&events).Error
 	if err != nil {
