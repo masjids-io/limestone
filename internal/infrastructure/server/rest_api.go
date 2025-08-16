@@ -61,7 +61,7 @@ func SetupRESTGateway(ctx context.Context, db *gorm.DB) *runtime.ServeMux {
 	//event service
 	eventRepo := storage.NewGormEventRepository(db)
 	eventService := services.NewEventService(eventRepo)
-	eventHandler := handler.NewEventGrpcHandler(eventService)
+	eventHandler := handler.NewEventGrpcHandler(eventService, masjidService)
 	if err := pb.RegisterEventServiceHandlerServer(ctx, mux, eventHandler); err != nil {
 		log.Fatalf("failed to register EventService handler: %s", err)
 	}

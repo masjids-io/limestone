@@ -1,18 +1,26 @@
 package entity
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type NikkahProfile struct {
-	ID        uuid.UUID `gorm:"primaryKey;type:char(36)"`
-	UserID    string    `gorm:"uniqueIndex;type:uuid"`
-	Name      string    `gorm:"type:varchar(255)"`
-	Gender    Gender    `gorm:"not null"`
-	BirthDate BirthDate `gorm:"embedded"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         uuid.UUID `gorm:"primaryKey;type:char(36)"`
+	UserID     string    `gorm:"uniqueIndex;type:uuid"`
+	Name       string    `gorm:"type:varchar(255)"`
+	Gender     Gender    `gorm:"not null"`
+	BirthDate  BirthDate `gorm:"embedded"`
+	Location   Location  `gorm:"embedded"`
+	Education  Education `gorm:"type:int"`
+	Occupation string    `gorm:"type:varchar(255)"`
+	Height     Height    `gorm:"embedded"`
+	Sect       Sect      `gorm:"type:int"`
+	Pictures   []Picture `gorm:"type:jsonb"`
+	Hobbies    []Hobbies `gorm:"type:jsonb"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type NikkahMatch struct {
@@ -34,11 +42,17 @@ type NikkahLike struct {
 }
 
 type NikkahProfileQueryParams struct {
-	Start  int32
-	Limit  int32
-	Page   int32
-	Name   string
-	Gender string
+	Start      int32
+	Limit      int32
+	Page       int32
+	Name       string
+	Gender     string
+	Location   *Location
+	Education  *Education
+	Occupation string
+	Height     *Height
+	Sect       *Sect
+	Hobbies    []Hobbies
 }
 
 type NikkahProfileQueryResult struct {

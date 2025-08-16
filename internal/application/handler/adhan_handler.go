@@ -7,8 +7,10 @@ import (
 	"github.com/mnadev/limestone/internal/application/domain/entity"
 	"github.com/mnadev/limestone/internal/application/helper"
 	"github.com/mnadev/limestone/internal/application/services"
+	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"strings"
 	"time"
 )
@@ -22,7 +24,7 @@ func NewAdhanGrpcHandler(svc *services.AdhanService) *AdhanGrpcHandler {
 	return &AdhanGrpcHandler{Svc: svc}
 }
 
-const maxAdhanFileSizeMB = 5
+const maxAdhanFileSizeMB = 50
 
 func (h *AdhanGrpcHandler) CreateAdhan(ctx context.Context, req *pb.CreateAdhanFileRequest) (*pb.StandardAdhanResponse, error) {
 	adhanFile := req.GetAdhanFile()
@@ -165,4 +167,57 @@ func (h *AdhanGrpcHandler) DeleteAdhan(ctx context.Context, req *pb.DeleteAdhanF
 	}
 
 	return helper.StandardAdhanResponse(codes.OK, "success", "adhan file deleted successfully", nil, &pb.DeleteAdhanFileResponse{})
+}
+
+func (h *AdhanGrpcHandler) ListAdhan(ctx context.Context, req *pb.ListAdhanRequest) (*pb.ListAdhanResponse, error) {
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_MEMBER),
+		string(entity.MASJID_VOLUNTEER),
+		string(entity.MASJID_IMAM),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "ListAdhans"); err != nil {
+		return nil, err
+	}
+
+	page := req.GetPage()
+	if page <= 0 {
+		page = 1
+	}
+	limit := req.GetLimit()
+	if limit <= 0 {
+		limit = 10
+	}
+	searchQuery := req.GetSearch()
+
+	adhans, totalItems, err := h.Svc.ListAdhan(ctx, searchQuery, page, limit)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to list Adhan: %v", err)
+	}
+
+	var totalPages int32
+	if totalItems > 0 {
+		totalPages = int32((totalItems + int64(limit) - 1) / int64(limit))
+	}
+
+	protoAdhans := make([]*pb.AdhanFile, 0, len(adhans))
+	for _, adhan := range adhans {
+		protoAdhans = append(protoAdhans, &pb.AdhanFile{
+			Id:         adhan.ID.String(),
+			MasjidId:   adhan.MasjidId,
+			File:       adhan.File,
+			CreateTime: timestamppb.New(adhan.CreatedAt),
+			UpdateTime: timestamppb.New(adhan.UpdatedAt),
+		})
+	}
+
+	return &pb.ListAdhanResponse{
+		Code:        codes.OK.String(),
+		Status:      "success",
+		Message:     "Adhans retrieved successfully",
+		Data:        protoAdhans,
+		TotalItems:  totalItems,
+		CurrentPage: page,
+		TotalPages:  totalPages,
+	}, nil
 }

@@ -4,10 +4,16 @@ import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "masjid_service.proto";
 
 package limestone;
 
 option go_package = "github.com/mnadev/limestone/internal/transport/grpc";
+
+// =========================================================================
+// Service for managing Adhan files
+// =========================================================================
 
 service AdhanService {
   rpc CreateAdhan(CreateAdhanFileRequest) returns (StandardAdhanResponse) {
@@ -36,6 +42,83 @@ service AdhanService {
     };
     option (google.api.method_signature) = "id";
   }
+  rpc ListAdhan(ListAdhanRequest) returns (ListAdhanResponse) {
+    option (google.api.http) = {
+      get: "/v1/adhan"
+    };
+  }
+}
+
+// =========================================================================
+// Service for managing user Adhan preferences
+// =========================================================================
+
+service AdhanPreferencesService {
+  rpc CreateAdhanPreferences(CreateAdhanPreferencesRequest) returns (AdhanPreferencesResponse) {
+    option (google.api.http) = {
+      post: "/v1/preferences"
+      body: "*"
+    };
+    option (google.api.method_signature) = "preferences";
+  }
+  rpc UpdateAdhanPreferences(UpdateAdhanPreferencesRequest) returns (AdhanPreferencesResponse) {
+    option (google.api.http) = {
+      patch: "/v1/preferences/{id}"
+      body: "*"
+    };
+    option (google.api.method_signature) = "id,preferences";
+  }
+  rpc GetAdhanPreferences(GetAdhanPreferencesRequest) returns (AdhanPreferencesResponse) {
+    option (google.api.http) = {
+      get: "/v1/preferences/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+  rpc DeleteAdhanPreferences(DeleteAdhanPreferencesRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/preferences/{id}"
+    };
+    option (google.api.method_signature) = "id";
+  }
+  rpc ListAdhanPreferences(ListAdhanPreferencesRequest) returns (ListAdhanPreferencesResponse) {
+    option (google.api.http) = {
+      get: "/v1/preferences"
+    };
+    option (google.api.method_signature) = "user_id";
+  }
+}
+
+// =========================================================================
+// Message Definitions
+// =========================================================================
+
+// Definition for Masjid and its prayer times configuration.
+// This was missing in your original file.
+message Masjids {
+  message PrayerTimesConfiguration {
+    string calculation_method = 1;
+    double fajr_angle = 2;
+    double isha_angle = 3;
+    string madhab = 4;
+    double latitude = 5;
+    double longitude = 6;
+  }
+}
+
+// When the user logs in to the app, we want to save their adhan preferences.
+// We want to save the adhan file id and the prayer times configuration or masjid id.
+// If the masjid id is provided, we will use the masjid's prayer times configuration.
+// We need to create CRUD for this.
+message SavedUserAdhanPreferences {
+  string id = 1;
+  string user_id = 2;
+  string adhan_file_id = 3;
+  oneof configuration_type {
+    Masjids.PrayerTimesConfiguration prayer_times_configuration = 6;
+    string masjid_id = 7;
+  }
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp update_time = 5;
 }
 
 message StandardAdhanResponse {
@@ -47,6 +130,7 @@ message StandardAdhanResponse {
     DeleteAdhanFileResponse delete_adhan_file_response = 5;
   }
 }
+
 message AdhanFile {
   string id = 1;
   string masjid_id = 2;
@@ -60,7 +144,7 @@ message CreateAdhanFileRequest {
 }
 
 message UpdateAdhanFileRequest {
-  string id = 1;
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
   AdhanFile adhan_file = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
@@ -73,3 +157,49 @@ message DeleteAdhanFileRequest {
 }
 
 message DeleteAdhanFileResponse {}
+
+// CRUD messages for SavedUserAdhanPreferences
+message CreateAdhanPreferencesRequest {
+  SavedUserAdhanPreferences preferences = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateAdhanPreferencesRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+  SavedUserAdhanPreferences preferences = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message GetAdhanPreferencesRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteAdhanPreferencesRequest {
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message AdhanPreferencesResponse {
+  SavedUserAdhanPreferences preferences = 1;
+}
+
+message ListAdhanPreferencesRequest {
+  string user_id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ListAdhanPreferencesResponse {
+  repeated SavedUserAdhanPreferences preferences = 1;
+}
+
+message ListAdhanRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional string search = 3;
+}
+
+message ListAdhanResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  repeated AdhanFile data = 4;
+  int64 total_items = 5;
+  int32 current_page = 6;
+  int32 total_pages = 7;
+}

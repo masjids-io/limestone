@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
@@ -76,6 +77,53 @@ func (r *GormNikkahRepository) ListProfiles(ctx context.Context, params *entity.
 
 	if params.Gender != "" {
 		db = db.Where("gender = ?", params.Gender)
+	}
+
+	// Location filters
+	if params.Location != nil {
+		if params.Location.Country != "" {
+			db = db.Where("location_country ILIKE ?", "%"+params.Location.Country+"%")
+		}
+		if params.Location.City != "" {
+			db = db.Where("location_city ILIKE ?", "%"+params.Location.City+"%")
+		}
+		if params.Location.State != "" {
+			db = db.Where("location_state ILIKE ?", "%"+params.Location.State+"%")
+		}
+		if params.Location.ZipCode != "" {
+			db = db.Where("location_zip_code = ?", params.Location.ZipCode)
+		}
+		// Note: Latitude and Longitude filtering would require more complex geospatial queries
+		// For now, we'll skip them as they would need proper geospatial indexing
+	}
+
+	// Education filter
+	if params.Education != nil {
+		db = db.Where("education = ?", *params.Education)
+	}
+
+	// Occupation filter
+	if params.Occupation != "" {
+		db = db.Where("occupation ILIKE ?", "%"+params.Occupation+"%")
+	}
+
+	// Height filter
+	if params.Height != nil {
+		db = db.Where("height_cm = ?", params.Height.Cm)
+	}
+
+	// Sect filter
+	if params.Sect != nil {
+		db = db.Where("sect = ?", *params.Sect)
+	}
+
+	// Hobbies filter - this is more complex as it's a JSONB array
+	if len(params.Hobbies) > 0 {
+		// For JSONB array contains, we need to check if the hobbies array contains any of the specified hobbies
+		// This is a simplified approach - in production you might want more sophisticated matching
+		for _, hobby := range params.Hobbies {
+			db = db.Where("hobbies @> ?", fmt.Sprintf(`["%s"]`, hobby.String()))
+		}
 	}
 
 	var totalCount int64

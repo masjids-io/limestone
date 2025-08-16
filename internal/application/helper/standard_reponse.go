@@ -120,8 +120,6 @@ func StandardEventResponse(code codes.Code, statusMessage string, message string
 			UpdateTime:        timestamppb.New(eventEntity.UpdatedAt),
 		}
 		resp.Data = &pb.StandardEventResponse_Event{Event: protoEvent}
-	} else if listResponse != nil {
-		resp.Data = &pb.StandardEventResponse_ListEventResponse{ListEventResponse: listResponse}
 	} else if deleteResponse != nil {
 		resp.Data = &pb.StandardEventResponse_DeleteEventResponse{DeleteEventResponse: deleteResponse}
 	}

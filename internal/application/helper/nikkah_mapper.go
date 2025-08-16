@@ -49,14 +49,71 @@ func ToEntityNikkahProfile(protoProfile *pb.NikkahProfile) (*entity.NikkahProfil
 		updatedAt = protoProfile.GetUpdateTime().AsTime()
 	}
 
+	// Convert proto location to entity location
+	var location entity.Location
+	if protoProfile.GetLocation() != nil {
+		location = entity.Location{
+			Country:   protoProfile.GetLocation().GetCountry(),
+			City:      protoProfile.GetLocation().GetCity(),
+			State:     protoProfile.GetLocation().GetState(),
+			ZipCode:   protoProfile.GetLocation().GetZipCode(),
+			Latitude:  protoProfile.GetLocation().GetLatitude(),
+			Longitude: protoProfile.GetLocation().GetLongitude(),
+		}
+	}
+
+	// Convert proto education to entity education
+	var education entity.Education
+	if protoProfile.GetEducation() != pb.Education_EDUCATION_UNSPECIFIED {
+		education = entity.Education(protoProfile.GetEducation())
+	}
+
+	// Convert proto height to entity height
+	var height entity.Height
+	if protoProfile.GetHeight() != nil {
+		height = entity.Height{
+			Cm: protoProfile.GetHeight().GetCm(),
+		}
+	}
+
+	// Convert proto sect to entity sect
+	var sect entity.Sect
+	if protoProfile.GetSect() != pb.Sect_SECT_UNSPECIFIED {
+		sect = entity.Sect(protoProfile.GetSect())
+	}
+
+	// Convert proto pictures to entity pictures
+	var pictures []entity.Picture
+	for _, pic := range protoProfile.GetPictures() {
+		pictures = append(pictures, entity.Picture{
+			Image:    pic.GetImage(),
+			MimeType: pic.GetMimeType(),
+		})
+	}
+
+	// Convert proto hobbies to entity hobbies
+	var hobbies []entity.Hobbies
+	for _, hobby := range protoProfile.GetHobbies() {
+		if hobby != pb.Hobbies_HOBBIES_UNSPECIFIED {
+			hobbies = append(hobbies, entity.Hobbies(hobby))
+		}
+	}
+
 	return &entity.NikkahProfile{
-		ID:        profileID,
-		UserID:    protoProfile.GetUserId(),
-		Name:      protoProfile.GetName(),
-		BirthDate: birthDate,
-		Gender:    gender,
-		CreatedAt: createdAt,
-		UpdatedAt: updatedAt,
+		ID:         profileID,
+		UserID:     protoProfile.GetUserId(),
+		Name:       protoProfile.GetName(),
+		BirthDate:  birthDate,
+		Gender:     gender,
+		Location:   location,
+		Education:  education,
+		Occupation: protoProfile.GetOccupation(),
+		Height:     height,
+		Sect:       sect,
+		Pictures:   pictures,
+		Hobbies:    hobbies,
+		CreatedAt:  createdAt,
+		UpdatedAt:  updatedAt,
 	}, nil
 }
 
@@ -65,10 +122,71 @@ func ToProtoNikkahProfile(eProfile *entity.NikkahProfile) *pb.NikkahProfile {
 		return nil
 	}
 
+	// Convert entity location to proto location
+	var protoLocation *pb.Location
+	if eProfile.Location != (entity.Location{}) {
+		protoLocation = &pb.Location{
+			Country:   eProfile.Location.Country,
+			City:      eProfile.Location.City,
+			State:     eProfile.Location.State,
+			ZipCode:   eProfile.Location.ZipCode,
+			Latitude:  eProfile.Location.Latitude,
+			Longitude: eProfile.Location.Longitude,
+		}
+	}
+
+	// Convert entity education to proto education
+	var protoEducation pb.Education
+	if eProfile.Education != entity.EducationUnspecified {
+		protoEducation = pb.Education(eProfile.Education)
+	} else {
+		protoEducation = pb.Education_EDUCATION_UNSPECIFIED
+	}
+
+	// Convert entity height to proto height
+	var protoHeight *pb.Height
+	if eProfile.Height != (entity.Height{}) {
+		protoHeight = &pb.Height{
+			Cm: eProfile.Height.Cm,
+		}
+	}
+
+	// Convert entity sect to proto sect
+	var protoSect pb.Sect
+	if eProfile.Sect != entity.SectUnspecified {
+		protoSect = pb.Sect(eProfile.Sect)
+	} else {
+		protoSect = pb.Sect_SECT_UNSPECIFIED
+	}
+
+	// Convert entity pictures to proto pictures
+	var protoPictures []*pb.Picture
+	for _, pic := range eProfile.Pictures {
+		protoPictures = append(protoPictures, &pb.Picture{
+			Image:    pic.Image,
+			MimeType: pic.MimeType,
+		})
+	}
+
+	// Convert entity hobbies to proto hobbies
+	var protoHobbies []pb.Hobbies
+	for _, hobby := range eProfile.Hobbies {
+		if hobby != entity.HobbiesUnspecified {
+			protoHobbies = append(protoHobbies, pb.Hobbies(hobby))
+		}
+	}
+
 	protoProfile := &pb.NikkahProfile{
-		Id:     eProfile.ID.String(),
-		UserId: eProfile.UserID,
-		Name:   eProfile.Name,
+		Id:         eProfile.ID.String(),
+		UserId:     eProfile.UserID,
+		Name:       eProfile.Name,
+		Location:   protoLocation,
+		Education:  protoEducation,
+		Occupation: eProfile.Occupation,
+		Height:     protoHeight,
+		Sect:       protoSect,
+		Pictures:   protoPictures,
+		Hobbies:    protoHobbies,
 		BirthDate: &pb.NikkahProfile_BirthDate{
 			Year:  eProfile.BirthDate.Year,
 			Month: pb.NikkahProfile_BirthDate_Month(eProfile.BirthDate.Month),

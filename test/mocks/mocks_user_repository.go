@@ -19,6 +19,15 @@ func (m *MockUserRepository) Create(ctx context.Context, user *entity.User) (*en
 	return args.Get(0).(*entity.User), args.Error(1)
 }
 
+// GetListUsers now returns a slice of users.
+func (m *MockUserRepository) GetListUsers(ctx context.Context, params *entity.ListUsersQueryParams) ([]entity.User, int32, error) {
+	args := m.Called(ctx)
+	if args.Get(0) == nil {
+		return nil, 0, args.Error(1)
+	}
+	return args.Get(0).([]entity.User), 0, args.Error(1)
+}
+
 // Update sekarang mengembalikan (*entity.User, error)
 func (m *MockUserRepository) Update(ctx context.Context, user *entity.User) (*entity.User, error) {
 	args := m.Called(ctx, user)

@@ -40,3 +40,30 @@ func (r *GormAdhanRepository) GetByIDAdhan(ctx context.Context, id string) (*ent
 func (r *GormAdhanRepository) DeleteAdhan(ctx context.Context, id string) error {
 	return r.db.WithContext(ctx).Delete(&entity.Adhan{}, "id = ?", id).Error
 }
+
+func (r *GormAdhanRepository) ListAdhan(ctx context.Context, searchQuery string, page int32, limit int32) ([]entity.Adhan, int64, error) {
+	var totalItems int64
+	var adhans []entity.Adhan
+
+	query := r.db.WithContext(ctx).Model(&entity.Adhan{})
+
+	if searchQuery != "" {
+		query = query.Where("masjid_id = ?", "%"+searchQuery+"%")
+	}
+
+	if err := query.Count(&totalItems).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if totalItems == 0 {
+		return []entity.Adhan{}, 0, nil
+	}
+
+	offset := (page - 1) * limit
+	err := query.Offset(int(offset)).Limit(int(limit)).Order("created_at DESC").Find(&adhans).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return adhans, totalItems, nil
+}

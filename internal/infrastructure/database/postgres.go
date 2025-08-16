@@ -2,10 +2,11 @@ package database
 
 import (
 	"fmt"
-	"github.com/mnadev/limestone/internal/application/domain/entity"
-	"gorm.io/gorm/logger"
 	"log"
 	"os"
+
+	"github.com/mnadev/limestone/internal/application/domain/entity"
+	"gorm.io/gorm/logger"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -50,10 +51,12 @@ func SetupDatabase() *gorm.DB {
 	}
 	err = DB.AutoMigrate(entity.NikkahProfile{})
 	if err != nil {
+		log.Printf("Failed to migrate NikkahProfile: %v", err)
 		return nil
 	}
 	err = DB.AutoMigrate(entity.NikkahLike{})
 	if err != nil {
+		log.Printf("Failed to migrate NikkahLike: %v", err)
 		return nil
 	}
 	err = DB.AutoMigrate(entity.NikkahMatch{})
@@ -110,13 +113,17 @@ func SetupDatabaseTesting() *gorm.DB {
 	}
 	err = DB.AutoMigrate(entity.NikkahProfile{})
 	if err != nil {
+		log.Printf("Failed to migrate NikkahProfile: %v", err)
 		return nil
 	}
 	err = DB.AutoMigrate(entity.NikkahLike{})
 	if err != nil {
+		log.Printf("Failed to migrate NikkahLike: %v", err)
+		return nil
 	}
 	err = DB.AutoMigrate(entity.NikkahMatch{})
 	if err != nil {
+		log.Printf("Failed to migrate NikkahMatch: %v", err)
 		return nil
 	}
 	err = DB.AutoMigrate(entity.RevertProfile{})

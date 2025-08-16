@@ -22,6 +22,45 @@ func (r *GormUserRepository) Create(ctx context.Context, user *entity.User) (*en
 	return user, nil
 }
 
+func (r *GormUserRepository) GetListUsers(ctx context.Context, params *entity.ListUsersQueryParams) ([]entity.User, int32, error) {
+	db := r.db.WithContext(ctx)
+	if params.Email != "" {
+		db = db.Where("email ILIKE ?", "%"+params.Email+"%")
+	}
+	if params.Username != "" {
+		//db = db.Where("LOWER(address->>'city') LIKE LOWER(?) OR LOWER(address->>'country_code') LIKE LOWER(?)", "%"+params.Location+"%", "%"+params.Location+"%")
+		db = db.Where("username ILIKE ?", "%"+params.Username+"%")
+	}
+
+	var totalCount int64
+	if err := db.Model(&entity.User{}).Count(&totalCount).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var users []entity.User
+	pageSize := params.Limit
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	offset := int((params.Page - 1) * pageSize)
+	if params.Start > 0 {
+		offset = int(params.Start)
+	}
+	if offset < 0 {
+		offset = 0
+	}
+
+	db = db.Offset(offset).Limit(int(pageSize)).Order("created_at DESC, id ASC")
+
+	result := db.Find(&users)
+	if result.Error != nil {
+		return nil, 0, result.Error
+	}
+
+	return users, int32(totalCount), nil
+}
+
 func (r *GormUserRepository) Update(ctx context.Context, user *entity.User) (*entity.User, error) {
 	if err := r.db.WithContext(ctx).Model(&entity.User{}).Where("id = ?", user.ID).Updates(user).Error; err != nil {
 		return nil, err

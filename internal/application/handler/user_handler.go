@@ -43,9 +43,6 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 	if req.GetPhoneNumber() == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "phone number is required")
 	}
-	if req.GetRole() == pb.CreateUserRequest_ROLE_UNSPECIFIED {
-		return nil, status.Errorf(codes.InvalidArgument, "role is required and cannot be unspecified.")
-	}
 
 	password := req.GetPassword()
 	if len(password) < 8 {
@@ -65,7 +62,7 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 		LastName:       req.GetLastName(),
 		PhoneNumber:    req.GetPhoneNumber(),
 		Gender:         entity.Gender(req.GetGender().String()),
-		Role:           entity.Role(req.GetRole().String()),
+		Role:           entity.MASJID_MEMBER,
 	}
 
 	responseCreatedUser, err := h.Svc.CreateUser(ctx, u)
@@ -76,6 +73,78 @@ func (h *UserGrpcHandler) CreateUser(ctx context.Context, req *pb.CreateUserRequ
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 	return helper.StandardUserResponse(codes.OK, "success", "user created successfully", responseCreatedUser, nil)
+}
+
+func (h *UserGrpcHandler) GetListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.ListUsersResponse, error) {
+	allowedRolesForAnyUser := []string{
+		string(entity.MASJID_ADMIN),
+		string(entity.MASJID_MEMBER),
+		string(entity.MASJID_VOLUNTEER),
+		string(entity.MASJID_IMAM),
+	}
+	if err := auth.RequireRole(ctx, allowedRolesForAnyUser, "ListUsers"); err != nil {
+		return nil, err
+	}
+
+	params := &entity.ListUsersQueryParams{
+		Start:    req.GetStart(),
+		Limit:    req.GetLimit(),
+		Page:     req.GetPage(),
+		Email:    req.GetEmail(),
+		Username: req.GetUsername(),
+	}
+
+	users, totalCount, err := h.Svc.GetListUsers(ctx, params)
+	if err != nil {
+		return nil, status.Errorf(codes.Canceled, err.Error())
+	}
+
+	var listUserResponseItems []*pb.ListUserResponseItem
+	for _, user := range users {
+		var protoRole pb.User_Role
+
+		if roleValue, ok := pb.User_Role_value[user.Role.String()]; ok {
+			protoRole = pb.User_Role(roleValue)
+		} else {
+			protoRole = pb.User_ROLE_UNSPECIFIED
+		}
+
+		listUserResponseItems = append(listUserResponseItems, &pb.ListUserResponseItem{
+			Id:       user.ID.String(),
+			Email:    user.Email,
+			Username: user.Username,
+			Role:     protoRole,
+		})
+	}
+
+	pageSize := params.Limit
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	totalPages := int32(0)
+	if pageSize > 0 {
+		totalPages = (totalCount + pageSize - 1) / pageSize
+	}
+
+	currentPage := params.Page
+	if currentPage == 0 {
+		if params.Start > 0 && pageSize > 0 {
+			currentPage = (params.Start / pageSize) + 1
+		} else {
+			currentPage = 1
+		}
+	}
+
+	return &pb.ListUsersResponse{
+		Code:        codes.OK.String(),
+		Status:      "success",
+		Message:     "users retrieved successfully",
+		Data:        listUserResponseItems,
+		TotalCount:  totalCount,
+		CurrentPage: currentPage,
+		TotalPages:  totalPages,
+	}, nil
 }
 
 func (h *UserGrpcHandler) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.StandardUserResponse, error) {
@@ -125,6 +194,7 @@ func (h *UserGrpcHandler) UpdateUser(ctx context.Context, req *pb.UpdateUserRequ
 		FirstName:   req.User.FirstName,
 		LastName:    req.User.LastName,
 		PhoneNumber: req.User.PhoneNumber,
+		Role:        entity.Role(req.User.Role.String()),
 		Gender:      entity.Gender(req.User.Gender),
 		UpdatedAt:   time.Now(),
 	}

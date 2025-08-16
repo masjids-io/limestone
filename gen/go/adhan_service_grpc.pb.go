@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -23,6 +24,7 @@ const (
 	AdhanService_UpdateAdhan_FullMethodName  = "/limestone.AdhanService/UpdateAdhan"
 	AdhanService_GetAdhanById_FullMethodName = "/limestone.AdhanService/GetAdhanById"
 	AdhanService_DeleteAdhan_FullMethodName  = "/limestone.AdhanService/DeleteAdhan"
+	AdhanService_ListAdhan_FullMethodName    = "/limestone.AdhanService/ListAdhan"
 )
 
 // AdhanServiceClient is the client API for AdhanService service.
@@ -33,6 +35,7 @@ type AdhanServiceClient interface {
 	UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
 	GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
 	DeleteAdhan(ctx context.Context, in *DeleteAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
+	ListAdhan(ctx context.Context, in *ListAdhanRequest, opts ...grpc.CallOption) (*ListAdhanResponse, error)
 }
 
 type adhanServiceClient struct {
@@ -83,6 +86,16 @@ func (c *adhanServiceClient) DeleteAdhan(ctx context.Context, in *DeleteAdhanFil
 	return out, nil
 }
 
+func (c *adhanServiceClient) ListAdhan(ctx context.Context, in *ListAdhanRequest, opts ...grpc.CallOption) (*ListAdhanResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAdhanResponse)
+	err := c.cc.Invoke(ctx, AdhanService_ListAdhan_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdhanServiceServer is the server API for AdhanService service.
 // All implementations must embed UnimplementedAdhanServiceServer
 // for forward compatibility.
@@ -91,6 +104,7 @@ type AdhanServiceServer interface {
 	UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*StandardAdhanResponse, error)
 	GetAdhanById(context.Context, *GetAdhanFileRequest) (*StandardAdhanResponse, error)
 	DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error)
+	ListAdhan(context.Context, *ListAdhanRequest) (*ListAdhanResponse, error)
 	mustEmbedUnimplementedAdhanServiceServer()
 }
 
@@ -112,6 +126,9 @@ func (UnimplementedAdhanServiceServer) GetAdhanById(context.Context, *GetAdhanFi
 }
 func (UnimplementedAdhanServiceServer) DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAdhan not implemented")
+}
+func (UnimplementedAdhanServiceServer) ListAdhan(context.Context, *ListAdhanRequest) (*ListAdhanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAdhan not implemented")
 }
 func (UnimplementedAdhanServiceServer) mustEmbedUnimplementedAdhanServiceServer() {}
 func (UnimplementedAdhanServiceServer) testEmbeddedByValue()                      {}
@@ -206,6 +223,24 @@ func _AdhanService_DeleteAdhan_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdhanService_ListAdhan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAdhanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdhanServiceServer).ListAdhan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdhanService_ListAdhan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdhanServiceServer).ListAdhan(ctx, req.(*ListAdhanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdhanService_ServiceDesc is the grpc.ServiceDesc for AdhanService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +263,265 @@ var AdhanService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAdhan",
 			Handler:    _AdhanService_DeleteAdhan_Handler,
+		},
+		{
+			MethodName: "ListAdhan",
+			Handler:    _AdhanService_ListAdhan_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "adhan_service.proto",
+}
+
+const (
+	AdhanPreferencesService_CreateAdhanPreferences_FullMethodName = "/limestone.AdhanPreferencesService/CreateAdhanPreferences"
+	AdhanPreferencesService_UpdateAdhanPreferences_FullMethodName = "/limestone.AdhanPreferencesService/UpdateAdhanPreferences"
+	AdhanPreferencesService_GetAdhanPreferences_FullMethodName    = "/limestone.AdhanPreferencesService/GetAdhanPreferences"
+	AdhanPreferencesService_DeleteAdhanPreferences_FullMethodName = "/limestone.AdhanPreferencesService/DeleteAdhanPreferences"
+	AdhanPreferencesService_ListAdhanPreferences_FullMethodName   = "/limestone.AdhanPreferencesService/ListAdhanPreferences"
+)
+
+// AdhanPreferencesServiceClient is the client API for AdhanPreferencesService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type AdhanPreferencesServiceClient interface {
+	CreateAdhanPreferences(ctx context.Context, in *CreateAdhanPreferencesRequest, opts ...grpc.CallOption) (*AdhanPreferencesResponse, error)
+	UpdateAdhanPreferences(ctx context.Context, in *UpdateAdhanPreferencesRequest, opts ...grpc.CallOption) (*AdhanPreferencesResponse, error)
+	GetAdhanPreferences(ctx context.Context, in *GetAdhanPreferencesRequest, opts ...grpc.CallOption) (*AdhanPreferencesResponse, error)
+	DeleteAdhanPreferences(ctx context.Context, in *DeleteAdhanPreferencesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ListAdhanPreferences(ctx context.Context, in *ListAdhanPreferencesRequest, opts ...grpc.CallOption) (*ListAdhanPreferencesResponse, error)
+}
+
+type adhanPreferencesServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewAdhanPreferencesServiceClient(cc grpc.ClientConnInterface) AdhanPreferencesServiceClient {
+	return &adhanPreferencesServiceClient{cc}
+}
+
+func (c *adhanPreferencesServiceClient) CreateAdhanPreferences(ctx context.Context, in *CreateAdhanPreferencesRequest, opts ...grpc.CallOption) (*AdhanPreferencesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AdhanPreferencesResponse)
+	err := c.cc.Invoke(ctx, AdhanPreferencesService_CreateAdhanPreferences_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adhanPreferencesServiceClient) UpdateAdhanPreferences(ctx context.Context, in *UpdateAdhanPreferencesRequest, opts ...grpc.CallOption) (*AdhanPreferencesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AdhanPreferencesResponse)
+	err := c.cc.Invoke(ctx, AdhanPreferencesService_UpdateAdhanPreferences_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adhanPreferencesServiceClient) GetAdhanPreferences(ctx context.Context, in *GetAdhanPreferencesRequest, opts ...grpc.CallOption) (*AdhanPreferencesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AdhanPreferencesResponse)
+	err := c.cc.Invoke(ctx, AdhanPreferencesService_GetAdhanPreferences_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adhanPreferencesServiceClient) DeleteAdhanPreferences(ctx context.Context, in *DeleteAdhanPreferencesRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, AdhanPreferencesService_DeleteAdhanPreferences_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adhanPreferencesServiceClient) ListAdhanPreferences(ctx context.Context, in *ListAdhanPreferencesRequest, opts ...grpc.CallOption) (*ListAdhanPreferencesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAdhanPreferencesResponse)
+	err := c.cc.Invoke(ctx, AdhanPreferencesService_ListAdhanPreferences_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AdhanPreferencesServiceServer is the server API for AdhanPreferencesService service.
+// All implementations must embed UnimplementedAdhanPreferencesServiceServer
+// for forward compatibility.
+type AdhanPreferencesServiceServer interface {
+	CreateAdhanPreferences(context.Context, *CreateAdhanPreferencesRequest) (*AdhanPreferencesResponse, error)
+	UpdateAdhanPreferences(context.Context, *UpdateAdhanPreferencesRequest) (*AdhanPreferencesResponse, error)
+	GetAdhanPreferences(context.Context, *GetAdhanPreferencesRequest) (*AdhanPreferencesResponse, error)
+	DeleteAdhanPreferences(context.Context, *DeleteAdhanPreferencesRequest) (*emptypb.Empty, error)
+	ListAdhanPreferences(context.Context, *ListAdhanPreferencesRequest) (*ListAdhanPreferencesResponse, error)
+	mustEmbedUnimplementedAdhanPreferencesServiceServer()
+}
+
+// UnimplementedAdhanPreferencesServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedAdhanPreferencesServiceServer struct{}
+
+func (UnimplementedAdhanPreferencesServiceServer) CreateAdhanPreferences(context.Context, *CreateAdhanPreferencesRequest) (*AdhanPreferencesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAdhanPreferences not implemented")
+}
+func (UnimplementedAdhanPreferencesServiceServer) UpdateAdhanPreferences(context.Context, *UpdateAdhanPreferencesRequest) (*AdhanPreferencesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAdhanPreferences not implemented")
+}
+func (UnimplementedAdhanPreferencesServiceServer) GetAdhanPreferences(context.Context, *GetAdhanPreferencesRequest) (*AdhanPreferencesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAdhanPreferences not implemented")
+}
+func (UnimplementedAdhanPreferencesServiceServer) DeleteAdhanPreferences(context.Context, *DeleteAdhanPreferencesRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAdhanPreferences not implemented")
+}
+func (UnimplementedAdhanPreferencesServiceServer) ListAdhanPreferences(context.Context, *ListAdhanPreferencesRequest) (*ListAdhanPreferencesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAdhanPreferences not implemented")
+}
+func (UnimplementedAdhanPreferencesServiceServer) mustEmbedUnimplementedAdhanPreferencesServiceServer() {
+}
+func (UnimplementedAdhanPreferencesServiceServer) testEmbeddedByValue() {}
+
+// UnsafeAdhanPreferencesServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AdhanPreferencesServiceServer will
+// result in compilation errors.
+type UnsafeAdhanPreferencesServiceServer interface {
+	mustEmbedUnimplementedAdhanPreferencesServiceServer()
+}
+
+func RegisterAdhanPreferencesServiceServer(s grpc.ServiceRegistrar, srv AdhanPreferencesServiceServer) {
+	// If the following call pancis, it indicates UnimplementedAdhanPreferencesServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&AdhanPreferencesService_ServiceDesc, srv)
+}
+
+func _AdhanPreferencesService_CreateAdhanPreferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAdhanPreferencesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdhanPreferencesServiceServer).CreateAdhanPreferences(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdhanPreferencesService_CreateAdhanPreferences_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdhanPreferencesServiceServer).CreateAdhanPreferences(ctx, req.(*CreateAdhanPreferencesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdhanPreferencesService_UpdateAdhanPreferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAdhanPreferencesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdhanPreferencesServiceServer).UpdateAdhanPreferences(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdhanPreferencesService_UpdateAdhanPreferences_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdhanPreferencesServiceServer).UpdateAdhanPreferences(ctx, req.(*UpdateAdhanPreferencesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdhanPreferencesService_GetAdhanPreferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAdhanPreferencesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdhanPreferencesServiceServer).GetAdhanPreferences(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdhanPreferencesService_GetAdhanPreferences_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdhanPreferencesServiceServer).GetAdhanPreferences(ctx, req.(*GetAdhanPreferencesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdhanPreferencesService_DeleteAdhanPreferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAdhanPreferencesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdhanPreferencesServiceServer).DeleteAdhanPreferences(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdhanPreferencesService_DeleteAdhanPreferences_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdhanPreferencesServiceServer).DeleteAdhanPreferences(ctx, req.(*DeleteAdhanPreferencesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdhanPreferencesService_ListAdhanPreferences_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAdhanPreferencesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdhanPreferencesServiceServer).ListAdhanPreferences(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdhanPreferencesService_ListAdhanPreferences_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdhanPreferencesServiceServer).ListAdhanPreferences(ctx, req.(*ListAdhanPreferencesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AdhanPreferencesService_ServiceDesc is the grpc.ServiceDesc for AdhanPreferencesService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var AdhanPreferencesService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "limestone.AdhanPreferencesService",
+	HandlerType: (*AdhanPreferencesServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateAdhanPreferences",
+			Handler:    _AdhanPreferencesService_CreateAdhanPreferences_Handler,
+		},
+		{
+			MethodName: "UpdateAdhanPreferences",
+			Handler:    _AdhanPreferencesService_UpdateAdhanPreferences_Handler,
+		},
+		{
+			MethodName: "GetAdhanPreferences",
+			Handler:    _AdhanPreferencesService_GetAdhanPreferences_Handler,
+		},
+		{
+			MethodName: "DeleteAdhanPreferences",
+			Handler:    _AdhanPreferencesService_DeleteAdhanPreferences_Handler,
+		},
+		{
+			MethodName: "ListAdhanPreferences",
+			Handler:    _AdhanPreferencesService_ListAdhanPreferences_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

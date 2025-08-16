@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/google/uuid"
 	pb "github.com/mnadev/limestone/gen/go"
 	"github.com/mnadev/limestone/internal/application/domain/entity"
@@ -12,7 +14,6 @@ import (
 	"github.com/mnadev/limestone/internal/infrastructure/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"strings"
 )
 
 type NikkahIoGrpcHandler struct {
@@ -198,12 +199,61 @@ func (h *NikkahIoGrpcHandler) GetNikkahProfile(ctx context.Context, req *pb.GetN
 
 func (h *NikkahIoGrpcHandler) ListNikkahProfiles(ctx context.Context, req *pb.ListNikkahProfilesRequest) (*pb.StandardNikkahResponse, error) {
 
+	// Convert proto location to entity location
+	var location *entity.Location
+	if req.GetLocation() != nil {
+		location = &entity.Location{
+			Country:   req.GetLocation().GetCountry(),
+			City:      req.GetLocation().GetCity(),
+			State:     req.GetLocation().GetState(),
+			ZipCode:   req.GetLocation().GetZipCode(),
+			Latitude:  req.GetLocation().GetLatitude(),
+			Longitude: req.GetLocation().GetLongitude(),
+		}
+	}
+
+	// Convert proto education to entity education
+	var education *entity.Education
+	if req.GetEducation() != pb.Education_EDUCATION_UNSPECIFIED {
+		edu := entity.Education(req.GetEducation())
+		education = &edu
+	}
+
+	// Convert proto height to entity height
+	var height *entity.Height
+	if req.GetHeight() != nil {
+		height = &entity.Height{
+			Cm: req.GetHeight().GetCm(),
+		}
+	}
+
+	// Convert proto sect to entity sect
+	var sect *entity.Sect
+	if req.GetSect() != pb.Sect_SECT_UNSPECIFIED {
+		s := entity.Sect(req.GetSect())
+		sect = &s
+	}
+
+	// Convert proto hobbies to entity hobbies
+	var hobbies []entity.Hobbies
+	for _, hobby := range req.GetHobbies() {
+		if hobby != pb.Hobbies_HOBBIES_UNSPECIFIED {
+			hobbies = append(hobbies, entity.Hobbies(hobby))
+		}
+	}
+
 	params := &entity.NikkahProfileQueryParams{
-		Start:  req.GetStart(),
-		Limit:  req.GetLimit(),
-		Page:   req.GetPage(),
-		Name:   req.GetName(),
-		Gender: req.GetGender(),
+		Start:      req.GetStart(),
+		Limit:      req.GetLimit(),
+		Page:       req.GetPage(),
+		Name:       req.GetName(),
+		Gender:     req.GetGender().String(),
+		Location:   location,
+		Education:  education,
+		Occupation: req.GetOccupation(),
+		Height:     height,
+		Sect:       sect,
+		Hobbies:    hobbies,
 	}
 
 	queryResult, err := h.NikkahSvc.ListNikkahProfiles(ctx, params)
