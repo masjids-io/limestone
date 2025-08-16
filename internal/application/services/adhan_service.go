@@ -29,3 +29,7 @@ func (r *AdhanService) GetAdhanByID(ctx context.Context, id string) (*entity.Adh
 func (r *AdhanService) DeleteAdhan(ctx context.Context, id string) error {
 	return r.Repo.DeleteAdhan(ctx, id)
 }
+
+func (s *AdhanService) ListAdhan(ctx context.Context, searchQuery string, page int32, limit int32) ([]entity.Adhan, int64, error) {
+	return s.Repo.ListAdhan(ctx, searchQuery, page, limit)
+}

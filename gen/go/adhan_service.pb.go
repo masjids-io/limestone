@@ -908,6 +908,158 @@ func (x *ListAdhanPreferencesResponse) GetPreferences() []*SavedUserAdhanPrefere
 	return nil
 }
 
+type ListAdhanRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	Search        *string                `protobuf:"bytes,3,opt,name=search,proto3,oneof" json:"search,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAdhanRequest) Reset() {
+	*x = ListAdhanRequest{}
+	mi := &file_adhan_service_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAdhanRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAdhanRequest) ProtoMessage() {}
+
+func (x *ListAdhanRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_adhan_service_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAdhanRequest.ProtoReflect.Descriptor instead.
+func (*ListAdhanRequest) Descriptor() ([]byte, []int) {
+	return file_adhan_service_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *ListAdhanRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListAdhanRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *ListAdhanRequest) GetSearch() string {
+	if x != nil && x.Search != nil {
+		return *x.Search
+	}
+	return ""
+}
+
+type ListAdhanResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	Message       string                 `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	Data          []*AdhanFile           `protobuf:"bytes,4,rep,name=data,proto3" json:"data,omitempty"`
+	TotalItems    int64                  `protobuf:"varint,5,opt,name=total_items,json=totalItems,proto3" json:"total_items,omitempty"`
+	CurrentPage   int32                  `protobuf:"varint,6,opt,name=current_page,json=currentPage,proto3" json:"current_page,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,7,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAdhanResponse) Reset() {
+	*x = ListAdhanResponse{}
+	mi := &file_adhan_service_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAdhanResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAdhanResponse) ProtoMessage() {}
+
+func (x *ListAdhanResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_adhan_service_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAdhanResponse.ProtoReflect.Descriptor instead.
+func (*ListAdhanResponse) Descriptor() ([]byte, []int) {
+	return file_adhan_service_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ListAdhanResponse) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *ListAdhanResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ListAdhanResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ListAdhanResponse) GetData() []*AdhanFile {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *ListAdhanResponse) GetTotalItems() int64 {
+	if x != nil {
+		return x.TotalItems
+	}
+	return 0
+}
+
+func (x *ListAdhanResponse) GetCurrentPage() int32 {
+	if x != nil {
+		return x.CurrentPage
+	}
+	return 0
+}
+
+func (x *ListAdhanResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
+}
+
 type Masjids_PrayerTimesConfiguration struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	CalculationMethod string                 `protobuf:"bytes,1,opt,name=calculation_method,json=calculationMethod,proto3" json:"calculation_method,omitempty"`
@@ -922,7 +1074,7 @@ type Masjids_PrayerTimesConfiguration struct {
 
 func (x *Masjids_PrayerTimesConfiguration) Reset() {
 	*x = Masjids_PrayerTimesConfiguration{}
-	mi := &file_adhan_service_proto_msgTypes[16]
+	mi := &file_adhan_service_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -934,7 +1086,7 @@ func (x *Masjids_PrayerTimesConfiguration) String() string {
 func (*Masjids_PrayerTimesConfiguration) ProtoMessage() {}
 
 func (x *Masjids_PrayerTimesConfiguration) ProtoReflect() protoreflect.Message {
-	mi := &file_adhan_service_proto_msgTypes[16]
+	mi := &file_adhan_service_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1060,7 +1212,22 @@ const file_adhan_service_proto_rawDesc = "" +
 	"\x1bListAdhanPreferencesRequest\x12\x1c\n" +
 	"\auser_id\x18\x01 \x01(\tB\x03\xe0A\x02R\x06userId\"f\n" +
 	"\x1cListAdhanPreferencesResponse\x12F\n" +
-	"\vpreferences\x18\x01 \x03(\v2$.limestone.SavedUserAdhanPreferencesR\vpreferences2\xf4\x03\n" +
+	"\vpreferences\x18\x01 \x03(\v2$.limestone.SavedUserAdhanPreferencesR\vpreferences\"d\n" +
+	"\x10ListAdhanRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x1b\n" +
+	"\x06search\x18\x03 \x01(\tH\x00R\x06search\x88\x01\x01B\t\n" +
+	"\a_search\"\xe8\x01\n" +
+	"\x11ListAdhanResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x18\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\x12(\n" +
+	"\x04data\x18\x04 \x03(\v2\x14.limestone.AdhanFileR\x04data\x12\x1f\n" +
+	"\vtotal_items\x18\x05 \x01(\x03R\n" +
+	"totalItems\x12!\n" +
+	"\fcurrent_page\x18\x06 \x01(\x05R\vcurrentPage\x12\x1f\n" +
+	"\vtotal_pages\x18\a \x01(\x05R\n" +
+	"totalPages2\xcf\x04\n" +
 	"\fAdhanService\x12~\n" +
 	"\vCreateAdhan\x12!.limestone.CreateAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"*\xdaA\n" +
 	"adhan_file\x82\xd3\xe4\x93\x02\x17:\n" +
@@ -1069,7 +1236,8 @@ const file_adhan_service_proto_rawDesc = "" +
 	"adhan_file\x82\xd3\xe4\x93\x02\x1c:\n" +
 	"adhan_file2\x0e/v1/adhan/{id}\x12m\n" +
 	"\fGetAdhanById\x12\x1e.limestone.GetAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10\x12\x0e/v1/adhan/{id}\x12o\n" +
-	"\vDeleteAdhan\x12!.limestone.DeleteAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10*\x0e/v1/adhan/{id}2\xdc\x05\n" +
+	"\vDeleteAdhan\x12!.limestone.DeleteAdhanFileRequest\x1a .limestone.StandardAdhanResponse\"\x1b\xdaA\x02id\x82\xd3\xe4\x93\x02\x10*\x0e/v1/adhan/{id}\x12Y\n" +
+	"\tListAdhan\x12\x1b.limestone.ListAdhanRequest\x1a\x1c.limestone.ListAdhanResponse\"\x11\x82\xd3\xe4\x93\x02\v\x12\t/v1/adhan2\xdc\x05\n" +
 	"\x17AdhanPreferencesService\x12\x91\x01\n" +
 	"\x16CreateAdhanPreferences\x12(.limestone.CreateAdhanPreferencesRequest\x1a#.limestone.AdhanPreferencesResponse\"(\xdaA\vpreferences\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/preferences\x12\x99\x01\n" +
 	"\x16UpdateAdhanPreferences\x12(.limestone.UpdateAdhanPreferencesRequest\x1a#.limestone.AdhanPreferencesResponse\"0\xdaA\x0eid,preferences\x82\xd3\xe4\x93\x02\x19:\x01*2\x14/v1/preferences/{id}\x12\x84\x01\n" +
@@ -1090,7 +1258,7 @@ func file_adhan_service_proto_rawDescGZIP() []byte {
 	return file_adhan_service_proto_rawDescData
 }
 
-var file_adhan_service_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_adhan_service_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_adhan_service_proto_goTypes = []any{
 	(*Masjids)(nil),                          // 0: limestone.Masjids
 	(*SavedUserAdhanPreferences)(nil),        // 1: limestone.SavedUserAdhanPreferences
@@ -1108,47 +1276,52 @@ var file_adhan_service_proto_goTypes = []any{
 	(*AdhanPreferencesResponse)(nil),         // 13: limestone.AdhanPreferencesResponse
 	(*ListAdhanPreferencesRequest)(nil),      // 14: limestone.ListAdhanPreferencesRequest
 	(*ListAdhanPreferencesResponse)(nil),     // 15: limestone.ListAdhanPreferencesResponse
-	(*Masjids_PrayerTimesConfiguration)(nil), // 16: limestone.Masjids.PrayerTimesConfiguration
-	(*timestamppb.Timestamp)(nil),            // 17: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                    // 18: google.protobuf.Empty
+	(*ListAdhanRequest)(nil),                 // 16: limestone.ListAdhanRequest
+	(*ListAdhanResponse)(nil),                // 17: limestone.ListAdhanResponse
+	(*Masjids_PrayerTimesConfiguration)(nil), // 18: limestone.Masjids.PrayerTimesConfiguration
+	(*timestamppb.Timestamp)(nil),            // 19: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                    // 20: google.protobuf.Empty
 }
 var file_adhan_service_proto_depIdxs = []int32{
-	16, // 0: limestone.SavedUserAdhanPreferences.prayer_times_configuration:type_name -> limestone.Masjids.PrayerTimesConfiguration
-	17, // 1: limestone.SavedUserAdhanPreferences.create_time:type_name -> google.protobuf.Timestamp
-	17, // 2: limestone.SavedUserAdhanPreferences.update_time:type_name -> google.protobuf.Timestamp
+	18, // 0: limestone.SavedUserAdhanPreferences.prayer_times_configuration:type_name -> limestone.Masjids.PrayerTimesConfiguration
+	19, // 1: limestone.SavedUserAdhanPreferences.create_time:type_name -> google.protobuf.Timestamp
+	19, // 2: limestone.SavedUserAdhanPreferences.update_time:type_name -> google.protobuf.Timestamp
 	3,  // 3: limestone.StandardAdhanResponse.adhan_file:type_name -> limestone.AdhanFile
 	8,  // 4: limestone.StandardAdhanResponse.delete_adhan_file_response:type_name -> limestone.DeleteAdhanFileResponse
-	17, // 5: limestone.AdhanFile.create_time:type_name -> google.protobuf.Timestamp
-	17, // 6: limestone.AdhanFile.update_time:type_name -> google.protobuf.Timestamp
+	19, // 5: limestone.AdhanFile.create_time:type_name -> google.protobuf.Timestamp
+	19, // 6: limestone.AdhanFile.update_time:type_name -> google.protobuf.Timestamp
 	3,  // 7: limestone.CreateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
 	3,  // 8: limestone.UpdateAdhanFileRequest.adhan_file:type_name -> limestone.AdhanFile
 	1,  // 9: limestone.CreateAdhanPreferencesRequest.preferences:type_name -> limestone.SavedUserAdhanPreferences
 	1,  // 10: limestone.UpdateAdhanPreferencesRequest.preferences:type_name -> limestone.SavedUserAdhanPreferences
 	1,  // 11: limestone.AdhanPreferencesResponse.preferences:type_name -> limestone.SavedUserAdhanPreferences
 	1,  // 12: limestone.ListAdhanPreferencesResponse.preferences:type_name -> limestone.SavedUserAdhanPreferences
-	4,  // 13: limestone.AdhanService.CreateAdhan:input_type -> limestone.CreateAdhanFileRequest
-	5,  // 14: limestone.AdhanService.UpdateAdhan:input_type -> limestone.UpdateAdhanFileRequest
-	6,  // 15: limestone.AdhanService.GetAdhanById:input_type -> limestone.GetAdhanFileRequest
-	7,  // 16: limestone.AdhanService.DeleteAdhan:input_type -> limestone.DeleteAdhanFileRequest
-	9,  // 17: limestone.AdhanPreferencesService.CreateAdhanPreferences:input_type -> limestone.CreateAdhanPreferencesRequest
-	10, // 18: limestone.AdhanPreferencesService.UpdateAdhanPreferences:input_type -> limestone.UpdateAdhanPreferencesRequest
-	11, // 19: limestone.AdhanPreferencesService.GetAdhanPreferences:input_type -> limestone.GetAdhanPreferencesRequest
-	12, // 20: limestone.AdhanPreferencesService.DeleteAdhanPreferences:input_type -> limestone.DeleteAdhanPreferencesRequest
-	14, // 21: limestone.AdhanPreferencesService.ListAdhanPreferences:input_type -> limestone.ListAdhanPreferencesRequest
-	2,  // 22: limestone.AdhanService.CreateAdhan:output_type -> limestone.StandardAdhanResponse
-	2,  // 23: limestone.AdhanService.UpdateAdhan:output_type -> limestone.StandardAdhanResponse
-	2,  // 24: limestone.AdhanService.GetAdhanById:output_type -> limestone.StandardAdhanResponse
-	2,  // 25: limestone.AdhanService.DeleteAdhan:output_type -> limestone.StandardAdhanResponse
-	13, // 26: limestone.AdhanPreferencesService.CreateAdhanPreferences:output_type -> limestone.AdhanPreferencesResponse
-	13, // 27: limestone.AdhanPreferencesService.UpdateAdhanPreferences:output_type -> limestone.AdhanPreferencesResponse
-	13, // 28: limestone.AdhanPreferencesService.GetAdhanPreferences:output_type -> limestone.AdhanPreferencesResponse
-	18, // 29: limestone.AdhanPreferencesService.DeleteAdhanPreferences:output_type -> google.protobuf.Empty
-	15, // 30: limestone.AdhanPreferencesService.ListAdhanPreferences:output_type -> limestone.ListAdhanPreferencesResponse
-	22, // [22:31] is the sub-list for method output_type
-	13, // [13:22] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	3,  // 13: limestone.ListAdhanResponse.data:type_name -> limestone.AdhanFile
+	4,  // 14: limestone.AdhanService.CreateAdhan:input_type -> limestone.CreateAdhanFileRequest
+	5,  // 15: limestone.AdhanService.UpdateAdhan:input_type -> limestone.UpdateAdhanFileRequest
+	6,  // 16: limestone.AdhanService.GetAdhanById:input_type -> limestone.GetAdhanFileRequest
+	7,  // 17: limestone.AdhanService.DeleteAdhan:input_type -> limestone.DeleteAdhanFileRequest
+	16, // 18: limestone.AdhanService.ListAdhan:input_type -> limestone.ListAdhanRequest
+	9,  // 19: limestone.AdhanPreferencesService.CreateAdhanPreferences:input_type -> limestone.CreateAdhanPreferencesRequest
+	10, // 20: limestone.AdhanPreferencesService.UpdateAdhanPreferences:input_type -> limestone.UpdateAdhanPreferencesRequest
+	11, // 21: limestone.AdhanPreferencesService.GetAdhanPreferences:input_type -> limestone.GetAdhanPreferencesRequest
+	12, // 22: limestone.AdhanPreferencesService.DeleteAdhanPreferences:input_type -> limestone.DeleteAdhanPreferencesRequest
+	14, // 23: limestone.AdhanPreferencesService.ListAdhanPreferences:input_type -> limestone.ListAdhanPreferencesRequest
+	2,  // 24: limestone.AdhanService.CreateAdhan:output_type -> limestone.StandardAdhanResponse
+	2,  // 25: limestone.AdhanService.UpdateAdhan:output_type -> limestone.StandardAdhanResponse
+	2,  // 26: limestone.AdhanService.GetAdhanById:output_type -> limestone.StandardAdhanResponse
+	2,  // 27: limestone.AdhanService.DeleteAdhan:output_type -> limestone.StandardAdhanResponse
+	17, // 28: limestone.AdhanService.ListAdhan:output_type -> limestone.ListAdhanResponse
+	13, // 29: limestone.AdhanPreferencesService.CreateAdhanPreferences:output_type -> limestone.AdhanPreferencesResponse
+	13, // 30: limestone.AdhanPreferencesService.UpdateAdhanPreferences:output_type -> limestone.AdhanPreferencesResponse
+	13, // 31: limestone.AdhanPreferencesService.GetAdhanPreferences:output_type -> limestone.AdhanPreferencesResponse
+	20, // 32: limestone.AdhanPreferencesService.DeleteAdhanPreferences:output_type -> google.protobuf.Empty
+	15, // 33: limestone.AdhanPreferencesService.ListAdhanPreferences:output_type -> limestone.ListAdhanPreferencesResponse
+	24, // [24:34] is the sub-list for method output_type
+	14, // [14:24] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_adhan_service_proto_init() }
@@ -1165,13 +1338,14 @@ func file_adhan_service_proto_init() {
 		(*StandardAdhanResponse_AdhanFile)(nil),
 		(*StandardAdhanResponse_DeleteAdhanFileResponse)(nil),
 	}
+	file_adhan_service_proto_msgTypes[16].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_adhan_service_proto_rawDesc), len(file_adhan_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

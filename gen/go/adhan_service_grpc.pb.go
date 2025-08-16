@@ -24,6 +24,7 @@ const (
 	AdhanService_UpdateAdhan_FullMethodName  = "/limestone.AdhanService/UpdateAdhan"
 	AdhanService_GetAdhanById_FullMethodName = "/limestone.AdhanService/GetAdhanById"
 	AdhanService_DeleteAdhan_FullMethodName  = "/limestone.AdhanService/DeleteAdhan"
+	AdhanService_ListAdhan_FullMethodName    = "/limestone.AdhanService/ListAdhan"
 )
 
 // AdhanServiceClient is the client API for AdhanService service.
@@ -34,6 +35,7 @@ type AdhanServiceClient interface {
 	UpdateAdhan(ctx context.Context, in *UpdateAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
 	GetAdhanById(ctx context.Context, in *GetAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
 	DeleteAdhan(ctx context.Context, in *DeleteAdhanFileRequest, opts ...grpc.CallOption) (*StandardAdhanResponse, error)
+	ListAdhan(ctx context.Context, in *ListAdhanRequest, opts ...grpc.CallOption) (*ListAdhanResponse, error)
 }
 
 type adhanServiceClient struct {
@@ -84,6 +86,16 @@ func (c *adhanServiceClient) DeleteAdhan(ctx context.Context, in *DeleteAdhanFil
 	return out, nil
 }
 
+func (c *adhanServiceClient) ListAdhan(ctx context.Context, in *ListAdhanRequest, opts ...grpc.CallOption) (*ListAdhanResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListAdhanResponse)
+	err := c.cc.Invoke(ctx, AdhanService_ListAdhan_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdhanServiceServer is the server API for AdhanService service.
 // All implementations must embed UnimplementedAdhanServiceServer
 // for forward compatibility.
@@ -92,6 +104,7 @@ type AdhanServiceServer interface {
 	UpdateAdhan(context.Context, *UpdateAdhanFileRequest) (*StandardAdhanResponse, error)
 	GetAdhanById(context.Context, *GetAdhanFileRequest) (*StandardAdhanResponse, error)
 	DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error)
+	ListAdhan(context.Context, *ListAdhanRequest) (*ListAdhanResponse, error)
 	mustEmbedUnimplementedAdhanServiceServer()
 }
 
@@ -113,6 +126,9 @@ func (UnimplementedAdhanServiceServer) GetAdhanById(context.Context, *GetAdhanFi
 }
 func (UnimplementedAdhanServiceServer) DeleteAdhan(context.Context, *DeleteAdhanFileRequest) (*StandardAdhanResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAdhan not implemented")
+}
+func (UnimplementedAdhanServiceServer) ListAdhan(context.Context, *ListAdhanRequest) (*ListAdhanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAdhan not implemented")
 }
 func (UnimplementedAdhanServiceServer) mustEmbedUnimplementedAdhanServiceServer() {}
 func (UnimplementedAdhanServiceServer) testEmbeddedByValue()                      {}
@@ -207,6 +223,24 @@ func _AdhanService_DeleteAdhan_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdhanService_ListAdhan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAdhanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdhanServiceServer).ListAdhan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdhanService_ListAdhan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdhanServiceServer).ListAdhan(ctx, req.(*ListAdhanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdhanService_ServiceDesc is the grpc.ServiceDesc for AdhanService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +263,10 @@ var AdhanService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteAdhan",
 			Handler:    _AdhanService_DeleteAdhan_Handler,
+		},
+		{
+			MethodName: "ListAdhan",
+			Handler:    _AdhanService_ListAdhan_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

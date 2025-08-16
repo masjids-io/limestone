@@ -42,6 +42,11 @@ service AdhanService {
     };
     option (google.api.method_signature) = "id";
   }
+  rpc ListAdhan(ListAdhanRequest) returns (ListAdhanResponse) {
+    option (google.api.http) = {
+      get: "/v1/adhan"
+    };
+  }
 }
 
 // =========================================================================
@@ -181,4 +186,20 @@ message ListAdhanPreferencesRequest {
 
 message ListAdhanPreferencesResponse {
   repeated SavedUserAdhanPreferences preferences = 1;
+}
+
+message ListAdhanRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional string search = 3;
+}
+
+message ListAdhanResponse {
+  string code = 1;
+  string status = 2;
+  string message = 3;
+  repeated AdhanFile data = 4;
+  int64 total_items = 5;
+  int32 current_page = 6;
+  int32 total_pages = 7;
 }

@@ -17,6 +17,34 @@ produces:
   - application/json
 paths:
   /v1/adhan:
+    get:
+      operationId: AdhanService_ListAdhan
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/limestoneListAdhanResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: page
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: limit
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: search
+          in: query
+          required: false
+          type: string
+      tags:
+        - AdhanService
     post:
       operationId: AdhanService_CreateAdhan
       responses:
@@ -1503,6 +1531,29 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/limestoneSavedUserAdhanPreferences'
+  limestoneListAdhanResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      status:
+        type: string
+      message:
+        type: string
+      data:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/limestoneAdhanFile'
+      totalItems:
+        type: string
+        format: int64
+      currentPage:
+        type: integer
+        format: int32
+      totalPages:
+        type: integer
+        format: int32
   limestoneListEventsResponse:
     type: object
     properties:
