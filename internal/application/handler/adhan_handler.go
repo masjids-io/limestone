@@ -22,7 +22,7 @@ func NewAdhanGrpcHandler(svc *services.AdhanService) *AdhanGrpcHandler {
 	return &AdhanGrpcHandler{Svc: svc}
 }
 
-const maxAdhanFileSizeMB = 5
+const maxAdhanFileSizeMB = 50
 
 func (h *AdhanGrpcHandler) CreateAdhan(ctx context.Context, req *pb.CreateAdhanFileRequest) (*pb.StandardAdhanResponse, error) {
 	adhanFile := req.GetAdhanFile()
